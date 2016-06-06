@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
@@ -50,7 +51,6 @@ public class RealBall extends Entity implements Ball {
         this.lastPosition  = new Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
         this.accelerations = new ArrayList<Vector3f>();
 		this.moving = true;
-		this.addAccel(PhysicsEngine.GRAVITY);
 	}
 
 	public void updateAndMove() {
@@ -78,7 +78,7 @@ public class RealBall extends Entity implements Ball {
 		accelerations.remove(accel);
 	}
 
-    public void applyAccelerations() {
+    public void applyAccel() {
         for (Vector3f a : accelerations) {
 			System.out.printf("Acceleration applied: (%f|%f|%f)\n", a.x, a.y, a.z);
 			currentAcc.set(a.x, a.y, a.z);
@@ -86,6 +86,32 @@ public class RealBall extends Entity implements Ball {
 			Vector3f.add(currentVel, currentAcc, currentVel);
 			System.out.printf("... and velocity after: (%f|%f|%f)\n", currentVel.x, currentVel.y, currentVel.z);
 		}
+    }
+
+    public void applyGlobalAccel(ArrayList<Vector3f> accels, Random r) {
+        for (Vector3f a : accels) {
+            if (a != PhysicsEngine.GRAVITY) {
+                currentAcc.set(a.x, a.y, a.z);
+                currentAcc.scale(getTimeElapsed());
+
+                double meanX = currentAcc.x;
+                double stdX = 0.5 * meanX;
+                double newX = r.nextGaussian() * stdX + meanX;
+                currentAcc.setX((float) newX);
+
+                double meanY = currentAcc.y;
+                double stdY = 0.5 * meanX;
+                double newY = r.nextGaussian() * stdY + meanY;
+                currentAcc.setY((float) newY);
+
+                double meanZ = currentAcc.z;
+                double stdZ = 0.5 * meanZ;
+                double newZ = r.nextGaussian() * stdZ + meanZ;
+                currentAcc.setZ((float) newZ);
+
+                Vector3f.add(currentVel, currentAcc, currentVel);
+            }
+        }
     }
 
 	public void resetLastPos() {

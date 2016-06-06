@@ -28,15 +28,13 @@ public class MainGameLoop {
 		
 		while(!Display.isCloseRequested()){
 			if(!update) {
+				currState.checkInputs();
+				currState.update();
+				GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+				currState.renderScreen();
+				counter++;
 
-			currState.checkInputs();
-			currState.update();
-			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
-			currState.renderScreen();
-			counter++;
-			
-			
-			DisplayManager.updateDisplay();
+				DisplayManager.updateDisplay();
 			}
 		}
 		currState.cleanUp();

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.util.vector.Vector;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
@@ -111,6 +112,7 @@ public class GameState implements State {
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
 		mainEngine = new PhysicsEngine(balls, world);
+		addRandomWind();
 		loadWater();
 		loadParticleSystem();
 
@@ -470,5 +472,12 @@ public class GameState implements State {
 
 	public void removeBall() {
 		balls.remove(currBall);
+	}
+
+	public void addRandomWind() {
+		Vector3f wind = new Vector3f();
+		wind.set((float) (Math.random() * 100 - 50), 0, (float) (Math.random() * 100 - 50));
+        System.out.printf("Wind: (%f|%f|%f)\n", wind.x, wind.y, wind.z);
+		mainEngine.addGlobalAccel(wind);
 	}
 }

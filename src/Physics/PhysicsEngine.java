@@ -2,6 +2,7 @@ package Physics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.lwjgl.util.vector.Vector3f;
 
@@ -26,12 +27,17 @@ public class PhysicsEngine {
 	public static final Vector3f GRAVITY = new Vector3f(0, -230f, 0);
 	public static final float COEFF_RESTITUTION = 0.75f;
 	public static final float COEFF_FRICTION = 0.15f;
-	
+
+    private static final double FRICTION_STD = 0.5;
 	
 
 	private List<RealBall> balls;
 	private World world;
+
+    private Random r;
 	private boolean enabled;
+
+    private ArrayList<Vector3f> globalAccel;
 
 	public PhysicsEngine(List<Ball> balls, World world) {
 		this.balls = new ArrayList<RealBall>();
@@ -40,6 +46,9 @@ public class PhysicsEngine {
 				this.balls.add((RealBall)b);
 		this.world = world;
 		this.enabled = true;
+        this.r = new Random();
+        this.globalAccel = new ArrayList<Vector3f>();
+        this.addGlobalAccel(PhysicsEngine.GRAVITY);
 	}
 
 	public boolean isEnabled() {
@@ -54,9 +63,18 @@ public class PhysicsEngine {
 		this.balls.add(ball);
 	}
 
+    public void addGlobalAccel(Vector3f accel) {
+        this.globalAccel.add(accel);
+    }
+
+    public void removeGlobalAccel(Vector3f accel) {
+        this.globalAccel.remove(accel);
+    }
+
 	public void tick() {
 		for (RealBall b : balls) {
-            b.applyAccelerations();
+            b.applyGlobalAccel(this.globalAccel, r);
+            b.applyAccel();
 			if ((b.isMoving() && (b.movedLastStep() || b.getLastTimeElapsed() == 0)) || MainGameLoop.getCounter() < 10) {
 				b.updateAndMove();
 				System.out.println("\n---- Collision detection starts ----\n");
@@ -283,20 +301,38 @@ public class PhysicsEngine {
 			// since F = m * a <=> F/m = a <=> F/m * t = v the effect on the velocity is computed as done below (Ffriction = coeffFriction * Fnormal)
 			float angleIncl = Vector3f.angle(new Vector3f(frictionDir.x,0,frictionDir.z), frictionDir);
 			angleIncl = (float) Math.min(Math.PI - angleIncl, angleIncl);
-			float frictionVelComponent = PhysicsEngine.COEFF_FRICTION * (PhysicsEngine.GRAVITY.length() * (float) (Math.cos(angleIncl))) * b.getTimeElapsed();
+			float frictionVelComponent = randomiseFriction() * (PhysicsEngine.GRAVITY.length() * (float) (Math.cos(angleIncl))) * b.getTimeElapsed();
 			frictionDir = (Vector3f) frictionDir.scale(-frictionVelComponent);
+            //randomiseFriction(frictionDir);
 
-			// finally, the velocity of the ball is set to the projection (since the ball is not supposed to be bouncing)
+            // finally, the velocity of the ball is set to the projection (since the ball is not supposed to be bouncing)
 			// then friction is applied (if the effect of friction is larger than the actual velocity, the ball just stops)
 			b.setVelocity(projection.x, projection.y, projection.z);
 			if (b.getVelocity().lengthSquared() > frictionDir.lengthSquared())
 				b.increaseVelocity(frictionDir);
 			else {
 				b.setVelocity(0, 0, 0);
-				//b.setMoving(false);
+				b.setMoving(false);
 			}
 		}
 	}
+
+    private float randomiseFriction() {
+        double std = FRICTION_STD * COEFF_FRICTION;
+        double newFriction = r.nextGaussian() * std + COEFF_FRICTION;
+
+        System.out.println("\nFRICTION FROM " + COEFF_FRICTION + " TO " + newFriction + "\n");
+        return (float) newFriction;
+    }
+
+    private void randomiseFriction(Vector3f friction) {
+        double mean = friction.length();
+        double std = FRICTION_STD * mean;
+        double newLength = r.nextGaussian() * std + mean;
+        friction.scale((float) (newLength / mean));
+
+        System.out.println("\nFRICTION FROM " + mean + " TO " + newLength + "\n");
+    }
 
 	public ShotData performVirtualShot(RealBall b, Vector3f shotVel) {
 		ArrayList<Entity> obstaclesHit = new ArrayList<Entity>();
