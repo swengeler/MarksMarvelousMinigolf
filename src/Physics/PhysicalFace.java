@@ -119,7 +119,27 @@ public class PhysicalFace {
         return edge;
     }
 
-    public Vector3f getCommonVertex(ArrayList<PhysicalFace> faces) {
+    public Vector3f[] getCommonVertices(PhysicalFace f) {
+        Vector3f[] result = new Vector3f[3];
+        if (this.point1 == f.getP1() || this.point1 == f.getP2() || this.point1 == f.getP3()) {
+            result[0] = point1;
+        } else if (this.point2 == f.getP1() || this.point2 == f.getP2() || this.point2 == f.getP3()) {
+            result[1] = point2;
+        } else if (this.point3 == f.getP1() || this.point3 == f.getP2() || this.point3 == f.getP3()) {
+            result[2] = point3;
+        } else {
+            return null;
+        }
+        return result;
+    }
+
+    public static Vector3f getCommonVertex(ArrayList<PhysicalFace> faces) {
+        Vector3f[] candidates = faces.get(0).getCommonVertices(faces.get(1));
+        for (int i = 0; i < candidates.length; i++) {
+            if (candidates[i] != null && (candidates[i] == faces.get(2).getP1() || candidates[i] == faces.get(2).getP2() || candidates[i] == faces.get(2).getP3())) {
+                return candidates[i];
+            }
+        }
         return null;
     }
 	

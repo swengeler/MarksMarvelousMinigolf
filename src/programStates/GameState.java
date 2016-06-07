@@ -323,7 +323,7 @@ public class GameState implements State {
 		ModelData grass = OBJFileLoader.loadOBJ("grassModel");
 		ModelData pine = OBJFileLoader.loadOBJ("pine");
 		ModelData flower = OBJFileLoader.loadOBJ("grassModel");
-		ModelData box = OBJFileLoader.loadOBJ("box");
+		ModelData box = OBJFileLoader.loadOBJ("wall_segment");
 		ModelData dragon = OBJFileLoader.loadOBJ("dragon");
 		ModelData empty = OBJFileLoader.loadOBJ("empty");
 		ModelData disk = OBJFileLoader.loadOBJ("disk");

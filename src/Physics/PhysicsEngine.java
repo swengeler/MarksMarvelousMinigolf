@@ -200,6 +200,7 @@ public class PhysicsEngine {
             while (b.collidesWith(collidingFaces)) {
                 b.increasePosition(revBM);
             }
+
             // push the ball back into the faces it collided with to register which ones it's colliding with now
             revBM.negate();
             b.increasePosition(revBM);
@@ -209,6 +210,7 @@ public class PhysicsEngine {
                     stillColliding.add(f);
             }
             System.out.println("Number of faces still colliding: " + stillColliding.size());
+
             if (stillColliding.size() == 1)
                 forResolution = stillColliding.get(0);
             else if (stillColliding.size() == 2){
@@ -217,8 +219,12 @@ public class PhysicsEngine {
                 if (Math.abs(closest1.x - closest2.x) < NORMAL_TH &&
                     Math.abs(closest1.y - closest2.y) < NORMAL_TH &&
                     Math.abs(closest1.z - closest2.z) < NORMAL_TH) {
-                    Vector3f normal = new Vector3f();
                     Vector3f edge = stillColliding.get(0).getCommonEdge(stillColliding.get(1));
+                    if (edge == null) {
+                        System.out.println("EDGE COULD NOT BE RESOLVED");
+                        return;
+                    }
+                    Vector3f normal = new Vector3f();
                     Vector3f projOnEdge = new Vector3f(b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
                     Vector3f.sub(projOnEdge, (Vector3f) edge.scale(Vector3f.dot(edge, projOnEdge)), projOnEdge);
                     Vector3f.sub(b.getVelocity(), projOnEdge, normal);
@@ -230,9 +236,45 @@ public class PhysicsEngine {
                 }
             } else {
                 // it is assumed that all faces join in one point
-                Vector3f vertex = stillColliding.get(0).getCommonVertex();
-                if (vertex == null) {
-                    return;
+                ArrayList<Vector3f> closestPoints = new ArrayList<>();
+                for (PhysicalFace f : stillColliding)
+                    closestPoints.add(f.getClosestPoint(b));
+
+                // try to find a common vertex (which would be the vertex joining all faces)
+                Vector3f vertex = null, edge = null;
+                Vector3f dist1 = new Vector3f(), dist2 = new Vector3f();
+                float lowestDistFace = Float.MAX_VALUE, lowestDistEdge= Float.MAX_VALUE;
+                PhysicalFace closestFace = null;
+                for (int i = 0; i < closestPoints.size(); i++) {
+                    for (int j = 0; j < closestPoints.size(); j++) {
+                        Vector3f.sub(b.getPosition(), closestPoints.get(i), dist1);
+                        Vector3f.sub(b.getPosition(), closestPoints.get(j), dist2);
+                        if (closestPoints.get(i) == closestPoints.get(j)) {
+                            vertex = closestPoints.get(i);
+                        } else if (Math.abs(dist1.lengthSquared() - dist2.lengthSquared()) < 0.01 && Maths.distancePtPtSq(b.getPosition(), closestPoints.get(i)) < lowestDistEdge) {
+                            edge = stillColliding.get(i).getCommonEdge(stillColliding.get(j));
+                            lowestDistEdge = Maths.distancePtPtSq(b.getPosition(), closestPoints.get(i));
+                        } else if (dist1.lengthSquared() < lowestDistFace) {
+                            lowestDistFace = dist1.lengthSquared();
+                            closestFace = stillColliding.get(i);
+                        }
+                    }
+                }
+                if (vertex != null) {
+                    // collide with the vertex
+                    Vector3f normal = new Vector3f();
+                    Vector3f.sub(b.getPosition(), vertex, normal);
+                    forResolution = new PhysicalFace(normal, vertex, vertex, vertex);
+                } else if (edge != null) {
+                    // collide with an edge
+                    Vector3f normal = new Vector3f();
+                    Vector3f projOnEdge = new Vector3f(b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
+                    Vector3f.sub(projOnEdge, (Vector3f) edge.scale(Vector3f.dot(edge, projOnEdge)), projOnEdge);
+                    Vector3f.sub(b.getVelocity(), projOnEdge, normal);
+                    forResolution = new PhysicalFace(normal, null, null, null);
+                } else {
+                    // collide with the closest face
+                    forResolution = closestFace;
                 }
             }
         }

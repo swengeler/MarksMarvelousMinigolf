@@ -24,7 +24,7 @@ public class Maths {
         float d1 = Vector3f.dot(ab, ap);
         float d2 = Vector3f.dot(ac, ap);
         if (d1 <= 0 && d2 <= 0)
-            return a;
+            return aOr;
 
         // check if p is in the vertex region outside of b
         Vector3f bp = new Vector3f();
@@ -32,7 +32,7 @@ public class Maths {
         float d3 = Vector3f.dot(ab, bp);
         float d4 = Vector3f.dot(ac, bp);
         if (d3 >= 0 && d4 <= d3)
-            return b;
+            return bOr;
 
         // check if p is in the vertex region outside c
         Vector3f cp = new Vector3f();
@@ -40,7 +40,7 @@ public class Maths {
         float d5 = Vector3f.dot(ab, cp);
         float d6 = Vector3f.dot(ac, cp);
         if (d6 >= 0 && d5 <= d6)
-        	return c;
+        	return cOr;
 
         // check if p is in the edge region of ab
         float vc = d1 * d4 - d3 * d2;
