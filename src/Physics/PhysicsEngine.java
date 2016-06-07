@@ -191,14 +191,14 @@ public class PhysicsEngine {
             Vector3f normal = new Vector3f(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
             System.out.printf("Normal of closest: (%f|%f|%f)\n", normal.x, normal.x, normal.x);
             normal.scale(Vector3f.dot(b.getVelocity(), normal) / normal.lengthSquared());
-            normal.scale(-0.001f);
+            normal.scale(-0.0001f);
             while (b.collidesWith(collidingFaces)) {
                 b.increasePosition(normal);
             }
         } else {
             Vector3f revBM = new Vector3f(b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
             revBM.normalise();
-            revBM.scale(-0.001f);
+            revBM.scale(-0.0001f);
             while (b.collidesWith(collidingFaces)) {
                 b.increasePosition(revBM);
             }
@@ -286,6 +286,7 @@ public class PhysicsEngine {
         }
 		
 		resolvePlaneCollision(b, forResolution);
+        System.out.println("COLLISION WITH OBSTACLE RESOLVED");
         //MainGameLoop.currState.cleanUp();
         //DisplayManager.closeDisplay();
 	}

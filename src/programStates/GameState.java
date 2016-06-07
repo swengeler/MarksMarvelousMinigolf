@@ -116,7 +116,8 @@ public class GameState implements State {
 		loadWater();
 		loadParticleSystem();
 
-		createEntity("box", new Vector3f(world.getStart().x + 50, 0, world.getStart().z + 50), 0, 0, 0, 20);
+		createEntity("box", new Vector3f(world.getStart().x + 50, -79.5f, world.getStart().z + 50), 0, 0, 0, 20);
+        createEntity("tree", new Vector3f(world.getStart().x + 50, 0, world.getStart().z - 50), 0, 0, 0, 10);
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);

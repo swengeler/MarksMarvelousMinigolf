@@ -13,7 +13,7 @@ import Physics.PhysicalFace;
 import Physics.PhysicsEngine;
 
 public class RealBall extends Entity implements Ball {
-	
+
 	private static final float FACTOR = 0.5f;
 	private static final float RUN_SPEED = 2;
 	private static final float TURN_SPEED = 100;
@@ -22,7 +22,7 @@ public class RealBall extends Entity implements Ball {
 	public static final float REAL_RADIUS = 0.04267f;
 	public static final float REAL_MASS = 0.04593f;
 	public static final float RADIUS = 1f;
-	
+
 	private static final float MAX_CHARGING_TIME = 3;
 	private static final float POWER_SCALE = 100;
 	private static final float MIN_VEL = 7;
@@ -34,11 +34,11 @@ public class RealBall extends Entity implements Ball {
 	private boolean gameover=false;
 	private float currentTurnSpeed;
 	private float lastTimeElapsed;
-	
+
 	private int score;
 
 	private boolean moving;
-	
+
 	private float initspeed = 0;
 	private boolean charging;
 	private boolean played;
@@ -140,19 +140,19 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public void checkInputs() {
-			
+
 		if(Keyboard.isKeyDown(Keyboard.KEY_Y)){
 			//System.out.println("Here swapping from the ball at position " + this.getPosition().x );
 			GameState.getInstance().swap();
 		}
-		
+
 		if(Keyboard.isKeyDown(Keyboard.KEY_F)){
 			if(!played){
 				charging = true;
 				initspeed += DisplayManager.getFrameTimeSeconds();
 				if(initspeed > MAX_CHARGING_TIME)
 					initspeed = MAX_CHARGING_TIME;
-			}	
+			}
 		} else if(!Keyboard.isKeyDown(Keyboard.KEY_F) && charging){
 			charging = false;
 			setMoving(true);
@@ -160,11 +160,11 @@ public class RealBall extends Entity implements Ball {
 			System.out.println(initspeed + "hell is here");
 			this.currentVel.x = (float) (initspeed * Math.sin(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall()))) * POWER_SCALE;
 			this.currentVel.z = (float) (initspeed * Math.cos(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall()))) * POWER_SCALE;
-			
+
 			initspeed=0;
 			played = true;
 		}
-		
+
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 			this.currentVel.x += (float) (RUN_SPEED * Math.sin(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR;
 			this.currentVel.z += (float) (RUN_SPEED * Math.cos(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR;
@@ -213,7 +213,7 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public void setVelocity(Vector3f v) {
-        System.out.printf("Velocity of ball %s set to: (%f|%f|%f)\n", this.toString(), v.x, v.y, v.z);
+        //System.out.printf("Velocity of ball %s set to: (%f|%f|%f)\n", this.toString(), v.x, v.y, v.z);
 		currentVel.set(v.x, v.y, v.z);
 	}
 
@@ -234,7 +234,7 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public void setVelocity(float x, float y, float z) {
-		System.out.printf("Velocity of ball %s set to: (%f|%f|%f)\n", this.toString(), x, y, z);
+		//System.out.printf("Velocity of ball %s set to: (%f|%f|%f)\n", this.toString(), x, y, z);
 		currentVel.set(x, y, z);
 	}
 
@@ -247,11 +247,11 @@ public class RealBall extends Entity implements Ball {
 		System.out.println("Therefore moved is " + moved);
 		return moved;
 	}
-	
+
 	public float getTimeElapsed() {
 		return DisplayManager.getFrameTimeSeconds();
 	}
-	
+
 	public float getLastTimeElapsed() {
 		return lastTimeElapsed;
 	}
@@ -259,23 +259,23 @@ public class RealBall extends Entity implements Ball {
 	public String toString() {
 		return "Ball at (" + getPosition().x + "|" + getPosition().y + "|" + getPosition().z + ") with velocity (" + currentVel.x + "|" + currentVel.y + "|" + currentVel.z + ")" ;
 	}
-	
+
 	public boolean equals(Object o) {
 		return super.equals(o);
 	}
-	
+
 	public void addScore(){
 		score++;
 	}
-	
+
 	public int getScore(){
 		return score;
 	}
-	
+
 	public boolean isPlayed(){
 		return played;
 	}
-	
+
 	public void setPlayed(boolean p){
 		played = p;
 	}
