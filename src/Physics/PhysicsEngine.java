@@ -11,6 +11,7 @@ import entities.RealBall;
 import entities.VirtualBall;
 import entities.Ball;
 import entities.Entity;
+import renderEngine.DisplayManager;
 import terrains.Terrain;
 import terrains.World;
 import toolbox.Douple;
@@ -158,8 +159,9 @@ public class PhysicsEngine {
 	}
 
 	public void resolveObstacleCollision(Ball b) {
-        ArrayList<PhysicalFace> collidingFaces = new ArrayList<PhysicalFace>();
+        ArrayList<PhysicalFace> collidingFaces = new ArrayList<>();
         collidingFaces.addAll(world.getCollidingFacesEntities(b));
+        System.out.println("NUMBER OF COLLIDING FACES: " + collidingFaces.size());
 
         if (collidingFaces.size() == 0)
             return;
@@ -189,7 +191,7 @@ public class PhysicsEngine {
             Vector3f normal = new Vector3f(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
             System.out.printf("Normal of closest: (%f|%f|%f)\n", normal.x, normal.x, normal.x);
             normal.scale(Vector3f.dot(b.getVelocity(), normal) / normal.lengthSquared());
-            normal.scale(-0.1f);
+            normal.scale(-0.001f);
             while (b.collidesWith(collidingFaces)) {
                 b.increasePosition(normal);
             }
@@ -225,9 +227,13 @@ public class PhysicsEngine {
                         return;
                     }
                     Vector3f normal = new Vector3f();
-                    Vector3f projOnEdge = new Vector3f(b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
-                    Vector3f.sub(projOnEdge, (Vector3f) edge.scale(Vector3f.dot(edge, projOnEdge)), projOnEdge);
+                    Vector3f projOnEdge = new Vector3f(edge.x, edge.y, edge.z);
+                    projOnEdge.scale(Vector3f.dot(edge, b.getVelocity()) / edge.lengthSquared());
+                    System.out.printf("Edge: (%f|%f|%f)\n", edge.x, edge.y, edge.z);
+                    System.out.printf("Projection of velocity on edge: (%f|%f|%f)\n", projOnEdge.x, projOnEdge.y, projOnEdge.z);
+                    System.out.printf("Ball's velocity: (%f|%f|%f)\n", b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
                     Vector3f.sub(b.getVelocity(), projOnEdge, normal);
+                    System.out.printf("Normal for resolution: (%f|%f|%f)\n", normal.x, normal.y, normal.z);
                     forResolution = new PhysicalFace(normal, closest1, closest1, closest1);
                 } else if (Maths.distancePtPtSq(closest1, b.getPosition()) < Maths.distancePtPtSq(closest2, b.getPosition())) {
                     forResolution = stillColliding.get(0);
@@ -249,7 +255,7 @@ public class PhysicsEngine {
                     for (int j = 0; j < closestPoints.size(); j++) {
                         Vector3f.sub(b.getPosition(), closestPoints.get(i), dist1);
                         Vector3f.sub(b.getPosition(), closestPoints.get(j), dist2);
-                        if (closestPoints.get(i) == closestPoints.get(j)) {
+                        if (Maths.pointsAreEqual(closestPoints.get(i), closestPoints.get(j))) { // needs to be changed
                             vertex = closestPoints.get(i);
                         } else if (Math.abs(dist1.lengthSquared() - dist2.lengthSquared()) < 0.01 && Maths.distancePtPtSq(b.getPosition(), closestPoints.get(i)) < lowestDistEdge) {
                             edge = stillColliding.get(i).getCommonEdge(stillColliding.get(j));
@@ -280,6 +286,8 @@ public class PhysicsEngine {
         }
 		
 		resolvePlaneCollision(b, forResolution);
+        //MainGameLoop.currState.cleanUp();
+        //DisplayManager.closeDisplay();
 	}
 
 	public void resolveBallCollision(Ball b1) {

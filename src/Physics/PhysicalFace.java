@@ -17,12 +17,9 @@ public class PhysicalFace {
 	public PhysicalFace(Vector3f normal, Vector3f point1, Vector3f point2, Vector3f point3) {
 		this.normal = new Vector3f(normal.x, normal.y, normal.z);
 		this.normal.normalise();
-		/*this.point1 = new Vector3f(point1.x, point1.y, point1.z);
+		this.point1 = new Vector3f(point1.x, point1.y, point1.z);
 		this.point2 = new Vector3f(point2.x, point2.y, point2.z);
-		this.point3 = new Vector3f(point3.x, point3.y, point3.z);*/
-        this.point1 = point1;
-        this.point2 = point2;
-        this.point3 = point3;
+		this.point3 = new Vector3f(point3.x, point3.y, point3.z);
 		dist = new Vector3f();
 		prepareBounds();
 	}
@@ -30,7 +27,7 @@ public class PhysicalFace {
 	public boolean collidesWithFace(Ball b) {
 		Vector3f closest = Maths.closestPtPointTriangle(b.getPosition(), point1, point2, point3);
 		Vector3f.sub(b.getPosition(), closest, dist);
-		//System.out.println("Distance stuff/ballcenter: " + dist.length());
+		System.out.println("Distance between ball and " + this + ": " + dist.length());
 		if (dist.length() <= Ball.RADIUS)
 			return true;
 		return false;
@@ -92,24 +89,24 @@ public class PhysicalFace {
 		bbox = new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 
-	public Vector3f getCommonEdge(PhysicalFace f) {
+	public Vector3f getCommonEdge(PhysicalFace f) { // all of this equality stuff needs to be changed
         Vector3f c1, c2, edge = new Vector3f();
 
-        if (this.point1 == f.getP1() || this.point1 == f.getP2() || this.point1 == f.getP3()) {
+        if (Maths.pointsAreEqual(point1, f.getP1()) || Maths.pointsAreEqual(point1, f.getP2()) || Maths.pointsAreEqual(point1, f.getP3())) {
             c1 = this.point1;
-        } else if (this.point2 == f.getP1() || this.point2 == f.getP2() || this.point2 == f.getP3()) {
+        } else if (Maths.pointsAreEqual(point2, f.getP1()) || Maths.pointsAreEqual(point2, f.getP2()) || Maths.pointsAreEqual(point2, f.getP3())) {
             c1 = this.point2;
-        } else if (this.point3 == f.getP1() || this.point3 == f.getP2() || this.point3 == f.getP3()) {
+        } else if (Maths.pointsAreEqual(point3, f.getP1()) || Maths.pointsAreEqual(point3, f.getP2()) || Maths.pointsAreEqual(point3, f.getP3())) {
             c1 = this.point3;
         } else {
             return null;
         }
 
-        if (this.point1 == f.getP1() || this.point1 == f.getP2() || this.point1 == f.getP3()) {
+        if (c1 != point1 && (Maths.pointsAreEqual(point1, f.getP1()) || Maths.pointsAreEqual(point1, f.getP2()) || Maths.pointsAreEqual(point1, f.getP3()))) {
             c2 = this.point1;
-        } else if (this.point2 == f.getP1() || this.point2 == f.getP2() || this.point2 == f.getP3()) {
+        } else if (c1 != point2 && (Maths.pointsAreEqual(point2, f.getP1()) || Maths.pointsAreEqual(point2, f.getP2()) || Maths.pointsAreEqual(point2, f.getP3()))) {
             c2 = this.point2;
-        } else if (this.point3 == f.getP1() || this.point3 == f.getP2() || this.point3 == f.getP3()) {
+        } else if (c1 != point3 && (Maths.pointsAreEqual(point3, f.getP1()) || Maths.pointsAreEqual(point3, f.getP2()) || Maths.pointsAreEqual(point3, f.getP3()))) {
             c2 = this.point3;
         } else {
             return null;
@@ -119,13 +116,13 @@ public class PhysicalFace {
         return edge;
     }
 
-    public Vector3f[] getCommonVertices(PhysicalFace f) {
+    public Vector3f[] getCommonVertices(PhysicalFace f) { // all of this equality stuff needs to be changed
         Vector3f[] result = new Vector3f[3];
-        if (this.point1 == f.getP1() || this.point1 == f.getP2() || this.point1 == f.getP3()) {
+        if (Maths.pointsAreEqual(point1, f.getP1()) || Maths.pointsAreEqual(point1, f.getP2()) || Maths.pointsAreEqual(point1, f.getP3())) {
             result[0] = point1;
-        } else if (this.point2 == f.getP1() || this.point2 == f.getP2() || this.point2 == f.getP3()) {
+        } else if (Maths.pointsAreEqual(point2, f.getP1()) || Maths.pointsAreEqual(point2, f.getP2()) || Maths.pointsAreEqual(point2, f.getP3())) {
             result[1] = point2;
-        } else if (this.point3 == f.getP1() || this.point3 == f.getP2() || this.point3 == f.getP3()) {
+        } else if (Maths.pointsAreEqual(point3, f.getP1()) || Maths.pointsAreEqual(point3, f.getP2()) || Maths.pointsAreEqual(point3, f.getP3())) {
             result[2] = point3;
         } else {
             return null;
@@ -136,7 +133,7 @@ public class PhysicalFace {
     public static Vector3f getCommonVertex(ArrayList<PhysicalFace> faces) {
         Vector3f[] candidates = faces.get(0).getCommonVertices(faces.get(1));
         for (int i = 0; i < candidates.length; i++) {
-            if (candidates[i] != null && (candidates[i] == faces.get(2).getP1() || candidates[i] == faces.get(2).getP2() || candidates[i] == faces.get(2).getP3())) {
+            if (candidates[i] != null && (candidates[i] == faces.get(2).getP1() || candidates[i] == faces.get(2).getP2() || candidates[i] == faces.get(2).getP3())) { // needs to be changed
                 return candidates[i];
             }
         }
@@ -144,7 +141,7 @@ public class PhysicalFace {
     }
 	
 	public String toString() {
-		return this.getClass().getName() + " with normal (" + normal.x + "|" + normal.y + "|" + normal.z + ") with " + bbox;
+		return "PhysicalFace with normal (" + normal.x + "|" + normal.y + "|" + normal.z + ") with points (" + point1.x + "|" + point1.y + "|" + point1.z + "), (" + point2.x + "|" + point2.y + "|" + point2.z + ") and (" + point3.x + "|" + point3.y + "|" + point3.z + ")";
 	}
 
 }

@@ -13,7 +13,7 @@ import terrains.World;
 
 public class MainGameLoop {
 	
-	private static State currState;
+	public static State currState;
 	private static Loader loader = new Loader();
 	private static boolean update = false;
 	

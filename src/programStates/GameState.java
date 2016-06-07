@@ -112,9 +112,11 @@ public class GameState implements State {
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
 		mainEngine = new PhysicsEngine(balls, world);
-		addRandomWind();
+		// addRandomWind();
 		loadWater();
 		loadParticleSystem();
+
+		createEntity("box", new Vector3f(world.getStart().x + 50, 0, world.getStart().z + 50), 0, 0, 0, 20);
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
