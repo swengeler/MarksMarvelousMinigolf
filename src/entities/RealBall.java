@@ -25,7 +25,7 @@ public class RealBall extends Entity implements Ball {
 
 	private static final float MAX_CHARGING_TIME = 3;
 	private static final float POWER_SCALE = 100;
-	private static final float MIN_VEL = 7;
+	private static final float MIN_VEL = 0.5f;
 
 	private Vector3f currentVel;
 	private Vector3f currentAcc;
@@ -62,10 +62,11 @@ public class RealBall extends Entity implements Ball {
 		Vector3f delta = new Vector3f(currentVel.x, currentVel.y, currentVel.z);
 		delta.scale(getTimeElapsed());
 		super.increasePosition(delta);
+        super.increaseRotation(delta.z * 360, 0, delta.x * 360);
 
 		System.out.printf("Ball's position after moving: (%f|%f|%f)\n", getPosition().x, getPosition().y, getPosition().z);
 		System.out.printf("Ball's velocity after moving (with gravity applied): (%f|%f|%f)\n", currentVel.x, currentVel.y, currentVel.z);
-		if(getVelocity().length() < MIN_VEL && Math.abs(getPosition().y - GameState.getInstance().getWorld().getHeightOfTerrain(getPosition().x, getPosition().z)) < 3){
+		if (getVelocity().length() < MIN_VEL && Math.abs(getPosition().y - GameState.getInstance().getWorld().getHeightOfTerrain(getPosition().x, getPosition().z)) < 5) {
 			setMoving(false);
 		}
 	}

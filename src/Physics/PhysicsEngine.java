@@ -75,6 +75,11 @@ public class PhysicsEngine {
 
 	public void tick() {
 		for (RealBall b : balls) {
+            /*if (!b.isMoving() && b.getPosition().y > 1.5f) {
+                MainGameLoop.currState.cleanUp();
+                DisplayManager.closeDisplay();
+                System.out.println("TERMINATED BECAUSE BALL HANGS IN THE AIR");
+            }*/
             b.applyGlobalAccel(this.globalAccel, r);
             b.applyAccel();
 			if ((b.isMoving() && (b.movedLastStep() || b.getLastTimeElapsed() == 0)) || MainGameLoop.getCounter() < 10) {
@@ -215,7 +220,7 @@ public class PhysicsEngine {
 
             if (stillColliding.size() == 1)
                 forResolution = stillColliding.get(0);
-            else if (stillColliding.size() == 2){
+            else if (stillColliding.size() == 2) {
                 Vector3f closest1 = stillColliding.get(0).getClosestPoint(b);
                 Vector3f closest2 = stillColliding.get(1).getClosestPoint(b);
                 if (Math.abs(closest1.x - closest2.x) < NORMAL_TH &&
@@ -223,18 +228,21 @@ public class PhysicsEngine {
                     Math.abs(closest1.z - closest2.z) < NORMAL_TH) {
                     Vector3f edge = stillColliding.get(0).getCommonEdge(stillColliding.get(1));
                     if (edge == null) {
-                        System.out.println("EDGE COULD NOT BE RESOLVED");
-                        return;
+                        System.out.println("EDGE COULD NOT BE RESOLVED -> ONE PLANE CHOSEN RANDOMLY");
+                        forResolution = stillColliding.get(0);
+                    } else {
+                        Vector3f normal = new Vector3f();
+                        /*Vector3f projOnEdge = new Vector3f(edge.x, edge.y, edge.z);
+                        projOnEdge.scale(Vector3f.dot(edge, b.getVelocity()) / edge.lengthSquared());
+                        System.out.printf("Edge: (%f|%f|%f)\n", edge.x, edge.y, edge.z);
+                        System.out.printf("Projection of velocity on edge: (%f|%f|%f)\n", projOnEdge.x, projOnEdge.y, projOnEdge.z);
+                        System.out.printf("Ball's velocity: (%f|%f|%f)\n", b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
+                        Vector3f.sub(b.getVelocity(), projOnEdge, normal);*/
+                        System.out.printf("Closest point: (%f|%f|%f)\n", closest1.x, closest1.y, closest1.z);
+                        Vector3f.sub(b.getPosition(), closest1, normal);
+                        System.out.printf("Normal for resolution: (%f|%f|%f)\n", normal.x, normal.y, normal.z);
+                        forResolution = new PhysicalFace(normal, closest1, closest1, closest1);
                     }
-                    Vector3f normal = new Vector3f();
-                    Vector3f projOnEdge = new Vector3f(edge.x, edge.y, edge.z);
-                    projOnEdge.scale(Vector3f.dot(edge, b.getVelocity()) / edge.lengthSquared());
-                    System.out.printf("Edge: (%f|%f|%f)\n", edge.x, edge.y, edge.z);
-                    System.out.printf("Projection of velocity on edge: (%f|%f|%f)\n", projOnEdge.x, projOnEdge.y, projOnEdge.z);
-                    System.out.printf("Ball's velocity: (%f|%f|%f)\n", b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
-                    Vector3f.sub(b.getVelocity(), projOnEdge, normal);
-                    System.out.printf("Normal for resolution: (%f|%f|%f)\n", normal.x, normal.y, normal.z);
-                    forResolution = new PhysicalFace(normal, closest1, closest1, closest1);
                 } else if (Maths.distancePtPtSq(closest1, b.getPosition()) < Maths.distancePtPtSq(closest2, b.getPosition())) {
                     forResolution = stillColliding.get(0);
                 } else {
