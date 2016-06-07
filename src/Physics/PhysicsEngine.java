@@ -13,6 +13,7 @@ import entities.Ball;
 import entities.Entity;
 import terrains.Terrain;
 import terrains.World;
+import toolbox.Douple;
 import toolbox.Maths;
 
 public class PhysicsEngine {
@@ -41,9 +42,9 @@ public class PhysicsEngine {
 
 	public PhysicsEngine(List<Ball> balls, World world) {
 		this.balls = new ArrayList<RealBall>();
-		for(Ball b:balls)
+		for(Ball b : balls)
 			if(b instanceof RealBall)
-				this.balls.add((RealBall)b);
+				this.balls.add((RealBall) b);
 		this.world = world;
 		this.enabled = true;
         this.r = new Random();
@@ -157,60 +158,86 @@ public class PhysicsEngine {
 	}
 
 	public void resolveObstacleCollision(Ball b) {
-		ArrayList<PhysicalFace> collidingFaces = new ArrayList<PhysicalFace>();
-		collidingFaces.addAll(world.getCollidingFacesEntities(b));
+        ArrayList<PhysicalFace> collidingFaces = new ArrayList<PhysicalFace>();
+        collidingFaces.addAll(world.getCollidingFacesEntities(b));
+
+        if (collidingFaces.size() == 0)
+            return;
+
+        ArrayList<PhysicalFace> combined = new ArrayList<PhysicalFace>();
+        combined.add(collidingFaces.get(0));
+        System.out.println("Normal added: (" + combined.get(0).getNormal().x + "|" + combined.get(0).getNormal().y + "|" + combined.get(0).getNormal().z + ")");
+        for (PhysicalFace f : collidingFaces) {
+            boolean found = false;
+            for (int i = 0; !found && i < combined.size(); i++) {
+                if (Math.abs(Math.abs(f.getNormal().x) - Math.abs(combined.get(i).getNormal().x)) < NORMAL_TH &&
+                        Math.abs(Math.abs(f.getNormal().y) - Math.abs(combined.get(i).getNormal().y)) < NORMAL_TH &&
+                        Math.abs(Math.abs(f.getNormal().z) - Math.abs(combined.get(i).getNormal().z)) < NORMAL_TH)
+                    found = true;
+            }
+            if (!found) {
+                System.out.println("Normal added: (" + f.getNormal().x + "|" + f.getNormal().y + "|" + f.getNormal().z + ")");
+                combined.add(f);
+            }
+        }
+
+        System.out.println("Number of combined faces: " + combined.size());
+
+        PhysicalFace forResolution;
+        if (combined.size() == 1) {
+            forResolution = combined.get(0);
+            Vector3f normal = new Vector3f(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
+            System.out.printf("Normal of closest: (%f|%f|%f)\n", normal.x, normal.x, normal.x);
+            normal.scale(Vector3f.dot(b.getVelocity(), normal) / normal.lengthSquared());
+            normal.scale(-0.1f);
+            while (b.collidesWith(collidingFaces)) {
+                b.increasePosition(normal);
+            }
+        } else {
+            Vector3f revBM = new Vector3f(b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
+            revBM.normalise();
+            revBM.scale(-0.001f);
+            while (b.collidesWith(collidingFaces)) {
+                b.increasePosition(revBM);
+            }
+            // push the ball back into the faces it collided with to register which ones it's colliding with now
+            revBM.negate();
+            b.increasePosition(revBM);
+            ArrayList<PhysicalFace> stillColliding = new ArrayList<>();
+            for (PhysicalFace f : collidingFaces) {
+                if (f.collidesWithFace(b))
+                    stillColliding.add(f);
+            }
+            System.out.println("Number of faces still colliding: " + stillColliding.size());
+            if (stillColliding.size() == 1)
+                forResolution = stillColliding.get(0);
+            else if (stillColliding.size() == 2){
+                Vector3f closest1 = stillColliding.get(0).getClosestPoint(b);
+                Vector3f closest2 = stillColliding.get(1).getClosestPoint(b);
+                if (Math.abs(closest1.x - closest2.x) < NORMAL_TH &&
+                    Math.abs(closest1.y - closest2.y) < NORMAL_TH &&
+                    Math.abs(closest1.z - closest2.z) < NORMAL_TH) {
+                    Vector3f normal = new Vector3f();
+                    Vector3f edge = stillColliding.get(0).getCommonEdge(stillColliding.get(1));
+                    Vector3f projOnEdge = new Vector3f(b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
+                    Vector3f.sub(projOnEdge, (Vector3f) edge.scale(Vector3f.dot(edge, projOnEdge)), projOnEdge);
+                    Vector3f.sub(b.getVelocity(), projOnEdge, normal);
+                    forResolution = new PhysicalFace(normal, closest1, closest1, closest1);
+                } else if (Maths.distancePtPtSq(closest1, b.getPosition()) < Maths.distancePtPtSq(closest2, b.getPosition())) {
+                    forResolution = stillColliding.get(0);
+                } else {
+                    forResolution = stillColliding.get(1);
+                }
+            } else {
+                // it is assumed that all faces join in one point
+                Vector3f vertex = stillColliding.get(0).getCommonVertex();
+                if (vertex == null) {
+                    return;
+                }
+            }
+        }
 		
-		if (collidingFaces.size() == 0) 
-			return;
-		
-		ArrayList<PhysicalFace> combined = new ArrayList<PhysicalFace>();
-		combined.add(collidingFaces.get(0));
-		System.out.println("Normal added: (" + combined.get(0).getNormal().x + "|" + combined.get(0).getNormal().y + "|" + combined.get(0).getNormal().z + ")");
-		for (PhysicalFace f : collidingFaces) {
-			boolean found = false;
-			for (int i = 0; !found && i < combined.size(); i++) {
-				if (Math.abs(Math.abs(f.getNormal().x) - Math.abs(combined.get(i).getNormal().x)) < NORMAL_TH &&
-					Math.abs(Math.abs(f.getNormal().y) - Math.abs(combined.get(i).getNormal().y)) < NORMAL_TH &&
-					Math.abs(Math.abs(f.getNormal().z) - Math.abs(combined.get(i).getNormal().z)) < NORMAL_TH)
-					found = true;
-			}
-			if (!found) {
-				System.out.println("Normal added: (" + f.getNormal().x + "|" + f.getNormal().y + "|" + f.getNormal().z + ")");
-				combined.add(f);
-			}
-		}
-		
-		if (combined.size() > 1) {
-			Vector3f revBM = new Vector3f(b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
-			revBM.normalise();
-			revBM.scale(-0.001f);
-			while (b.collidesWith(collidingFaces)) {
-				b.increasePosition(revBM);
-			}
-		}
-		
-		PhysicalFace closest = collidingFaces.get(0);
-		float lowestDistSq = closest.distanceToFaceSq(b);
-		for (PhysicalFace f : collidingFaces) {
-			if (f.distanceToFaceSq(b) < lowestDistSq) {
-				closest = f;
-				lowestDistSq = f.distanceToFaceSq(b);
-			}
-		}
-		
-		System.out.println("Lowest distance to ball: " + Math.sqrt(lowestDistSq));
-		
-		if (combined.size() == 1) {
-			Vector3f normal = new Vector3f(closest.getNormal().x, closest.getNormal().y, closest.getNormal().z);
-			System.out.printf("Normal of closest: (%f|%f|%f)\n", normal.x, normal.x, normal.x);
-			normal.scale(Vector3f.dot(b.getVelocity(), normal)/normal.lengthSquared());
-			normal.scale(-0.001f);
-			while (b.collidesWith(collidingFaces)) {
-				b.increasePosition(normal);
-			}
-		}
-		
-		resolvePlaneCollision(b, closest);
+		resolvePlaneCollision(b, forResolution);
 	}
 
 	public void resolveBallCollision(Ball b1) {

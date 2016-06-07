@@ -317,7 +317,7 @@ public class GameState implements State {
 	
 	private void loadModels(){
 		ModelData human = OBJFileLoader.loadOBJ("person");
-		ModelData ball = OBJFileLoader.loadOBJ("ball_oth_high");
+		ModelData ball = OBJFileLoader.loadOBJ("ball_centred_high_scaled2");
 		ModelData tree = OBJFileLoader.loadOBJ("tree");
 		ModelData fern = OBJFileLoader.loadOBJ("fern");
 		ModelData grass = OBJFileLoader.loadOBJ("grassModel");
@@ -475,8 +475,9 @@ public class GameState implements State {
 	}
 
 	public void addRandomWind() {
+        int a = 20;
 		Vector3f wind = new Vector3f();
-		wind.set((float) (Math.random() * 100 - 50), 0, (float) (Math.random() * 100 - 50));
+		wind.set((float) (Math.random() * a - a/2), 0, (float) (Math.random() * a - a/2));
         System.out.printf("Wind: (%f|%f|%f)\n", wind.x, wind.y, wind.z);
 		mainEngine.addGlobalAccel(wind);
 	}

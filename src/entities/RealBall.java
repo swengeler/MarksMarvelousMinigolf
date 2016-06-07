@@ -110,7 +110,11 @@ public class RealBall extends Entity implements Ball {
                 currentAcc.setZ((float) newZ);
 
                 Vector3f.add(currentVel, currentAcc, currentVel);
-            }
+            } else {
+                currentAcc.set(a.x, a.y, a.z);
+                currentAcc.scale(getTimeElapsed());
+                Vector3f.add(currentVel, currentAcc, currentVel);
+			}
         }
     }
 
@@ -202,10 +206,6 @@ public class RealBall extends Entity implements Ball {
 				return true;
 		}
 		return false;
-	}
-
-	public void checkMinSpeed() {
-
 	}
 
 	public Vector3f getVelocity() {

@@ -40,7 +40,7 @@ public class Maths {
         float d5 = Vector3f.dot(ab, cp);
         float d6 = Vector3f.dot(ac, cp);
         if (d6 >= 0 && d5 <= d6)
-        return c;
+        	return c;
 
         // check if p is in the edge region of ab
         float vc = d1 * d4 - d3 * d2;
@@ -108,6 +108,12 @@ public class Maths {
 		// otherwise p must lie on the triangle
 		return true;
 		
+	}
+
+	public static float distancePtPtSq(Vector3f p1, Vector3f p2) {
+		Vector3f dist = new Vector3f();
+		Vector3f.sub(p1, p2, dist);
+		return dist.lengthSquared();
 	}
 	
 	public static float barryCentric(Vector3f p1, Vector3f p2, Vector3f p3, Vector2f pos) {
