@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 import engineTester.MainGameLoop;
@@ -373,14 +374,14 @@ public class PhysicsEngine {
 			//b.scaleVelocity(COEFF_RESTITUTION);
 			System.out.println(b.getVelocity().x + " " + b.getVelocity().y+ " " + b.getVelocity().z);
 			/*if (b.getVelocity().x != 0 && b.getVelocity().z != 0){
-				b.setVelocity(xspeed(b), b.getVelocity().y*COEFF_RESTITUTION, zspeed(b));
-				applyspin(b);
+				b.setVelocity(xSpeed(b), b.getVelocity().y*COEFF_RESTITUTION, zSpeed(b));
+				applySpin(b);
 			} else if(b.getVelocity().x !=0 && b.getVelocity().z == 0){
-				b.setVelocity(xspeed(b), b.getVelocity().y*COEFF_RESTITUTION, b.getVelocity().z*COEFF_RESTITUTION);
-				applyspin(b);
+				b.setVelocity(xSpeed(b), b.getVelocity().y*COEFF_RESTITUTION, b.getVelocity().z*COEFF_RESTITUTION);
+				applySpin(b);
 			} else if(b.getVelocity().x==0 && b.getVelocity().z!=0){
-				b.setVelocity(b.getVelocity().x*COEFF_RESTITUTION, b.getVelocity().y*COEFF_RESTITUTION, zspeed(b));
-				applyspin(b);
+				b.setVelocity(b.getVelocity().x*COEFF_RESTITUTION, b.getVelocity().y*COEFF_RESTITUTION, zSpeed(b));
+				applySpin(b);
 			} else*/
 				b.scaleVelocity(COEFF_RESTITUTION);
 			
@@ -460,25 +461,49 @@ public class PhysicsEngine {
 
 		return new ShotData(shotVel, ball.getPosition(), obstaclesHit);
 	}
-	public void applyspin(Ball b){
-		float x,z;
-		float a=(float) 0.4;
-		x=b.getRotation().x*((a-COEFF_RESTITUTION)/(1+a)+(((1+COEFF_RESTITUTION)/(1+a))*b.getVelocity().x/(b.getRadius()*b.getRotation().x)));
-		z=b.getRotation().z*((a-COEFF_RESTITUTION)/(1+a)+(((1+COEFF_RESTITUTION)/(1+a))*b.getVelocity().z/(b.getRadius()*b.getRotation().z)));
-		b.setRotation(new Vector3f(x,b.getRotation().y,z));
+
+    public Matrix4f axisTransformationMatrix(Vector3f newY) {
+        Vector3f copy = new Vector3f(newY.x, newY.y, newY.z);
+
+        // find out at which angles to rotate around x and z axis
+        // project the normal/newY vector onto the yz plane to find out the angle at which to rotate around the x-axis
+        Vector3f yzProjection = new Vector3f();
+        Vector3f normalCurPlane = new Vector3f(1, 0, 0);
+        Vector3f.sub(copy, (Vector3f) normalCurPlane.scale(Vector3f.dot(copy, normalCurPlane)), yzProjection);
+        float xRot = Vector3f.angle(newY, yzProjection);
+
+        // resetting the copy
+        copy.set(newY.x, newY.y, newY.z);
+
+        // project the normal/newY vector onto the yx plane to find out the angle at which to rotate around the z-axis
+        Vector3f yxProjection = new Vector3f();
+        normalCurPlane = new Vector3f(0, 0, 1);
+        Vector3f.sub(copy, (Vector3f) normalCurPlane.scale(Vector3f.dot(copy, normalCurPlane)), yzProjection);
+        float zRot = Vector3f.angle(newY, yxProjection);
+
+        return Maths.createTransformationMatrix(new Vector3f(), (float) Math.toRadians(xRot), 0, (float) Math.toRadians(zRot), 1);
+    }
+
+	public void applySpin(Ball b){
+		float x,  z;
+		float a = 0.4f;
+		x = b.getRotation().x * ((a - COEFF_RESTITUTION) / (1 + a) + (((1 + COEFF_RESTITUTION) / (1 + a)) * b.getVelocity().x / (b.getRadius() * b.getRotation().x)));
+		z = b.getRotation().z * ((a - COEFF_RESTITUTION) / (1 + a) + (((1 + COEFF_RESTITUTION) / (1 + a)) * b.getVelocity().z / (b.getRadius() * b.getRotation().z)));
+		b.setRotation(new Vector3f(x, b.getRotation().y, z));
 	}
 	
-	public float xspeed(Ball b){
+	public float xSpeed(Ball b){
 		float x;
-		float a= (float) 0.4;
-		x=b.getVelocity().x*((1-a*COEFF_RESTITUTION)/(1+a)+ (a*(1+COEFF_RESTITUTION)/(1+a))*(b.getRadius()*b.getRotation().x)/b.getVelocity().x);
-	return x;	
+		float a = 0.4f;
+		x = b.getVelocity().x * ((1 - a * COEFF_RESTITUTION) / (1 + a) + (a * (1 + COEFF_RESTITUTION) / (1 + a)) * (b.getRadius() * b.getRotation().x) / b.getVelocity().x);
+	    return x;
 	}
-	public float zspeed(Ball b){
+
+	public float zSpeed(Ball b){
 		float z;
-		float a= (float) 0.4;
-		z=b.getVelocity().z*((1-a*COEFF_RESTITUTION)/(1+a)+ (a*(1+COEFF_RESTITUTION)/(1+a))*(b.getRadius()*b.getRotation().z)/b.getVelocity().z);
-	return z;	
+		float a = 0.4f;
+		z = b.getVelocity().z * ((1 - a * COEFF_RESTITUTION) / (1 + a) + (a * (1 + COEFF_RESTITUTION) / (1 + a)) * (b.getRadius() * b.getRotation().z) / b.getVelocity().z);
+	    return z;
 	}
 
 }
