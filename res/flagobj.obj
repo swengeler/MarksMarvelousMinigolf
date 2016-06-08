@@ -1,6 +1,6 @@
 # Blender v2.77 (sub 0) OBJ File: ''
 # www.blender.org
-mtllib flag.mtl
+mtllib flagobj.mtl
 o Cylinder
 v 0.000000 -2.000000 -0.075152
 v 0.000000 2.000000 -0.075152

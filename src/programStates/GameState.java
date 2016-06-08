@@ -116,8 +116,9 @@ public class GameState implements State {
 		loadWater();
 		loadParticleSystem();
 
-		createEntity("box", new Vector3f(world.getStart().x + 50, -79.9f, world.getStart().z + 50), 0, 0, 0, 20);
-        createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 10, 0, 6);
+		createEntity("box", new Vector3f(world.getStart().x + 50, /*-79.9f*/-40, world.getStart().z + 50), 0, 0, 0, 20);
+        createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 6);
+		createEntity("flag", new Vector3f(world.getStart().x - 50, 0, world.getStart().z - 50), 0, 45, 0, 5);
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
@@ -330,7 +331,7 @@ public class GameState implements State {
 		ModelData dragon = OBJFileLoader.loadOBJ("dragon");
 		ModelData empty = OBJFileLoader.loadOBJ("empty");
 		ModelData disk = OBJFileLoader.loadOBJ("disk");
-		ModelData flag = OBJFileLoader.loadOBJ("flag_rounded");
+		ModelData flag = OBJFileLoader.loadOBJ("flag");
 		ModelData wall = OBJFileLoader.loadOBJ("wall3");
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("hole");

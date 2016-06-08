@@ -102,10 +102,11 @@ public class Entity {
 		cdata = new CollisionData();
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(this.position,this.rotVel.x,this.rotVel.y,this.rotVel.z,this.scale);
 		Vector4f tfVector = new Vector4f(0,0,0,1f);
-		Vector3f p1 = new Vector3f(0,0,0), p2 = new Vector3f(0,0,0), p3 = new Vector3f(0,0,0);
-		Vector3f normal = new Vector3f(0,0,0), v1 = new Vector3f(0,0,0), v2 = new Vector3f(0,0,0);
+		Vector3f p1 = new Vector3f(), p2 = new Vector3f(), p3 = new Vector3f(), n1 = new Vector3f(), n2 = new Vector3f(), n3 = new Vector3f();
+		Vector3f normal = new Vector3f(), v1 = new Vector3f(), v2 = new Vector3f();
 
 		float[] ver = data.getVertices();
+        float[] norm = data.getNormals();
 		int[] ind = data.getIndices();
 
 		float minX = Float.MAX_VALUE;
@@ -116,22 +117,25 @@ public class Entity {
 		float maxZ = maxX;
 
 		PhysicalFace face;
-		int[] currInd = new int[3];
+		int[] curInd = new int[3];
 		for (int i = 0; i < ind.length; i += 3) {
-			currInd[0] = ind[i] * 3;
-			currInd[1] = ind[i + 1] * 3;
-			currInd[2] = ind[i + 2] * 3;
+			curInd[0] = ind[i] * 3;
+			curInd[1] = ind[i + 1] * 3;
+			curInd[2] = ind[i + 2] * 3;
 
 			// first vertex
-			tfVector.set(ver[currInd[0]], ver[currInd[0] + 1], ver[currInd[0] + 2]);
+			tfVector.set(ver[curInd[0]], ver[curInd[0] + 1], ver[curInd[0] + 2]);
+			n1.set(norm[curInd[0]], norm[curInd[0] + 1], norm[curInd[0] + 2]);
 			Matrix4f.transform(transformationMatrix, tfVector, tfVector);
 			p1.set(tfVector.x, tfVector.y, tfVector.z);
 			// second vertex
-			tfVector.set(ver[currInd[1]], ver[currInd[1] + 1], ver[currInd[1] + 2]);
+			tfVector.set(ver[curInd[1]], ver[curInd[1] + 1], ver[curInd[1] + 2]);
+            n2.set(norm[curInd[1]], norm[curInd[1] + 1], norm[curInd[1] + 2]);
 			Matrix4f.transform(transformationMatrix, tfVector, tfVector);
 			p2.set(tfVector.x, tfVector.y, tfVector.z);
 			// third vertex
-			tfVector.set(ver[currInd[2]], ver[currInd[2] + 1], ver[currInd[2] + 2]);
+			tfVector.set(ver[curInd[2]], ver[curInd[2] + 1], ver[curInd[2] + 2]);
+            n3.set(norm[curInd[2]], norm[curInd[2] + 1], norm[curInd[2] + 2]);
 			Matrix4f.transform(transformationMatrix, tfVector, tfVector);
 			p3.set(tfVector.x, tfVector.y, tfVector.z);
 
@@ -147,10 +151,10 @@ public class Entity {
 			Vector3f.sub(p2, p1, v1);
 			Vector3f.sub(p3, p1, v2);
 			Vector3f.cross(v1, v2, normal);
+            // Vector3f.add(n1, n2, normal);
+            // Vector3f.add(normal, n3, normal);
 			if (normal.lengthSquared() == 0) {
 				normal.set(0, 1f, 0);
-			} else {
-				normal.normalise();
 			}
 			face = new PhysicalFace(normal, p1, p2, p3);
 
