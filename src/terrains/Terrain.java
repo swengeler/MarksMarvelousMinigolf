@@ -96,8 +96,6 @@ public class Terrain {
 	public ModelTexture getTexture() {
 		return texture;
 	}
-	
-	
 
 	private RawModel generateTerrain(Loader loader, boolean rand){
 		if(rand){
@@ -251,8 +249,6 @@ public class Terrain {
 	}
 	
 	private RawModel generateTerrain(Loader loader, Vector2f hole){
-		
-		
 		VERTEX_COUNT = heights.length;
 		System.out.println(VERTEX_COUNT);
 		float newHeight = -4;

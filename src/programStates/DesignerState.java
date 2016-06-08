@@ -157,7 +157,7 @@ public class DesignerState implements State{
 		balls.get(currBall).checkInputs();
 		if (Keyboard.isKeyDown(Keyboard.KEY_Q) && loader.getVBOs() <= 350 && picker.getCurrentTerrainPoint() != null) {
 			world.getTerrains().get(0).updateTerrain(loader, ((picker.getCurrentTerrainPoint().x / (Terrain.getSize()/2)) * (world.getTerrains().get(0).getVertexCount()/2)), ((picker.getCurrentTerrainPoint().z / (Terrain.getSize()/2)) * (world.getTerrains().get(0).getVertexCount()/2)));
-			for(Entity e:world.getEntities()) {
+			for (Entity e:world.getEntities()) {
 				float x = e.getPosition().x;
 				float z = e.getPosition().z;
 				float y = getWorld().getHeightOfTerrain(x, z);

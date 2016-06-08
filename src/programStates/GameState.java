@@ -112,9 +112,13 @@ public class GameState implements State {
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
 		mainEngine = new PhysicsEngine(balls, world);
-		addRandomWind();
+		// addRandomWind();
 		loadWater();
 		loadParticleSystem();
+
+		createEntity("box", new Vector3f(world.getStart().x + 50, /*-79.9f*/-40, world.getStart().z + 50), 0, 0, 0, 20);
+        createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 6);
+		createEntity("flag", new Vector3f(world.getStart().x - 50, 0, world.getStart().z - 50), 0, 45, 0, 5);
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
@@ -317,20 +321,21 @@ public class GameState implements State {
 	
 	private void loadModels(){
 		ModelData human = OBJFileLoader.loadOBJ("person");
-		ModelData ball = OBJFileLoader.loadOBJ("ball_oth_high");
+		ModelData ball = OBJFileLoader.loadOBJ("ball_centred_high_scaled2");
 		ModelData tree = OBJFileLoader.loadOBJ("tree");
 		ModelData fern = OBJFileLoader.loadOBJ("fern");
 		ModelData grass = OBJFileLoader.loadOBJ("grassModel");
 		ModelData pine = OBJFileLoader.loadOBJ("pine");
 		ModelData flower = OBJFileLoader.loadOBJ("grassModel");
-		ModelData box = OBJFileLoader.loadOBJ("box");
+		ModelData box = OBJFileLoader.loadOBJ("wall_segment");
 		ModelData dragon = OBJFileLoader.loadOBJ("dragon");
 		ModelData empty = OBJFileLoader.loadOBJ("empty");
 		ModelData disk = OBJFileLoader.loadOBJ("disk");
-		ModelData flag = OBJFileLoader.loadOBJ("flag_rounded");
+		ModelData flag = OBJFileLoader.loadOBJ("flag");
 		ModelData wall = OBJFileLoader.loadOBJ("wall3");
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("hole");
+        ModelData ramp = OBJFileLoader.loadOBJ("ramp");
 		
 	    mData.put("human",human);
 	    mData.put("ball",ball);
@@ -345,6 +350,7 @@ public class GameState implements State {
 	    mData.put("dragon_low",dragon_low);
 	    mData.put("flag",flag);
 	    mData.put("hole",hole);
+        mData.put("ramp",ramp);
 
 		
 		RawModel humanModel = loader.loadToVAO(human.getVertices(), human.getTextureCoords(), human.getNormals(), human.getIndices());
@@ -362,6 +368,7 @@ public class GameState implements State {
 		RawModel holeModel = loader.loadToVAO(hole.getVertices(), hole.getTextureCoords(), hole.getNormals(), hole.getIndices());
 		RawModel wallModel = loader.loadToVAO(wall.getVertices(), wall.getTextureCoords(), wall.getNormals(), wall.getIndices());
 		RawModel dragonLowModel = loader.loadToVAO(dragon_low.getVertices(), dragon_low.getTextureCoords(), dragon_low.getNormals(), dragon_low.getIndices());
+        RawModel rampModel = loader.loadToVAO(ramp.getVertices(), ramp.getTextureCoords(), ramp.getNormals(), ramp.getIndices());
 		
 		tModels.put("human", new TexturedModel(humanModel,new ModelTexture(loader.loadTexture("playerTexture"))));
 		tModels.put("ball", new TexturedModel(ballModel,new ModelTexture(loader.loadTexture("white"))));
@@ -380,6 +387,7 @@ public class GameState implements State {
 		tModels.put("flag", new TexturedModel(flagModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("wall", new TexturedModel(wallModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
+        tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("skull"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
 
 		tModels.get("barrel").getTexture().setShineDamper(10);
@@ -475,8 +483,9 @@ public class GameState implements State {
 	}
 
 	public void addRandomWind() {
+        int a = 20;
 		Vector3f wind = new Vector3f();
-		wind.set((float) (Math.random() * 100 - 50), 0, (float) (Math.random() * 100 - 50));
+		wind.set((float) (Math.random() * a - a/2), 0, (float) (Math.random() * a - a/2));
         System.out.printf("Wind: (%f|%f|%f)\n", wind.x, wind.y, wind.z);
 		mainEngine.addGlobalAccel(wind);
 		wind.set(0, 0,0);

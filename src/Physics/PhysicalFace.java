@@ -2,9 +2,11 @@ package Physics;
 
 import java.util.ArrayList;
 
+import org.lwjgl.util.vector.Vector;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.Ball;
+import toolbox.Douple;
 import toolbox.Maths;
 
 public class PhysicalFace {
@@ -25,7 +27,7 @@ public class PhysicalFace {
 	public boolean collidesWithFace(Ball b) {
 		Vector3f closest = Maths.closestPtPointTriangle(b.getPosition(), point1, point2, point3);
 		Vector3f.sub(b.getPosition(), closest, dist);
-		//System.out.println("Distance stuff/ballcenter: " + dist.length());
+		//System.out.println("Distance between ball and " + this + ": " + dist.length());
 		if (dist.length() <= Ball.RADIUS)
 			return true;
 		return false;
@@ -57,6 +59,10 @@ public class PhysicalFace {
 		return dist.lengthSquared();
 	}
 
+    public Vector3f getClosestPoint(Ball b) {
+        return Maths.closestPtPointTriangle(b.getPosition(), point1, point2, point3);
+    }
+
 	public Vector3f getNormal() {
 		return normal;
 	}
@@ -83,74 +89,59 @@ public class PhysicalFace {
 		bbox = new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 
-	public static PhysicalFace combineFaces(ArrayList<PhysicalFace> faces, Ball b) {
-		if (faces.size() == 1) {
-			System.out.println("COLLISION WITH ONE PLANE");
-			return faces.get(0);
-		} else if (faces.size() == 2) {
-			PhysicalFace f1 = faces.get(0), f2 = faces.get(1);
-			Vector3f v1 = new Vector3f(), v2 = new Vector3f(), p1 = new Vector3f(), p2 = new Vector3f(), temp = new Vector3f();
+	public Vector3f getCommonEdge(PhysicalFace f) { // all of this equality stuff needs to be changed
+        Vector3f c1, c2, edge = new Vector3f();
 
-			// getting the first vector out of the cross product of both normal vectors (parallel to the line of intersection of both planes)
-			Vector3f.cross(f1.getNormal(), f2.getNormal(), v1);
+        if (Maths.pointsAreEqual(point1, f.getP1()) || Maths.pointsAreEqual(point1, f.getP2()) || Maths.pointsAreEqual(point1, f.getP3())) {
+            c1 = this.point1;
+        } else if (Maths.pointsAreEqual(point2, f.getP1()) || Maths.pointsAreEqual(point2, f.getP2()) || Maths.pointsAreEqual(point2, f.getP3())) {
+            c1 = this.point2;
+        } else if (Maths.pointsAreEqual(point3, f.getP1()) || Maths.pointsAreEqual(point3, f.getP2()) || Maths.pointsAreEqual(point3, f.getP3())) {
+            c1 = this.point3;
+        } else {
+            return null;
+        }
 
-			// getting the first point needed for the second vector in the first face/plane
-			Vector3f.sub(b.getPosition(), f1.getP1(), temp);
-			float signedDistance = Vector3f.dot(temp, f1.getNormal())/f1.getNormal().length();
-			temp.set(f1.getNormal().x, f1.getNormal().y, f1.getNormal().z);
-			temp.scale(signedDistance);
-			Vector3f.add(b.getPosition(), temp, p1);
+        if (c1 != point1 && (Maths.pointsAreEqual(point1, f.getP1()) || Maths.pointsAreEqual(point1, f.getP2()) || Maths.pointsAreEqual(point1, f.getP3()))) {
+            c2 = this.point1;
+        } else if (c1 != point2 && (Maths.pointsAreEqual(point2, f.getP1()) || Maths.pointsAreEqual(point2, f.getP2()) || Maths.pointsAreEqual(point2, f.getP3()))) {
+            c2 = this.point2;
+        } else if (c1 != point3 && (Maths.pointsAreEqual(point3, f.getP1()) || Maths.pointsAreEqual(point3, f.getP2()) || Maths.pointsAreEqual(point3, f.getP3()))) {
+            c2 = this.point3;
+        } else {
+            return null;
+        }
 
-			// getting the second point needed for the second vector in the second face/plane
-			Vector3f.sub(b.getPosition(), f2.getP1(), temp);
-			signedDistance = Vector3f.dot(temp, f2.getNormal())/f2.getNormal().length();
-			temp.set(f2.getNormal().x, f2.getNormal().y, f2.getNormal().z);
-			temp.scale(signedDistance);
-			Vector3f.add(b.getPosition(), temp, p2);
+        Vector3f.sub(c1, c2, edge);
+        return edge;
+    }
 
-			// getting the second vector out of difference between the calculated points p1 and p2 and then constructing the face
-			Vector3f.sub(p1, p2, v2);
-			Vector3f.cross(v1, v2, temp);
-			System.out.println("COLLISION WITH TWO PLANES");
-			System.out.printf("Vector 1: (%f|%f|%f)\n", v1.x, v1.y, v1.z);
-			System.out.printf("Vector 2: (%f|%f|%f)\n", v2.x, v2.y, v2.z);
-			System.out.printf("Normal vector out of two planes: (%f|%f|%f)\n", temp.x, temp.y, temp.z);
-			return new PhysicalFace(temp, p1, p1, p2);
-		}
-		System.out.println("COLLISION WITH THREE PLANES");
-		PhysicalFace f1 = faces.get(0), f2 = faces.get(1), f3 = faces.get(2);
-		Vector3f v1 = new Vector3f(), v2 = new Vector3f(), p1 = new Vector3f(), p2 = new Vector3f(), p3 = new Vector3f(), temp = new Vector3f();
+    public Vector3f[] getCommonVertices(PhysicalFace f) { // all of this equality stuff needs to be changed
+        Vector3f[] result = new Vector3f[3];
+        if (Maths.pointsAreEqual(point1, f.getP1()) || Maths.pointsAreEqual(point1, f.getP2()) || Maths.pointsAreEqual(point1, f.getP3())) {
+            result[0] = point1;
+        } else if (Maths.pointsAreEqual(point2, f.getP1()) || Maths.pointsAreEqual(point2, f.getP2()) || Maths.pointsAreEqual(point2, f.getP3())) {
+            result[1] = point2;
+        } else if (Maths.pointsAreEqual(point3, f.getP1()) || Maths.pointsAreEqual(point3, f.getP2()) || Maths.pointsAreEqual(point3, f.getP3())) {
+            result[2] = point3;
+        } else {
+            return null;
+        }
+        return result;
+    }
 
-		// getting the first point needed for both vectors in the first face/plane
-		Vector3f.sub(b.getPosition(), f1.getP1(), temp);
-		float signedDistance = Vector3f.dot(temp, f1.getNormal())/f1.getNormal().length();
-		temp.set(f1.getNormal().x, f1.getNormal().y, f1.getNormal().z);
-		temp.scale(signedDistance);
-		Vector3f.add(b.getPosition(), temp, p1);
-
-		// getting the second point needed for both vectors in the second face/plane
-		Vector3f.sub(b.getPosition(), f2.getP1(), temp);
-		signedDistance = Vector3f.dot(temp, f2.getNormal())/f2.getNormal().length();
-		temp.set(f2.getNormal().x, f2.getNormal().y, f2.getNormal().z);
-		temp.scale(signedDistance);
-		Vector3f.add(b.getPosition(), temp, p2);
-
-		// getting the third point needed for both vectors in the third face/plane
-		Vector3f.sub(b.getPosition(), f3.getP1(), temp);
-		signedDistance = Vector3f.dot(temp, f3.getNormal())/f3.getNormal().length();
-		temp.set(f3.getNormal().x, f3.getNormal().y, f3.getNormal().z);
-		temp.scale(signedDistance);
-		Vector3f.add(b.getPosition(), temp, p3);
-
-		// constructing the two vectors lying in the plane, calculating the normal vector and creating the new face
-		Vector3f.sub(p2, p1, v1);
-		Vector3f.sub(p3, p1, v2);
-		Vector3f.cross(v1, v2, temp);
-		return new PhysicalFace(temp, p1, p2, p3);
-	}
+    public static Vector3f getCommonVertex(ArrayList<PhysicalFace> faces) {
+        Vector3f[] candidates = faces.get(0).getCommonVertices(faces.get(1));
+        for (int i = 0; i < candidates.length; i++) {
+            if (candidates[i] != null && (candidates[i] == faces.get(2).getP1() || candidates[i] == faces.get(2).getP2() || candidates[i] == faces.get(2).getP3())) { // needs to be changed
+                return candidates[i];
+            }
+        }
+        return null;
+    }
 	
 	public String toString() {
-		return this.getClass().getName() + " with normal (" + normal.x + "|" + normal.y + "|" + normal.z + ") with " + bbox;
+		return "PhysicalFace with normal (" + normal.x + "|" + normal.y + "|" + normal.z + ") with points (" + point1.x + "|" + point1.y + "|" + point1.z + "), (" + point2.x + "|" + point2.y + "|" + point2.z + ") and (" + point3.x + "|" + point3.y + "|" + point3.z + ")";
 	}
 
 }
