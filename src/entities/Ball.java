@@ -35,5 +35,6 @@ public interface Ball {
 	public float getRotY();
 	public Vector3f getRotation();
 	public float getRadius();
+	public void setRotation(Vector3f vector3f);
 	
 }

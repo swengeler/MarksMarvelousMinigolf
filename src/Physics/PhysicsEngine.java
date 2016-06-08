@@ -286,8 +286,15 @@ public class PhysicsEngine {
 			System.out.println(b.getVelocity().x + " " + b.getVelocity().y+ " " + b.getVelocity().z);
 			//b.scaleVelocity(COEFF_RESTITUTION);
 			System.out.println(b.getVelocity().x + " " + b.getVelocity().y+ " " + b.getVelocity().z);
-			if(b.getVelocity().x!=0){
-			b.setVelocity(xspeed(b), b.getVelocity().y*COEFF_RESTITUTION, b.getVelocity().z);
+			if(b.getVelocity().x!=0 && b.getVelocity().z!=0){
+			b.setVelocity(xspeed(b), b.getVelocity().y*COEFF_RESTITUTION, zspeed(b));
+			applyspin(b);
+			}else if(b.getVelocity().x!=0 && b.getVelocity().z==0){
+				b.setVelocity(xspeed(b), b.getVelocity().y*COEFF_RESTITUTION, b.getVelocity().z*COEFF_RESTITUTION);
+				applyspin(b);
+			}else if(b.getVelocity().x==0 && b.getVelocity().z!=0){
+				b.setVelocity(b.getVelocity().x*COEFF_RESTITUTION, b.getVelocity().y*COEFF_RESTITUTION, zspeed(b));
+				applyspin(b);
 			}else
 				b.scaleVelocity(COEFF_RESTITUTION);
 				
@@ -365,11 +372,12 @@ public class PhysicsEngine {
 
 		return new ShotData(shotVel, ball.getPosition(), obstaclesHit);
 	}
-	public float applyspin(Ball b){
-		float x;
+	public void applyspin(Ball b){
+		float x,z;
 		float a=(float) 0.4;
 		x=b.getRotation().x*((a-COEFF_RESTITUTION)/(1+a)+(((1+COEFF_RESTITUTION)/(1+a))*b.getVelocity().x/(b.getRadius()*b.getRotation().x)));
-		return x;
+		z=b.getRotation().z*((a-COEFF_RESTITUTION)/(1+a)+(((1+COEFF_RESTITUTION)/(1+a))*b.getVelocity().z/(b.getRadius()*b.getRotation().z)));
+		b.setRotation(new Vector3f(x,b.getRotation().y,z));
 	}
 	
 	public float xspeed(Ball b){
@@ -377,6 +385,12 @@ public class PhysicsEngine {
 		float a= (float) 0.4;
 		x=b.getVelocity().x*((1-a*COEFF_RESTITUTION)/(1+a)+ (a*(1+COEFF_RESTITUTION)/(1+a))*(b.getRadius()*b.getRotation().x)/b.getVelocity().x);
 	return x;	
+	}
+	public float zspeed(Ball b){
+		float z;
+		float a= (float) 0.4;
+		z=b.getVelocity().z*((1-a*COEFF_RESTITUTION)/(1+a)+ (a*(1+COEFF_RESTITUTION)/(1+a))*(b.getRadius()*b.getRotation().z)/b.getVelocity().z);
+	return z;	
 	}
 
 }
