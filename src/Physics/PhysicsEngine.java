@@ -297,6 +297,8 @@ public class PhysicsEngine {
 				applyspin(b);
 			}else
 				b.scaleVelocity(COEFF_RESTITUTION);
+			
+			System.out.println(b.getRotation().x + " " + b.getRotation().y + " "+ b.getRotation().z);
 				
 		} else {
 			// the ball is rolling (or sliding but that is not implemented (yet)), therefore a projection on the plane instead of a reflection is used

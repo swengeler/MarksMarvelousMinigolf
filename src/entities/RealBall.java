@@ -204,7 +204,7 @@ public class RealBall extends Entity implements Ball {
 			//this.setVelocity(10, 0, 0);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_P)){
-			this.setVelocity(100, this.getVelocity().y, this.getVelocity().z);
+			this.setVelocity(50, this.getVelocity().y, this.getVelocity().z);
 		}
 	}
 
