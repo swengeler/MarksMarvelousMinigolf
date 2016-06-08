@@ -372,16 +372,16 @@ public class PhysicsEngine {
 			System.out.println(b.getVelocity().x + " " + b.getVelocity().y+ " " + b.getVelocity().z);
 			//b.scaleVelocity(COEFF_RESTITUTION);
 			System.out.println(b.getVelocity().x + " " + b.getVelocity().y+ " " + b.getVelocity().z);
-			if(b.getVelocity().x!=0 && b.getVelocity().z!=0){
-			b.setVelocity(xspeed(b), b.getVelocity().y*COEFF_RESTITUTION, zspeed(b));
-			applyspin(b);
-			}else if(b.getVelocity().x!=0 && b.getVelocity().z==0){
+			/*if (b.getVelocity().x != 0 && b.getVelocity().z != 0){
+				b.setVelocity(xspeed(b), b.getVelocity().y*COEFF_RESTITUTION, zspeed(b));
+				applyspin(b);
+			} else if(b.getVelocity().x !=0 && b.getVelocity().z == 0){
 				b.setVelocity(xspeed(b), b.getVelocity().y*COEFF_RESTITUTION, b.getVelocity().z*COEFF_RESTITUTION);
 				applyspin(b);
-			}else if(b.getVelocity().x==0 && b.getVelocity().z!=0){
+			} else if(b.getVelocity().x==0 && b.getVelocity().z!=0){
 				b.setVelocity(b.getVelocity().x*COEFF_RESTITUTION, b.getVelocity().y*COEFF_RESTITUTION, zspeed(b));
 				applyspin(b);
-			}else
+			} else*/
 				b.scaleVelocity(COEFF_RESTITUTION);
 				
 		} else {

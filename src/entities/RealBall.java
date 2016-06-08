@@ -52,7 +52,7 @@ public class RealBall extends Entity implements Ball {
         this.lastPosition  = new Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
         this.accelerations = new ArrayList<Vector3f>();
 		this.moving = true;
-		this.spin= new Vector3f();
+		this.spin = new Vector3f();
 	}
 
 	public void updateAndMove() {
