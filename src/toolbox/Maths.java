@@ -17,6 +17,21 @@ public class Maths {
                 Math.abs(p1.z - p2.z) < EQUALITY_TOLERANCE;
     }
 
+	public static float distancePtLineSegSq(Vector3f p, Vector3f s1, Vector3f s2) {
+		Vector3f v = Vector3f.sub(s1, s2, null);
+		Vector3f w = Vector3f.sub(p, s1, null);
+		float c1, c2;
+
+		if ((c1 = Vector3f.dot(w, v)) <= 0) {
+			return distancePtPtSq(p, s1);
+		} else if ((c2 = Vector3f.dot(v, v)) <= c1) {
+			return distancePtPtSq(p, s2);
+		}
+		float b = c1 / c2;
+		Vector3f sb = Vector3f.add(s1, (Vector3f) v.scale(b), null);
+		return distancePtPtSq(p, sb);
+	}
+
 	public static Vector3f closestPtPointTriangle(Vector3f pOr, Vector3f aOr, Vector3f bOr, Vector3f cOr) {
 		// to make sure that the actual points aren't changed by the operations below
 		Vector3f p = new Vector3f(pOr.x, pOr.y, pOr.z);
