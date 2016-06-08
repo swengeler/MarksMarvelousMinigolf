@@ -33,5 +33,7 @@ public interface Ball {
 	public boolean collidesWith(ArrayList<PhysicalFace> faces);
 	public void checkInputs();
 	public float getRotY();
+	public Vector3f getRotation();
+	public float getRadius();
 	
 }

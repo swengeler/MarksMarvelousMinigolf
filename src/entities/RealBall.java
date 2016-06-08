@@ -43,6 +43,7 @@ public class RealBall extends Entity implements Ball {
 	private boolean charging;
 	private boolean played;
 
+	private Vector3f spin;
 
 	public RealBall(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		super(model, position, rotX, rotY, rotZ, scale, "ball");
@@ -51,6 +52,7 @@ public class RealBall extends Entity implements Ball {
         this.lastPosition  = new Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
         this.accelerations = new ArrayList<Vector3f>();
 		this.moving = true;
+		this.spin= new Vector3f();
 	}
 
 	public void updateAndMove() {
@@ -196,8 +198,14 @@ public class RealBall extends Entity implements Ball {
 		} else
 			this.currentTurnSpeed = 0;
 
-		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
 			jump();
+			this.setRotation(new Vector3f(-90,0,0));
+			//this.setVelocity(10, 0, 0);
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_P)){
+			this.setVelocity(100, this.getVelocity().y, this.getVelocity().z);
+		}
 	}
 
 	public boolean collidesWith(ArrayList<PhysicalFace> faces) {
@@ -282,6 +290,17 @@ public class RealBall extends Entity implements Ball {
 	
 	public void setPlayed(boolean p){
 		played = p;
+	}
+	
+	//new
+	public void setRotation(Vector3f v){
+	this.spin=v;
+	}
+	public Vector3f getRotation(){
+		return spin;
+	}
+	public float getRadius(){
+		return RADIUS;
 	}
 
 }

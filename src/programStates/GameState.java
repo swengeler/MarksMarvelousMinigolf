@@ -479,5 +479,6 @@ public class GameState implements State {
 		wind.set((float) (Math.random() * 100 - 50), 0, (float) (Math.random() * 100 - 50));
         System.out.printf("Wind: (%f|%f|%f)\n", wind.x, wind.y, wind.z);
 		mainEngine.addGlobalAccel(wind);
+		wind.set(0, 0,0);
 	}
 }

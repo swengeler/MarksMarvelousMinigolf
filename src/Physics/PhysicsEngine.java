@@ -283,7 +283,14 @@ public class PhysicsEngine {
 		if (angle > Math.toRadians(45) || (angle * b.getVelocity().lengthSquared() * C > 1 && angle > Math.toRadians(ANGLE_TH))) {
 			// the ball is bouncing and the velocity can simply remain as is, only the coefficient of restitution has to be applied
 			System.out.println("BOUNCING");
-			b.scaleVelocity(COEFF_RESTITUTION);
+			System.out.println(b.getVelocity().x + " " + b.getVelocity().y+ " " + b.getVelocity().z);
+			//b.scaleVelocity(COEFF_RESTITUTION);
+			System.out.println(b.getVelocity().x + " " + b.getVelocity().y+ " " + b.getVelocity().z);
+			if(b.getVelocity().x!=0){
+			b.setVelocity(xspeed(b), b.getVelocity().y*COEFF_RESTITUTION, b.getVelocity().z);
+			}else
+				b.scaleVelocity(COEFF_RESTITUTION);
+				
 		} else {
 			// the ball is rolling (or sliding but that is not implemented (yet)), therefore a projection on the plane instead of a reflection is used
 			System.out.println("ROLLING");
@@ -357,6 +364,19 @@ public class PhysicsEngine {
 		}
 
 		return new ShotData(shotVel, ball.getPosition(), obstaclesHit);
+	}
+	public float applyspin(Ball b){
+		float x;
+		float a=(float) 0.4;
+		x=b.getRotation().x*((a-COEFF_RESTITUTION)/(1+a)+(((1+COEFF_RESTITUTION)/(1+a))*b.getVelocity().x/(b.getRadius()*b.getRotation().x)));
+		return x;
+	}
+	
+	public float xspeed(Ball b){
+		float x;
+		float a= (float) 0.4;
+		x=b.getVelocity().x*((1-a*COEFF_RESTITUTION)/(1+a)+ (a*(1+COEFF_RESTITUTION)/(1+a))*(b.getRadius()*b.getRotation().x)/b.getVelocity().x);
+	return x;	
 	}
 
 }

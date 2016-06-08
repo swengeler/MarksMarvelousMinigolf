@@ -13,6 +13,7 @@ public class VirtualBall implements Ball {
 	private Vector3f position, lastPosition, velocity;
 	private ArrayList<Vector3f> accelerations;
 	private boolean moving;
+	private Vector3f spin;
 	
 	public VirtualBall(RealBall cloneOf, Vector3f initVelocity) {
 		this.cloneOf = cloneOf;
@@ -22,6 +23,7 @@ public class VirtualBall implements Ball {
 		this.accelerations = new ArrayList<Vector3f>();
 		accelerations.add(PhysicsEngine.GRAVITY);
 		this.moving = true;
+		this.spin= new Vector3f();
 	}
 	
 	public void updateAndMove() {
@@ -151,5 +153,13 @@ public class VirtualBall implements Ball {
 	public float getRotY() {
 		return 0;
 	}
-	
+	public void setRotation(Vector3f v){
+	this.lastPosition=v;
+	}
+	public Vector3f getRotation(){
+		return spin;
+	}
+	public float getRadius(){
+		return RADIUS;
+	}
 }
