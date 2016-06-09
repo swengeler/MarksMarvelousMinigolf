@@ -73,6 +73,12 @@ public class RealBall extends Entity implements Ball {
 		}
 	}
 
+	public void move() {
+		Vector3f delta = new Vector3f(currentVel.x, currentVel.y, currentVel.z);
+		delta.scale(getTimeElapsed());
+		super.increasePosition(delta);
+	}
+
 	public void addAccel(Vector3f accel) {
 		accelerations.add(accel);
 	}

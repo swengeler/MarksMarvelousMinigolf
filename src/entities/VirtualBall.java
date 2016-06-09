@@ -34,6 +34,12 @@ public class VirtualBall implements Ball {
 		delta.scale(getTimeElapsed());
 		increasePosition(delta.x, delta.y, delta.z);
 	}
+
+	public void move() {
+		Vector3f delta = new Vector3f(velocity.x, velocity.y, velocity.z);
+		delta.scale(getTimeElapsed());
+		increasePosition(delta.x, delta.y, delta.z);
+	}
 	
 	public float getTimeElapsed() {
 		return 0.05f;

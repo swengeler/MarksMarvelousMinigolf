@@ -102,6 +102,7 @@ public class GameState implements State {
 	
 	@Override
 	public void init(Loader loader) {
+		long start = System.currentTimeMillis();
 		this.loader = loader;
 		loadModels();
 		loadGuis();
@@ -113,11 +114,12 @@ public class GameState implements State {
 		renderer = new MasterRenderer(loader, camera);
 		mainEngine = new PhysicsEngine(balls, world);
 		// addRandomWind();
-		loadWater();
+		System.out.println("Before loading particle system for the first time");
 		loadParticleSystem();
+		System.out.println("After loading particle system for the first time");
 
-		createEntity("box", new Vector3f(world.getStart().x + 50, /*-79.9f*/-40, world.getStart().z + 50), 0, 0, 0, 20);
-        createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 6);
+		createEntity("box", new Vector3f(world.getStart().x + 50, /*-79.9f*/-60, world.getStart().z + 50), 0, 0, 0, 20);
+        createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 10);
 		createEntity("flag", new Vector3f(world.getStart().x - 50, 0, world.getStart().z - 50), 0, 45, 0, 5);
 		createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
 
@@ -275,9 +277,11 @@ public class GameState implements State {
 		mData.clear();
 	}
 	
-	public Terrain createTerrain(int gridX, int gridY, String texName, boolean rand){
+	public Terrain createTerrain(int gridX, int gridY, String texName, boolean rand) {
+		long before = System.currentTimeMillis();
 		Terrain t = new Terrain(gridX, gridY, loader, new ModelTexture(loader.loadTexture(texName)), rand);
 		world.add(t);
+		System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
 		return t;
 	}
 	
@@ -288,9 +292,11 @@ public class GameState implements State {
 	}
 	
 	public Terrain createTerrain(int gridX, int gridY, String texName, float[][] height){
+		long before = System.currentTimeMillis();
 		Terrain t = new Terrain(gridX, gridY, loader, new ModelTexture(loader.loadTexture(texName)), height, new Vector2f(world.getEnd().x, world.getEnd().z));
 		world.removeTerrain();
 		world.add(t);
+		System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
 		return t;
 	}
 	
@@ -306,21 +312,28 @@ public class GameState implements State {
 	}
 
 	private void loadParticleSystem() {
+		long before = System.currentTimeMillis();
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());
+		System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
 	}
 
 	private void loadWater() {
+		long before = System.currentTimeMillis();
 		fbos = new WaterFrameBuffers();
 		WaterShader waterShader = new WaterShader();
 		waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), fbos);
+		System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
 	}
 
 	private void loadGuis() {
+		long before = System.currentTimeMillis();
 		guiRenderer = new GuiRenderer(loader);
 		guis = new ArrayList<GuiTexture>();
+		System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
 	}
 	
 	private void loadModels(){
+		long before = System.currentTimeMillis();
 		ModelData human = OBJFileLoader.loadOBJ("person");
 		ModelData ball = OBJFileLoader.loadOBJ("ball_centred_high_scaled2");
 		ModelData tree = OBJFileLoader.loadOBJ("tree");
@@ -336,7 +349,7 @@ public class GameState implements State {
 		ModelData wall = OBJFileLoader.loadOBJ("wall3");
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("hole");
-        ModelData ramp = OBJFileLoader.loadOBJ("ramp");
+        ModelData ramp = OBJFileLoader.loadOBJ("ramp_hole");
         ModelData windmill = OBJFileLoader.loadOBJ("windmill_tunnel");
 
 	    mData.put("human",human);
@@ -391,7 +404,7 @@ public class GameState implements State {
 		tModels.put("flag", new TexturedModel(flagModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("wall", new TexturedModel(wallModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
-        tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("skull"))));
+        tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("white"))));
         tModels.put("windmill", new TexturedModel(windmillModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
 
@@ -409,19 +422,24 @@ public class GameState implements State {
 		
 		tModels.get("ball").getTexture().setShineDamper(10);
 		tModels.get("ball").getTexture().setReflectivity(1);
-		
+
+		System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
 	}
 	
 	private void loadLights(){
+		long before = System.currentTimeMillis();
 		world.getLights().clear();
 		List<Light> lights = new ArrayList<Light>();
 		lights.add(new Light(new Vector3f(1000000,1500000,-1000000),new Vector3f(1f,1f,1f)));
 		world.addLights(lights);
+		System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
 	}
 	
 	public Entity createEntity(String eName, Vector3f position, float rotX, float rotY, float rotZ, float scale){
+		long before = System.currentTimeMillis();
 		Entity e = new Entity(tModels.get(eName), 0,mData.get(eName), position, rotX, rotY, rotZ, scale);
 		world.add(e);
+		System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
 		return e;
 	}
 	

@@ -195,16 +195,16 @@ public class PhysicsEngine {
         if (combined.size() == 1) {
             forResolution = combined.get(0);
             Vector3f normal = new Vector3f(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
-            System.out.printf("Normal of closest: (%f|%f|%f)\n", normal.x, normal.x, normal.x);
+            System.out.printf("Normal of closest: (%f|%f|%f)\n", normal.x, normal.y, normal.z);
             normal.scale(Vector3f.dot(b.getVelocity(), normal) / normal.lengthSquared());
-            normal.scale(-0.0001f);
+            normal.scale(-0.001f);
             while (b.collidesWith(collidingFaces)) {
                 b.increasePosition(normal);
             }
         } else {
             Vector3f revBM = new Vector3f(b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
             revBM.normalise();
-            revBM.scale(-0.0001f);
+            revBM.scale(-0.001f);
             while (b.collidesWith(collidingFaces)) {
                 b.increasePosition(revBM);
             }
@@ -217,21 +217,31 @@ public class PhysicsEngine {
                 if (f.collidesWithFace(b))
                     stillColliding.add(f);
             }
+            //stillColliding = collidingFaces;
             System.out.println("Number of faces still colliding: " + stillColliding.size());
+            for (PhysicalFace f : stillColliding) {
+                System.out.printf("Still colliding: (%f|%f|%f)\n", f.getNormal().x, f.getNormal().y, f.getNormal().z);
+            }
 
-            if (stillColliding.size() == 1)
+            if (stillColliding.size() == 1) {
                 forResolution = stillColliding.get(0);
+                b.move();
+                // still needs to be changed to projection
+                revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
+                revBM.scale(0.001f);
+                while (forResolution.collidesWithFace(b))
+                    b.increasePosition(revBM);
+            }
             else if (stillColliding.size() == 2) {
                 Vector3f closest1 = stillColliding.get(0).getClosestPoint(b);
                 Vector3f closest2 = stillColliding.get(1).getClosestPoint(b);
-                if (Math.abs(closest1.x - closest2.x) < NORMAL_TH &&
-                        Math.abs(closest1.y - closest2.y) < NORMAL_TH &&
-                        Math.abs(closest1.z - closest2.z) < NORMAL_TH) {
+                if (Math.abs(closest1.x - closest2.x) < NORMAL_TH && Math.abs(closest1.y - closest2.y) < NORMAL_TH && Math.abs(closest1.z - closest2.z) < NORMAL_TH) {
                     Vector3f edge = stillColliding.get(0).getCommonEdge(stillColliding.get(1));
                     if (edge == null) {
                         System.out.println("EDGE COULD NOT BE RESOLVED -> ONE PLANE CHOSEN RANDOMLY");
                         forResolution = stillColliding.get(0);
                     } else {
+                        System.out.println("Stuff for edge collision: " + Vector3f.dot(b.getVelocity(), closest1) + " - " + Vector3f.dot(b.getVelocity(), b.getPosition()) + " = " + (Vector3f.dot(b.getVelocity(), closest1) - Vector3f.dot(b.getVelocity(), b.getPosition())));
                         Vector3f normal = new Vector3f();
                         /*Vector3f projOnEdge = new Vector3f(edge.x, edge.y, edge.z);
                         projOnEdge.scale(Vector3f.dot(edge, b.getVelocity()) / edge.lengthSquared());
@@ -246,8 +256,21 @@ public class PhysicsEngine {
                     }
                 } else if (Maths.distancePtPtSq(closest1, b.getPosition()) < Maths.distancePtPtSq(closest2, b.getPosition())) {
                     forResolution = stillColliding.get(0);
+                    b.move();
+                    // still needs to be changed to projection
+                    revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
+                    revBM.scale(0.001f);
+                    while (forResolution.collidesWithFace(b))
+                        b.increasePosition(revBM);
+
                 } else {
                     forResolution = stillColliding.get(1);
+                    b.move();
+                    // still needs to be changed to projection
+                    revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
+                    revBM.scale(0.001f);
+                    while (forResolution.collidesWithFace(b))
+                        b.increasePosition(revBM);
                 }
             } else {
                 // it is assumed that all faces join in one point
@@ -500,7 +523,7 @@ public class PhysicsEngine {
     // this method totally makes sense in the physics engine, trust me
     public Vector3f[] getEvasionVector(Vector3f position, Entity e) {
         // check in which region the ball is currently: either closest to an edge/corner of the bounding box or closest to one of its faces/sides
-        Vector3f[] result = new Vector3f[];
+        Vector3f[] result = new Vector3f[2];
         float minX = e.getCollisionData().getBoundingBox().getMinX(), maxX = e.getCollisionData().getBoundingBox().getMaxX(), minZ = e.getCollisionData().getBoundingBox().getMinZ(), maxZ = e.getCollisionData().getBoundingBox().getMaxZ();
         Vector3f[] corners = {new Vector3f(minX, position.y, minZ), new Vector3f(minX, position.y, maxZ), new Vector3f(maxX, position.y, maxZ), new Vector3f(maxX, position.y, minZ)};
         Vector3f closestCorner = new Vector3f();
