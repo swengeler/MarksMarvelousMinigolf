@@ -72,5 +72,4 @@ public class EntityRenderer {
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
 	
-	
 }

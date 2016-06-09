@@ -14,23 +14,21 @@ import toolbox.Maths;
 
 public class Entity {
 
-	private TexturedModel model;
-	private CollisionData cdata;
-	private Vector3f position;
-	protected Vector3f rotVel = new Vector3f();
-	private float scale;
-	private String type;
+	protected TexturedModel model;
+	protected CollisionData cdata;
+	protected Vector3f position;
+	protected Vector3f rotation;
+	protected float scale;
+	protected String type;
 
-	private int textureIndex = 0;
-	private boolean collidable = true;
+	protected int textureIndex = 0;
+	protected boolean isCollidable = true;
 
 	public Entity(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale, String type) {
 		this.model = model;
 		this.position = position;
-		this.rotVel.x = rotX;
-		this.rotVel.y = rotY;
+		this.rotation = new Vector3f(rotX, rotY, rotZ);
 		System.out.println(rotY);
-		this.rotVel.z = rotZ;
 		this.scale = scale;
 		this.type = type;
 	}
@@ -39,9 +37,7 @@ public class Entity {
         this.textureIndex = index;
         this.model = model;
         this.position = position;
-        this.rotVel.x = rotX;
-        this.rotVel.y = rotY;
-        this.rotVel.z = rotZ;
+		this.rotation = new Vector3f(rotX, rotY, rotZ);
         this.scale = scale;
         this.type = type;
     }
@@ -50,22 +46,18 @@ public class Entity {
         this.textureIndex = index;
         this.model = model;
         this.position = position;
-        this.rotVel.x = rotX;
-        this.rotVel.y = rotY;
-        this.rotVel.z = rotZ;
+        this.rotation = new Vector3f(rotX, rotY, rotZ);
         this.scale = scale;
         this.type = "Undefined";
     }
 	
-	public Entity(TexturedModel model, int index, Vector3f position, float rotX, float rotY, float rotZ, float scale, boolean collidable) {
+	public Entity(TexturedModel model, int index, Vector3f position, float rotX, float rotY, float rotZ, float scale, boolean isCollidable) {
         this.textureIndex = index;
         this.model = model;
         this.position = position;
-        this.rotVel.x = rotX;
-        this.rotVel.y = rotY;
-        this.rotVel.z = rotZ;
+        this.rotation = new Vector3f(rotX, rotY, rotZ);
         this.scale = scale;
-        this.collidable = collidable;
+        this.isCollidable = isCollidable;
         this.type = "Undefined";
     }
 
@@ -73,9 +65,7 @@ public class Entity {
     	this.textureIndex = index;
     	this.model = model;
 		this.position = position;
-		this.rotVel.x = rotX;
-		this.rotVel.y = rotY;
-		this.rotVel.z = rotZ;
+		this.rotation = new Vector3f(rotX, rotY, rotZ);
 		this.scale = scale;
         this.type = "not declared";
 		createCollisionData(data);
@@ -85,22 +75,20 @@ public class Entity {
 		this.textureIndex = index;
 		this.model = model;
 		this.position = position;
-		this.rotVel.x = rotX;
-		this.rotVel.y = rotY;
-		this.rotVel.z = rotZ;
+		this.rotation = new Vector3f(rotX, rotY, rotZ);
 		this.scale = scale;
         this.type = type;
 		createCollisionData(data);
 	}
 
 	public boolean isCollidable(){
-		return collidable;
+		return isCollidable;
 	}
-	
-	private void createCollisionData(ModelData data) {
+
+	protected void createCollisionData(ModelData data) {
 		long before = System.currentTimeMillis();
 		cdata = new CollisionData();
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix(this.position,this.rotVel.x,this.rotVel.y,this.rotVel.z,this.scale);
+		Matrix4f transformationMatrix = Maths.createTransformationMatrix(this.position,this.rotation.x,this.rotation.y,this.rotation.z,this.scale);
 		Vector4f tfVector = new Vector4f(0,0,0,1f);
 		Vector3f p1 = new Vector3f(), p2 = new Vector3f(), p3 = new Vector3f(), n1 = new Vector3f(), n2 = new Vector3f(), n3 = new Vector3f();
 		Vector3f normal = new Vector3f(), v1 = new Vector3f(), v2 = new Vector3f();
@@ -115,6 +103,9 @@ public class Entity {
 		float maxX = Float.MIN_VALUE;
 		float maxY = maxX;
 		float maxZ = maxX;
+
+		float overallMin = Float.MAX_VALUE;
+		float overallMax = Float.MIN_VALUE;
 
 		PhysicalFace face;
 		int[] curInd = new int[3];
@@ -147,6 +138,9 @@ public class Entity {
 			maxY = Math.max(maxY, Math.max(p1.y, Math.max(p2.y, p3.y)));
 			maxZ = Math.max(maxZ, Math.max(p1.z, Math.max(p2.z, p3.z)));
 
+			overallMin = Math.min(overallMin, Math.min(minX, Math.min(minY, minZ)));
+			overallMax = Math.max(overallMax, Math.max(maxX, Math.max(maxY, maxZ)));
+
 			// constructing a face from the three points p1, p2 and p3 and their resulting normal
 			Vector3f.sub(p2, p1, v1);
 			Vector3f.sub(p3, p1, v2);
@@ -160,7 +154,10 @@ public class Entity {
 
 			cdata.addFace(face);
 		}
+
+		cdata.setBoundingBox(overallMin, overallMin, overallMin, overallMax, overallMax, overallMax);
 		cdata.setBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+
 		long after = System.currentTimeMillis();
 		long difference = after - before;
 		System.out.println("Time to construct faces (for entity): " + difference + "\n");
@@ -175,7 +172,7 @@ public class Entity {
 	}
 
 	public ArrayList<PhysicalFace> getCollidingFaces(Ball b) {
-		return this.cdata.getCollidingFaces(b);
+		return cdata.getCollidingFaces(b);
 	}
 
 	public boolean inBounds(Ball b) {
@@ -196,7 +193,6 @@ public class Entity {
 		return (float)row/(float)model.getTexture().getNumberOfRows();
 	}
 
-
 	public void increasePosition(float dx, float dy, float dz){
 		this.position.x += dx;
 		this.position.y += dy;
@@ -210,9 +206,9 @@ public class Entity {
 	}
 
 	public void increaseRotation(float dx, float dy, float dz){
-		this.rotVel.x += dx;
-		this.rotVel.y += dy;
-		this.rotVel.z += dz;
+		this.rotation.x += dx;
+		this.rotation.y += dy;
+		this.rotation.z += dz;
 
 	}
 
@@ -233,27 +229,27 @@ public class Entity {
 	}
 
 	public float getRotX() {
-		return rotVel.x;
+		return rotation.x;
 	}
 
 	public void setRotX(float rotX) {
-		this.rotVel.x = rotX;
+		this.rotation.x = rotX;
 	}
 
 	public float getRotY() {
-		return rotVel.y;
+		return rotation.y;
 	}
 
 	public void setRotY(float rotY) {
-		this.rotVel.y = rotY;
+		this.rotation.y = rotY;
 	}
 
 	public float getRotZ() {
-		return rotVel.z;
+		return rotation.z;
 	}
 
 	public void setRotZ(float rotZ) {
-		this.rotVel.z = rotZ;
+		this.rotation.z = rotZ;
 	}
 
 	public float getScale() {

@@ -12,6 +12,7 @@ import entities.RealBall;
 import entities.VirtualBall;
 import entities.Ball;
 import entities.Entity;
+import programStates.GameState;
 import renderEngine.DisplayManager;
 import terrains.Terrain;
 import terrains.World;
@@ -75,6 +76,7 @@ public class PhysicsEngine {
     }
 
     public void tick() {
+        GameState.wmr.increaseRotation(0, 0, 0.01f);
         for (RealBall b : balls) {
             /*if (!b.isMoving() && b.getPosition().y > 1.5f) {
                 MainGameLoop.currState.cleanUp();
@@ -259,7 +261,8 @@ public class PhysicsEngine {
                     b.move();
                     // still needs to be changed to projection
                     revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
-                    revBM.scale(0.001f);
+                    revBM.scale(Vector3f.dot(b.getVelocity(), revBM) / revBM.lengthSquared());
+                    revBM.scale(-0.001f);
                     while (forResolution.collidesWithFace(b))
                         b.increasePosition(revBM);
 
@@ -268,7 +271,8 @@ public class PhysicsEngine {
                     b.move();
                     // still needs to be changed to projection
                     revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
-                    revBM.scale(0.001f);
+                    revBM.scale(Vector3f.dot(b.getVelocity(), revBM) / revBM.lengthSquared());
+                    revBM.scale(-0.001f);
                     while (forResolution.collidesWithFace(b))
                         b.increasePosition(revBM);
                 }
@@ -313,6 +317,13 @@ public class PhysicsEngine {
                 } else {
                     // collide with the closest face
                     forResolution = closestFace;
+                    b.move();
+                    // still needs to be changed to projection
+                    revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
+                    revBM.scale(Vector3f.dot(b.getVelocity(), revBM) / revBM.lengthSquared());
+                    revBM.scale(-0.001f);
+                    while (forResolution.collidesWithFace(b))
+                        b.increasePosition(revBM);
                 }
             }
         }

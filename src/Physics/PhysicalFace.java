@@ -1,18 +1,16 @@
 package Physics;
 
-import java.util.ArrayList;
 
-import org.lwjgl.util.vector.Vector;
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.Ball;
-import toolbox.Douple;
+import org.lwjgl.util.vector.Vector4f;
 import toolbox.Maths;
 
 public class PhysicalFace {
 
-	private Vector3f normal, point1, point2, point3, dist;
-	private BoundingBox bbox;
+	protected Vector3f normal, point1, point2, point3, dist;
 
 	public PhysicalFace(Vector3f normal, Vector3f point1, Vector3f point2, Vector3f point3) {
 		this.normal = new Vector3f(normal.x, normal.y, normal.z);
@@ -21,7 +19,12 @@ public class PhysicalFace {
 		this.point2 = new Vector3f(point2.x, point2.y, point2.z);
 		this.point3 = new Vector3f(point3.x, point3.y, point3.z);
 		dist = new Vector3f();
-		prepareBounds();
+	}
+
+	public void updateTFFace(Matrix4f tfMatrix) { // NOTE: might have to use the previous curTFPoints depending on the transformation matrix
+		// transforming the current points of the face to their actual position in the movable model
+		Vector4f tfVector = new Vector4f(point1.x, point1.y, point1.z, 1);
+		Vector3f tf1, tf2, tf3;
 	}
 
 	public boolean collidesWithFace(Ball b) {
@@ -79,16 +82,6 @@ public class PhysicalFace {
 		return point3;
 	}
 
-	private void prepareBounds() {
-		float minX = Math.min(point1.x, Math.min(point2.x, point3.x));
-		float minY = Math.min(point1.y, Math.min(point2.y, point3.y));
-		float minZ = Math.min(point1.z, Math.min(point2.z, point3.z));
-		float maxX = Math.max(point1.x, Math.max(point2.x, point3.x));
-		float maxY = Math.max(point1.y, Math.max(point2.y, point3.y));
-		float maxZ = Math.max(point1.z, Math.max(point2.z, point3.z));
-		bbox = new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
-	}
-
 	public Vector3f getCommonEdge(PhysicalFace f) { // all of this equality stuff needs to be changed
         Vector3f c1, c2, edge = new Vector3f();
 
@@ -114,30 +107,6 @@ public class PhysicalFace {
 
         Vector3f.sub(c1, c2, edge);
         return edge;
-    }
-
-    public Vector3f[] getCommonVertices(PhysicalFace f) { // all of this equality stuff needs to be changed
-        Vector3f[] result = new Vector3f[3];
-        if (Maths.pointsAreEqual(point1, f.getP1()) || Maths.pointsAreEqual(point1, f.getP2()) || Maths.pointsAreEqual(point1, f.getP3())) {
-            result[0] = point1;
-        } else if (Maths.pointsAreEqual(point2, f.getP1()) || Maths.pointsAreEqual(point2, f.getP2()) || Maths.pointsAreEqual(point2, f.getP3())) {
-            result[1] = point2;
-        } else if (Maths.pointsAreEqual(point3, f.getP1()) || Maths.pointsAreEqual(point3, f.getP2()) || Maths.pointsAreEqual(point3, f.getP3())) {
-            result[2] = point3;
-        } else {
-            return null;
-        }
-        return result;
-    }
-
-    public static Vector3f getCommonVertex(ArrayList<PhysicalFace> faces) {
-        Vector3f[] candidates = faces.get(0).getCommonVertices(faces.get(1));
-        for (int i = 0; i < candidates.length; i++) {
-            if (candidates[i] != null && (candidates[i] == faces.get(2).getP1() || candidates[i] == faces.get(2).getP2() || candidates[i] == faces.get(2).getP3())) { // needs to be changed
-                return candidates[i];
-            }
-        }
-        return null;
     }
 	
 	public String toString() {
