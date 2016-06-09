@@ -21,12 +21,6 @@ public class PhysicalFace {
 		dist = new Vector3f();
 	}
 
-	public void updateTFFace(Matrix4f tfMatrix) { // NOTE: might have to use the previous curTFPoints depending on the transformation matrix
-		// transforming the current points of the face to their actual position in the movable model
-		Vector4f tfVector = new Vector4f(point1.x, point1.y, point1.z, 1);
-		Vector3f tf1, tf2, tf3;
-	}
-
 	public boolean collidesWithFace(Ball b) {
 		Vector3f closest = Maths.closestPtPointTriangle(b.getPosition(), point1, point2, point3);
 		Vector3f.sub(b.getPosition(), closest, dist);

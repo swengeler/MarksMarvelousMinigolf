@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class RotatingEntity extends Entity {
 
     private Vector3f rotVelocity;
+    private Matrix4f inv, mt;
 
     public RotatingEntity(TexturedModel model, int index, ModelData data, Vector3f position, Vector3f rotation, float scale, Vector3f rotVel) {
         super(model, index, data, position, rotation.x, rotation.y, rotation.z, scale);
@@ -29,8 +30,13 @@ public class RotatingEntity extends Entity {
     @Override
     protected void createCollisionData(ModelData data) {
         long before = System.currentTimeMillis();
-        cdata = new RotatingCollisionData();
         Matrix4f transformationMatrix = Maths.createTransformationMatrix(this.position, this.rotation.x, this.rotation.y, this.rotation.z, this.scale);
+        System.out.println(transformationMatrix);
+        mt = transformationMatrix;
+        inv = Matrix4f.invert(mt, null);
+        System.out.println(transformationMatrix);
+        System.out.println(inv);
+        cdata = new RotatingCollisionData(inv);
         Vector4f tfVector = new Vector4f(0,0,0,1f);
         Vector3f p1 = new Vector3f(), p2 = new Vector3f(), p3 = new Vector3f(), n1 = new Vector3f(), n2 = new Vector3f(), n3 = new Vector3f();
         Vector3f normal = new Vector3f(), v1 = new Vector3f(), v2 = new Vector3f();
@@ -105,6 +111,23 @@ public class RotatingEntity extends Entity {
 
     @Override
     public ArrayList<PhysicalFace> getCollidingFaces(Ball b) {
+        //System.out.printf("TFMatrix updated with position: (%f|%f|%f) and rotation (%f|%f|%f) and scale %f\n", position.x, position.y, position.z, rotation.x, rotation.y, rotation.z, scale);
+
+        /*Matrix4f matrix = new Matrix4f();
+        matrix.setIdentity();
+        Matrix4f.translate(position, matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(0), new Vector3f(1, 0, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(0), new Vector3f(0, 1, 0), matrix, matrix);
+        Matrix4f.rotate((float) Math.toRadians(0), new Vector3f(0, 0, 1), matrix, matrix);
+        Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
+
+        Vector4f test = new Vector4f(385.452057f, 15.977961f, 251.528214f, 1f);
+        //Vector4f test = new Vector4f(10f, 2f, 4f, 1f);
+        Matrix4f.transform(inv, test, test);
+        System.out.printf("Test vector after TF: (%f|%f|%f)\n", test.x, test.y, test.z);
+        Matrix4f.transform(matrix, test, test);
+        System.out.printf("Test vector after TF: (%f|%f|%f)\n", test.x, test.y, test.z);*/
+
         ((RotatingCollisionData) cdata).updateTFMatrix(Maths.createTransformationMatrix(position, rotation.x, rotation.y, rotation.z, scale));
         return cdata.getCollidingFaces(b);
     }

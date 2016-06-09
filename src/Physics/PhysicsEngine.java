@@ -76,7 +76,8 @@ public class PhysicsEngine {
     }
 
     public void tick() {
-        GameState.wmr.increaseRotation(0, 0, 0.01f);
+        GameState.wmr.increaseRotation(0, 0, 1f);
+        GameState.two.increaseRotation(0, 5f, 0);
         for (RealBall b : balls) {
             /*if (!b.isMoving() && b.getPosition().y > 1.5f) {
                 MainGameLoop.currState.cleanUp();

@@ -11,7 +11,7 @@ import entities.Camera;
 import entities.Light;
 import toolbox.Maths;
 
-public class StaticShader extends ShaderProgram{
+public class StaticShader extends ShaderProgram {
 	
 	private static final int MAX_LIGHTS = 4;
 	

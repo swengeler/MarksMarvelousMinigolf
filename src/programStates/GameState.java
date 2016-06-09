@@ -38,7 +38,7 @@ import water.WaterTile;
 
 public class GameState implements State {
 
-	public static Entity wmr;
+	public static Entity wmr, two;
 	
 	private static GameState instance;
 	
@@ -116,9 +116,10 @@ public class GameState implements State {
 
 		createEntity("box", new Vector3f(world.getStart().x + 50, /*-79.9f*/-60, world.getStart().z + 50), 0, 0, 0, 20);
         createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 10);
-		createEntity("flag", new Vector3f(world.getStart().x - 50, 0, world.getStart().z - 50), 0, 45, 0, 5);
+		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
 		createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
-		wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 20, world.getStart().z - 150), new Vector3f(), 5, new Vector3f());
+		wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x - 150, 10, world.getStart().z - 300), new Vector3f(), 7, new Vector3f());
+		two = createRotatingEntity("sphere_offcenter", new Vector3f(world.getStart().x, 0, world.getStart().z), new Vector3f(), 4, new Vector3f());
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
@@ -349,6 +350,7 @@ public class GameState implements State {
         ModelData ramp = OBJFileLoader.loadOBJ("ramp_hole");
         ModelData windmill = OBJFileLoader.loadOBJ("windmill_tunnel");
         ModelData windmill_rot = OBJFileLoader.loadOBJ("windmill_rot");
+        ModelData sphere_offcenter = OBJFileLoader.loadOBJ("sphere_offcenter");
 
 	    mData.put("human",human);
 	    mData.put("ball",ball);
@@ -366,6 +368,7 @@ public class GameState implements State {
         mData.put("ramp",ramp);
         mData.put("windmill",windmill);
         mData.put("windmill_rot",windmill_rot);
+        mData.put("sphere_offcenter",sphere_offcenter);
 
 		
 		RawModel humanModel = loader.loadToVAO(human.getVertices(), human.getTextureCoords(), human.getNormals(), human.getIndices());
@@ -386,6 +389,7 @@ public class GameState implements State {
         RawModel rampModel = loader.loadToVAO(ramp.getVertices(), ramp.getTextureCoords(), ramp.getNormals(), ramp.getIndices());
         RawModel windmillModel = loader.loadToVAO(windmill.getVertices(), windmill.getTextureCoords(), windmill.getNormals(), windmill.getIndices());
         RawModel windmillRotModel = loader.loadToVAO(windmill_rot.getVertices(), windmill_rot.getTextureCoords(), windmill_rot.getNormals(), windmill_rot.getIndices());
+        RawModel sphereModel = loader.loadToVAO(sphere_offcenter.getVertices(), sphere_offcenter.getTextureCoords(), sphere_offcenter.getNormals(), sphere_offcenter.getIndices());
 
 		tModels.put("human", new TexturedModel(humanModel,new ModelTexture(loader.loadTexture("playerTexture"))));
 		tModels.put("ball", new TexturedModel(ballModel,new ModelTexture(loader.loadTexture("white"))));
@@ -407,6 +411,7 @@ public class GameState implements State {
         tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("white"))));
         tModels.put("windmill", new TexturedModel(windmillModel, new ModelTexture(loader.loadTexture("white"))));
         tModels.put("windmill_rot", new TexturedModel(windmillRotModel, new ModelTexture(loader.loadTexture("white"))));
+        tModels.put("sphere_offcenter", new TexturedModel(sphereModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
 
 		tModels.get("barrel").getTexture().setShineDamper(10);

@@ -88,7 +88,7 @@ public class Entity {
 	protected void createCollisionData(ModelData data) {
 		long before = System.currentTimeMillis();
 		cdata = new CollisionData();
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix(this.position,this.rotation.x,this.rotation.y,this.rotation.z,this.scale);
+		Matrix4f transformationMatrix = Maths.createTransformationMatrix(this.position, this.rotation.x, this.rotation.y, this.rotation.z, this.scale);
 		Vector4f tfVector = new Vector4f(0,0,0,1f);
 		Vector3f p1 = new Vector3f(), p2 = new Vector3f(), p3 = new Vector3f(), n1 = new Vector3f(), n2 = new Vector3f(), n3 = new Vector3f();
 		Vector3f normal = new Vector3f(), v1 = new Vector3f(), v2 = new Vector3f();

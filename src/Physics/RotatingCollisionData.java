@@ -2,15 +2,18 @@ package Physics;
 
 import entities.Ball;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 import java.util.ArrayList;
 
 public class RotatingCollisionData extends CollisionData {
 
-    private Matrix4f tfMatrix;
+    private Matrix4f tfMatrix, invTFMatrix;
 
-    public RotatingCollisionData() {
+    public RotatingCollisionData(Matrix4f invTFMatrix) {
         super();
+        this.invTFMatrix = invTFMatrix;
     }
 
     @Override
@@ -22,7 +25,7 @@ public class RotatingCollisionData extends CollisionData {
                 tfMatrix.m30 + " | " + tfMatrix.m31 + " | " + tfMatrix.m32 + " | " + tfMatrix.m33 + "\n");*/
         collisionList.clear();
         for (PhysicalFace f : faces) {
-            ((RotatingFace) f).updateFace(tfMatrix);
+            ((RotatingFace) f).updateFace(tfMatrix, invTFMatrix);
             if (f.collidesWithFace(b))
                 collisionList.add(f);
         }
@@ -32,7 +35,7 @@ public class RotatingCollisionData extends CollisionData {
     @Override
     public boolean collides(Ball b) {
         for (PhysicalFace f : faces) {
-            ((RotatingFace) f).updateFace(tfMatrix);
+            ((RotatingFace) f).updateFace(tfMatrix, invTFMatrix);
             if (f.collidesWithFace(b))
                 return true;
         }
