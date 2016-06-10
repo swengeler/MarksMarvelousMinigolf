@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -18,6 +19,8 @@ import terrains.Terrain;
 import terrains.World;
 import toolbox.Douple;
 import toolbox.Maths;
+import java.util.*;
+
 
 public class PhysicsEngine {
 
@@ -40,6 +43,7 @@ public class PhysicsEngine {
 
     private Random r;
     private boolean enabled;
+    private final float minenergy=1;
 
     private ArrayList<Vector3f> globalAccel;
 
@@ -508,6 +512,38 @@ public class PhysicsEngine {
         float zRot = Vector3f.angle(newY, yxProjection);
 
         return Maths.createTransformationMatrix(new Vector3f(), (float) Math.toRadians(xRot), 0, (float) Math.toRadians(zRot), 1);
+    }
+
+    public void spinToSpeed(Ball b) {
+        float xenergy, yenergy, zenergy, xspeed, yspeed, zspeed;
+
+        xenergy = (float) 0.5 * b.getRadius() * b.getRadius() * b.REAL_MASS * b.getRotation().x * b.getRotation().x;
+        yenergy = (float) 0.5 * b.getRadius() * b.getRadius() * b.REAL_MASS * b.getRotation().y * b.getRotation().y;
+        zenergy = (float) 0.5 * b.getRadius() * b.getRadius() * b.REAL_MASS * b.getRotation().z * b.getRotation().z;
+
+        if (xenergy < -minenergy || xenergy > minenergy) {
+            b.increaseVelocity((float) Math.sqrt(2 * xenergy * 0.1 / b.REAL_MASS), 0, 0);
+            xenergy = (float) 0.9 * xenergy;
+        } else {
+            b.increaseVelocity((float) Math.sqrt(2 * xenergy / b.REAL_MASS), 0, 0);
+            xenergy = 0;
+        }
+
+        if (yenergy < -minenergy || yenergy > minenergy) {
+            b.increaseVelocity((float) Math.sqrt(2 * yenergy * 0.1 / b.REAL_MASS), 0, 0);
+            yenergy = (float) 0.9 * yenergy;
+        } else {
+            b.increaseVelocity((float) Math.sqrt(2 * yenergy / b.REAL_MASS), 0, 0);
+            yenergy = 0;
+
+            if (zenergy < -minenergy || zenergy > minenergy) {
+                b.increaseVelocity((float) Math.sqrt(2 * zenergy * 0.1 / b.REAL_MASS), 0, 0);
+                zenergy = (float) 0.9 * zenergy;
+            } else {
+                b.increaseVelocity((float) Math.sqrt(2 * zenergy / b.REAL_MASS), 0, 0);
+                zenergy = 0;
+            }
+        }
     }
 
     public void applySpin(Ball b) {
