@@ -264,7 +264,6 @@ public class PhysicsEngine {
                 } else if (Maths.distancePtPtSq(closest1, b.getPosition()) < Maths.distancePtPtSq(closest2, b.getPosition())) {
                     forResolution = stillColliding.get(0);
                     b.move();
-                    // still needs to be changed to projection
                     revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
                     revBM.scale(Vector3f.dot(b.getVelocity(), revBM) / revBM.lengthSquared());
                     revBM.scale(-0.001f);
@@ -274,7 +273,6 @@ public class PhysicsEngine {
                 } else {
                     forResolution = stillColliding.get(1);
                     b.move();
-                    // still needs to be changed to projection
                     revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
                     revBM.scale(Vector3f.dot(b.getVelocity(), revBM) / revBM.lengthSquared());
                     revBM.scale(-0.001f);

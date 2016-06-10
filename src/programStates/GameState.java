@@ -115,7 +115,7 @@ public class GameState implements State {
 		System.out.println("After loading particle system for the first time");
 
 		createEntity("box", new Vector3f(world.getStart().x + 50, /*-79.9f*/-60, world.getStart().z + 50), 0, 0, 0, 20);
-        createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 10);
+        createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
 		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
 		createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
 		wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x - 150, 10, world.getStart().z - 300), new Vector3f(), 7, new Vector3f());
