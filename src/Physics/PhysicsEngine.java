@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 
+import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -490,26 +491,65 @@ public class PhysicsEngine {
         return new ShotData(shotVel, ball.getPosition(), obstaclesHit);
     }
 
-    public Matrix4f axisTransformationMatrix(Vector3f newY) {
-        Vector3f copy = new Vector3f(newY.x, newY.y, newY.z);
+    public Matrix3f convertingCoordinateSystem(Vector3f oldAxis, Vector3f newAxis) {
+        // finding out about which axis to rotate the oldAxis to obtain the newAxis and at which angle to rotate it around that
+        Vector3f rotAxis = Vector3f.cross(oldAxis, newAxis, null);
+        rotAxis.normalise();
+        float angle = Vector3f.angle(oldAxis, newAxis);
 
-        // find out at which angles to rotate around x and z axis
-        // project the normal/newY vector onto the yz plane to find out the angle at which to rotate around the x-axis
-        Vector3f yzProjection = new Vector3f();
-        Vector3f normalCurPlane = new Vector3f(1, 0, 0);
-        Vector3f.sub(copy, (Vector3f) normalCurPlane.scale(Vector3f.dot(copy, normalCurPlane)), yzProjection);
-        float xRot = Vector3f.angle(newY, yzProjection);
+        // setting up the final transformation matrix (R) that will be returned and is given by:
+        // R = I + sin(angle) * K + (1 - cos(angle)) * K^2
+        Matrix3f rodriguesRotMatrix = new Matrix3f();
+        rodriguesRotMatrix.setIdentity();
 
-        // resetting the copy
-        copy.set(newY.x, newY.y, newY.z);
+        // constructing a cross product matrix (K) for the rotation axis that will be used later
+        Matrix3f crossProductMatrix = new Matrix3f();
+        crossProductMatrix.setZero();
+        crossProductMatrix.m10 = -rotAxis.z;
+        crossProductMatrix.m20 = rotAxis.y;
+        crossProductMatrix.m01 = rotAxis.z;
+        crossProductMatrix.m21 = -rotAxis.x;
+        crossProductMatrix.m02 = -rotAxis.y;
+        crossProductMatrix.m12 = rotAxis.x;
 
-        // project the normal/newY vector onto the yx plane to find out the angle at which to rotate around the z-axis
-        Vector3f yxProjection = new Vector3f();
-        normalCurPlane = new Vector3f(0, 0, 1);
-        Vector3f.sub(copy, (Vector3f) normalCurPlane.scale(Vector3f.dot(copy, normalCurPlane)), yzProjection);
-        float zRot = Vector3f.angle(newY, yxProjection);
+        // computing the first summand for the formula given above: sin(angle) * K
+        Matrix3f summandOne = new Matrix3f();
+        summandOne.setZero();
+        double factorOne = Math.sin(angle);
+        summandOne.m10 = (float) (crossProductMatrix.m10 * factorOne);
+        summandOne.m20 = (float) (crossProductMatrix.m20 * factorOne);
+        summandOne.m01 = (float) (crossProductMatrix.m01 * factorOne);
+        summandOne.m21 = (float) (crossProductMatrix.m21 * factorOne);
+        summandOne.m02 = (float) (crossProductMatrix.m02 * factorOne);
+        summandOne.m12 = (float) (crossProductMatrix.m12 * factorOne);
 
-        return Maths.createTransformationMatrix(new Vector3f(), (float) Math.toRadians(xRot), 0, (float) Math.toRadians(zRot), 1);
+        // computing the first summand for the formula given above: (1 - cos(angle)) * K^2
+        Matrix3f summandTwo = new Matrix3f();
+        summandTwo.setZero();
+        double factorTwo = 1 - Math.cos(angle);
+        summandTwo.m10 = crossProductMatrix.m10;
+        summandTwo.m20 = crossProductMatrix.m20;
+        summandTwo.m01 = crossProductMatrix.m01;
+        summandTwo.m21 = crossProductMatrix.m21;
+        summandTwo.m02 = crossProductMatrix.m02;
+        summandTwo.m12 = crossProductMatrix.m12;
+        Matrix3f.mul(summandTwo, summandTwo, summandTwo);
+
+        summandTwo.m00 *= factorTwo;
+        summandTwo.m01 *= factorTwo;
+        summandTwo.m02 *= factorTwo;
+        summandTwo.m10 *= factorTwo;
+        summandTwo.m11 *= factorTwo;
+        summandTwo.m12 *= factorTwo;
+        summandTwo.m20 *= factorTwo;
+        summandTwo.m21 *= factorTwo;
+        summandTwo.m22 *= factorTwo;
+
+        // adding up the summands to get the final transformation matrix
+        Matrix3f.add(rodriguesRotMatrix, summandOne, rodriguesRotMatrix);
+        Matrix3f.add(rodriguesRotMatrix, summandTwo, rodriguesRotMatrix);
+
+        return rodriguesRotMatrix;
     }
 
     public void spinToSpeed(Ball b) {

@@ -4,11 +4,12 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         // test for linear algebra
-        System.out.println("LINEAR ALGEBRA TESTS:");
+        System.out.println("\nLINEAR ALGEBRA TESTS:");
         LinearAlgebraTests linAlg = new LinearAlgebraTests();
         Vector3f test = new Vector3f(1, 1, 1);
         test.normalise();
-        linAlg.convertingCoordinateSystem(LinearAlgebraTests.Y_AXIS, new Vector3f(0, 0, 1));
+        //System.out.println(test);
+        linAlg.convertingCoordinateSystemOther(LinearAlgebraTests.Y_AXIS, test);
         System.out.println();
     }
 }
