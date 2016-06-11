@@ -9,11 +9,11 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 
-import entities.Entity;
+import entities.obstacles.Entity;
 import models.RawModel;
 import models.TexturedModel;
-import renderEngine.MasterRenderer;
-import toolbox.Maths;
+import renderEngine.renderers.MasterRenderer;
+import toolbox.LinearAlgebra;
 
 public class ShadowMapEntityRenderer {
 
@@ -87,7 +87,7 @@ public class ShadowMapEntityRenderer {
 	 *            - the entity to be prepared for rendering.
 	 */
 	private void prepareInstance(Entity entity) {
-		Matrix4f modelMatrix = Maths.createTransformationMatrix(entity.getPosition(),
+		Matrix4f modelMatrix = LinearAlgebra.createTransformationMatrix(entity.getPosition(),
 				entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
 		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
 		shader.loadMvpMatrix(mvpMatrix);

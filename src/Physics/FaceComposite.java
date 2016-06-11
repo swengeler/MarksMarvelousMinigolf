@@ -1,11 +1,12 @@
-package Physics;
+package physics;
 
 import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import entities.Ball;
-import toolbox.Maths;
+import entities.playable.Ball;
+import physics.collisions.PhysicalFace;
+import toolbox.LinearAlgebra;
 
 public class FaceComposite {
 
@@ -54,7 +55,7 @@ public class FaceComposite {
 
     public boolean pointInComposite(Vector3f p) {
         for (PhysicalFace f : faces) {
-            if (Maths.checkPointInFace(p, f))
+            if (LinearAlgebra.checkPointInFace(p, f))
                 return true;
         }
         return false;

@@ -8,10 +8,10 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.util.vector.Vector2f;
 
-import engineTester.MainGameLoop;
+import gameEngine.MainGameLoop;
 import programStates.MenuState;
-import renderEngine.DisplayManager;
-import renderEngine.Loader;
+import renderEngine.utils.DisplayManager;
+import renderEngine.utils.Loader;
 
 public class GuiButton {
 	

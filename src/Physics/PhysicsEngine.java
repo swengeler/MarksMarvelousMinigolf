@@ -1,4 +1,4 @@
-package Physics;
+package physics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,21 +6,18 @@ import java.util.Random;
 
 
 import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-import engineTester.MainGameLoop;
-import entities.RealBall;
-import entities.VirtualBall;
-import entities.Ball;
-import entities.Entity;
+import gameEngine.MainGameLoop;
+import entities.playable.RealBall;
+import entities.playable.VirtualBall;
+import entities.playable.Ball;
+import entities.obstacles.Entity;
+import physics.collisions.PhysicalFace;
 import programStates.GameState;
-import renderEngine.DisplayManager;
 import terrains.Terrain;
 import terrains.World;
-import toolbox.Douple;
-import toolbox.Maths;
-import java.util.*;
+import toolbox.LinearAlgebra;
 
 
 public class PhysicsEngine {
@@ -126,9 +123,9 @@ public class PhysicsEngine {
         //while (b.collidesWith(collidingFaces))
         //b.increasePosition(0, 0.01f, 0);
 
-        /*if (((Vector3f) Vector3f.sub(b.getPosition(), new Vector3f(world.getEnd().x, b.getPosition().y, world.getEnd().z), null)).lengthSquared() < 100f) {
+        if (((Vector3f) Vector3f.sub(b.getPosition(), new Vector3f(world.getEnd().x, b.getPosition().y, world.getEnd().z), null)).lengthSquared() < 100f) {
             return;
-        }*/
+        }
 
         if (world.getHeightOfTerrain(b.getPosition().x, b.getPosition().z) > b.getPosition().y - Ball.RADIUS) {
             b.setPosition(new Vector3f(b.getPosition().x, world.getHeightOfTerrain(b.getPosition().x, b.getPosition().z) + Ball.RADIUS, b.getPosition().z));
@@ -266,7 +263,7 @@ public class PhysicsEngine {
                         System.out.printf("Normal for resolution: (%f|%f|%f)\n", normal.x, normal.y, normal.z);
                         forResolution = new PhysicalFace(normal, closest1, closest1, closest1);
                     }
-                } else if (Maths.distancePtPtSq(closest1, b.getPosition()) < Maths.distancePtPtSq(closest2, b.getPosition())) {
+                } else if (LinearAlgebra.distancePtPtSq(closest1, b.getPosition()) < LinearAlgebra.distancePtPtSq(closest2, b.getPosition())) {
                     forResolution = stillColliding.get(0);
                     b.move();
                     revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
@@ -299,11 +296,11 @@ public class PhysicsEngine {
                     for (int j = 0; j < closestPoints.size(); j++) {
                         Vector3f.sub(b.getPosition(), closestPoints.get(i), dist1);
                         Vector3f.sub(b.getPosition(), closestPoints.get(j), dist2);
-                        if (Maths.pointsAreEqual(closestPoints.get(i), closestPoints.get(j))) { // needs to be changed
+                        if (LinearAlgebra.pointsAreEqual(closestPoints.get(i), closestPoints.get(j))) { // needs to be changed
                             vertex = closestPoints.get(i);
-                        } else if (Math.abs(dist1.lengthSquared() - dist2.lengthSquared()) < 0.01 && Maths.distancePtPtSq(b.getPosition(), closestPoints.get(i)) < lowestDistEdge) {
+                        } else if (Math.abs(dist1.lengthSquared() - dist2.lengthSquared()) < 0.01 && LinearAlgebra.distancePtPtSq(b.getPosition(), closestPoints.get(i)) < lowestDistEdge) {
                             edge = stillColliding.get(i).getCommonEdge(stillColliding.get(j));
-                            lowestDistEdge = Maths.distancePtPtSq(b.getPosition(), closestPoints.get(i));
+                            lowestDistEdge = LinearAlgebra.distancePtPtSq(b.getPosition(), closestPoints.get(i));
                         } else if (dist1.lengthSquared() < lowestDistFace) {
                             lowestDistFace = dist1.lengthSquared();
                             closestFace = stillColliding.get(i);
@@ -619,12 +616,12 @@ public class PhysicsEngine {
         Vector3f closestCorner = new Vector3f();
         float closestDistCorner = Float.MAX_VALUE, closestDistLineSeg = Float.MAX_VALUE, temp;
         for (int i = 0; i < corners.length; i++) {
-            if (Maths.distancePtPtSq(position, corners[i]) < closestDistCorner) {
+            if (LinearAlgebra.distancePtPtSq(position, corners[i]) < closestDistCorner) {
                 closestCorner = corners[i];
-                closestDistCorner = Maths.distancePtPtSq(position, closestCorner);
+                closestDistCorner = LinearAlgebra.distancePtPtSq(position, closestCorner);
             }
             // distance to line segments: first minMin-minMax, then minMax-maxMax, then maxMax-maxMin, then maxMin-minMin
-            if ((temp = Maths.distancePtLineSegSq(position, corners[i], corners[i % 3])) < closestDistLineSeg) {
+            if ((temp = LinearAlgebra.distancePtLineSegSq(position, corners[i], corners[i % 3])) < closestDistLineSeg) {
                 closestDistLineSeg = temp;
             }
         }
@@ -632,9 +629,9 @@ public class PhysicsEngine {
         Vector3f nextClosest = new Vector3f();
         float nextClosestDistCorner = Float.MAX_VALUE;
         for (int i = 0; i < corners.length; i++) {
-            if (corners[i] != closestCorner && Maths.distancePtPtSq(position, corners[i]) < nextClosestDistCorner) {
+            if (corners[i] != closestCorner && LinearAlgebra.distancePtPtSq(position, corners[i]) < nextClosestDistCorner) {
                 nextClosest = corners[i];
-                nextClosestDistCorner = Maths.distancePtPtSq(position, nextClosest);
+                nextClosestDistCorner = LinearAlgebra.distancePtPtSq(position, nextClosest);
             }
         }
 
@@ -648,9 +645,9 @@ public class PhysicsEngine {
         Vector3f secondNextClosest = new Vector3f();
         float secondNextClosestDistCorner = Float.MAX_VALUE;
         for (int i = 0; i < corners.length; i++) {
-            if (corners[i] != closestCorner && corners[i] != secondNextClosest && Maths.distancePtPtSq(position, corners[i]) < secondNextClosestDistCorner) {
+            if (corners[i] != closestCorner && corners[i] != secondNextClosest && LinearAlgebra.distancePtPtSq(position, corners[i]) < secondNextClosestDistCorner) {
                 secondNextClosest = corners[i];
-                secondNextClosestDistCorner = Maths.distancePtPtSq(position, secondNextClosest);
+                secondNextClosestDistCorner = LinearAlgebra.distancePtPtSq(position, secondNextClosest);
             }
         }
 

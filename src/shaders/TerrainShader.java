@@ -6,11 +6,10 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import entities.Camera;
-import entities.Light;
-import shadows.ShadowBox;
+import entities.camera.Camera;
+import entities.lights.Light;
 import shadows.ShadowMapMasterRenderer;
-import toolbox.Maths;
+import toolbox.LinearAlgebra;
 
 public class TerrainShader extends ShaderProgram{
 
@@ -112,7 +111,7 @@ public class TerrainShader extends ShaderProgram{
 	}
 	
 	public void loadViewMatrix(Camera camera){
-		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
+		Matrix4f viewMatrix = LinearAlgebra.createViewMatrix(camera);
 		super.loadMatrix(location_viewMatrix, viewMatrix);
 	}
 	

@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 
 import org.lwjgl.util.vector.Matrix4f;
 
-import entities.Camera;
-import renderEngine.Loader;
+import entities.camera.Camera;
+import renderEngine.utils.Loader;
 
 public class ParticleMaster {
 	private static Map<ParticleTexture, List<Particle>> particles = new HashMap<ParticleTexture, List<Particle>>();

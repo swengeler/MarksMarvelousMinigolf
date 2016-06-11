@@ -10,12 +10,12 @@ import javax.imageio.ImageIO;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import Physics.CollisionData;
-import Physics.PhysicalFace;
-import entities.Ball;
-import entities.RealBall;
+import physics.collisions.CollisionData;
+import physics.collisions.PhysicalFace;
+import entities.playable.Ball;
+import entities.playable.RealBall;
 import models.RawModel;
-import renderEngine.Loader;
+import renderEngine.utils.Loader;
 import textures.ModelTexture;
 
 public class Terrain {

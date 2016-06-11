@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 
-import entities.Camera;
+import entities.camera.Camera;
 import guis.GuiButton;
 import guis.GuiRenderer;
-import guis.GuiTexture;
 import particles.ParticleSystem;
-import renderEngine.DisplayManager;
-import renderEngine.Loader;
-import renderEngine.MasterRenderer;
+import renderEngine.utils.DisplayManager;
+import renderEngine.utils.Loader;
+import renderEngine.renderers.MasterRenderer;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
 

@@ -1,6 +1,6 @@
 package bot;
 
-import Physics.ShotData;
+import physics.ShotData;
 
 public class Edge {
 

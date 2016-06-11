@@ -2,7 +2,7 @@ import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
-import toolbox.Maths;
+import toolbox.LinearAlgebra;
 
 public class LinearAlgebraTests {
 
@@ -128,7 +128,7 @@ public class LinearAlgebraTests {
         }
 
         Vector3f euler = new Vector3f((float) heading, (float) attitude, (float) bank);
-        Matrix4f tfMatrix = Maths.createTransformationMatrix(null, (float) heading, (float) attitude, (float) bank, 1f);
+        Matrix4f tfMatrix = LinearAlgebra.createTransformationMatrix(null, (float) heading, (float) attitude, (float) bank, 1f);
         Vector4f tfVector = new Vector4f(0, 0, 0, 1f);
         System.out.println("Conversion matrix:\n" + tfMatrix);
 

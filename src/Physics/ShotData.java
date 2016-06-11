@@ -1,10 +1,10 @@
-package Physics;
+package physics;
 
 import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import entities.Entity;
+import entities.obstacles.Entity;
 
 public class ShotData {
 	

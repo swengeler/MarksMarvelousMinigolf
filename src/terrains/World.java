@@ -6,12 +6,12 @@ import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import Physics.PhysicalFace;
-import entities.Entity;
-import entities.Light;
-import toolbox.Maths;
-import entities.Ball;
-import entities.Camera;
+import physics.collisions.PhysicalFace;
+import entities.obstacles.Entity;
+import entities.lights.Light;
+import toolbox.LinearAlgebra;
+import entities.playable.Ball;
+import entities.camera.Camera;
 
 public class World {
 
@@ -143,11 +143,11 @@ public class World {
 		float zCoord = (terrainZ % gridSquareSize) / gridSquareSize;
 		float answer;
 		if (xCoord <= (1-zCoord)) {
-			answer = Maths.barryCentric(new Vector3f(0, terrain.getHeights()[gridX][gridZ], 0), new Vector3f(1,
+			answer = LinearAlgebra.barryCentric(new Vector3f(0, terrain.getHeights()[gridX][gridZ], 0), new Vector3f(1,
 					terrain.getHeights()[gridX + 1][gridZ], 0), new Vector3f(0,
 							terrain.getHeights()[gridX][gridZ + 1], 1), new Vector2f(xCoord, zCoord));
 		} else {
-			answer = Maths.barryCentric(new Vector3f(1, terrain.getHeights()[gridX + 1][gridZ], 0), new Vector3f(1,
+			answer = LinearAlgebra.barryCentric(new Vector3f(1, terrain.getHeights()[gridX + 1][gridZ], 0), new Vector3f(1,
 					terrain.getHeights()[gridX + 1][gridZ + 1], 1), new Vector3f(0,
 							terrain.getHeights()[gridX][gridZ + 1], 1), new Vector2f(xCoord, zCoord));
 		}
