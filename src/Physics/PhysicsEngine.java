@@ -82,7 +82,7 @@ public class PhysicsEngine {
 
     public void tick() {
         GameState.wmr.increaseRotation(0, 0, 1f);
-        GameState.two.increaseRotation(0, 5f, 0);
+        //GameState.two.increaseRotation(0, 5f, 0);
         for (RealBall b : balls) {
             /*if (!b.isMoving() && b.getPosition().y > 1.5f) {
                 MainGameLoop.currState.cleanUp();
@@ -125,6 +125,10 @@ public class PhysicsEngine {
         // since its a terrain (which comes with certain restrictions) the ball is simply pushed upwards to simplify matters
         //while (b.collidesWith(collidingFaces))
         //b.increasePosition(0, 0.01f, 0);
+
+        /*if (((Vector3f) Vector3f.sub(b.getPosition(), new Vector3f(world.getEnd().x, b.getPosition().y, world.getEnd().z), null)).lengthSquared() < 100f) {
+            return;
+        }*/
 
         if (world.getHeightOfTerrain(b.getPosition().x, b.getPosition().z) > b.getPosition().y - Ball.RADIUS) {
             b.setPosition(new Vector3f(b.getPosition().x, world.getHeightOfTerrain(b.getPosition().x, b.getPosition().z) + Ball.RADIUS, b.getPosition().z));

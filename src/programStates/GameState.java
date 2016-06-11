@@ -114,7 +114,8 @@ public class GameState implements State {
 		loadParticleSystem();
 		System.out.println("After loading particle system for the first time");
 
-		//createEntity("box", new Vector3f(world.getStart().x + 50, /*-79.9f*/-60, world.getStart().z + 50), 0, 0, 0, 20);
+		createEntity("hole", new Vector3f(world.getStart().x + 50, /*-79.9f*/0.1f, world.getStart().z + 50), 0, 0, 0, 20);
+		world.setEnd(new Vector2f(world.getStart().x + 50, world.getStart().z + 50));
         //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
 		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
 		createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
@@ -227,11 +228,11 @@ public class GameState implements State {
 		}
 		mainEngine.tick();
 		camera.move();
-		for(ParticleSystem system:particles)
+		for (ParticleSystem system : particles)
 			system.generateParticles();
-		if(!balls.get(currBall).isMoving() && ((RealBall)balls.get(currBall)).isPlayed()){
+		if (!balls.get(currBall).isMoving() && ((RealBall)balls.get(currBall)).isPlayed()) {
 			timeBallStill += DisplayManager.getFrameTimeSeconds();
-			if(timeBallStill >= 1){
+			if (timeBallStill >= 1) {
 				printScore();
 				int bio = checkBallsInHole();
 				if(bio >= 0){

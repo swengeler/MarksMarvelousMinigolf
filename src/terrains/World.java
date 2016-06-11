@@ -14,6 +14,7 @@ import entities.Ball;
 import entities.Camera;
 
 public class World {
+
 	private List<Terrain> terrains = new ArrayList<Terrain>();
 	private List<Entity> entities = new ArrayList<Entity>();
 	private List<Entity> normalEntities = new ArrayList<Entity>();
@@ -21,8 +22,7 @@ public class World {
 	private Camera camera;
 	private Vector2f Start = new Vector2f(Terrain.getSize()/2f, Terrain.getSize()/2f);
 	private Vector2f End = new Vector2f(Terrain.getSize()/4f, Terrain.getSize()/4f);
-	
-	
+
 	public World(Camera camera){
 		this.camera = camera;
 	}
