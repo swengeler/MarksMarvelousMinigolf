@@ -114,12 +114,12 @@ public class GameState implements State {
 		loadParticleSystem();
 		System.out.println("After loading particle system for the first time");
 
-		createEntity("box", new Vector3f(world.getStart().x + 50, /*-79.9f*/-60, world.getStart().z + 50), 0, 0, 0, 20);
-        createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
+		//createEntity("box", new Vector3f(world.getStart().x + 50, /*-79.9f*/-60, world.getStart().z + 50), 0, 0, 0, 20);
+        //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
 		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
 		createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
-		wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x - 150, 10, world.getStart().z - 300), new Vector3f(), 7, new Vector3f());
-		two = createRotatingEntity("sphere_offcenter", new Vector3f(world.getStart().x, 0, world.getStart().z), new Vector3f(), 4, new Vector3f());
+		wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 76, world.getStart().z + 150 - 26f), new Vector3f(), 10, new Vector3f());
+		two = createRotatingEntity("sphere_offcenter", new Vector3f(world.getStart().x, 0, world.getStart().z - 300), new Vector3f(), 4, new Vector3f());
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
@@ -348,8 +348,8 @@ public class GameState implements State {
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("hole");
         ModelData ramp = OBJFileLoader.loadOBJ("ramp_hole");
-        ModelData windmill = OBJFileLoader.loadOBJ("windmill_tunnel");
-        ModelData windmill_rot = OBJFileLoader.loadOBJ("windmill_rot");
+        ModelData windmill = OBJFileLoader.loadOBJ("windmill_tower");
+        ModelData windmill_rot = OBJFileLoader.loadOBJ("windmill_wings");
         ModelData sphere_offcenter = OBJFileLoader.loadOBJ("sphere_offcenter");
 
 	    mData.put("human",human);
@@ -409,8 +409,8 @@ public class GameState implements State {
 		tModels.put("wall", new TexturedModel(wallModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
         tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("white"))));
-        tModels.put("windmill", new TexturedModel(windmillModel, new ModelTexture(loader.loadTexture("white"))));
-        tModels.put("windmill_rot", new TexturedModel(windmillRotModel, new ModelTexture(loader.loadTexture("white"))));
+        tModels.put("windmill", new TexturedModel(windmillModel, new ModelTexture(loader.loadTexture("windmill_tower"))));
+        tModels.put("windmill_rot", new TexturedModel(windmillRotModel, new ModelTexture(loader.loadTexture("windmill_wings_alt"))));
         tModels.put("sphere_offcenter", new TexturedModel(sphereModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
 
