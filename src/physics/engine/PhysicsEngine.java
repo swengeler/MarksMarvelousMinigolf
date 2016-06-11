@@ -1,4 +1,4 @@
-package physics;
+package physics.engine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import entities.playable.RealBall;
 import entities.playable.VirtualBall;
 import entities.playable.Ball;
 import entities.obstacles.Entity;
+import physics.utils.ShotData;
 import physics.collisions.PhysicalFace;
 import programStates.GameState;
 import terrains.Terrain;
@@ -22,7 +23,7 @@ import toolbox.LinearAlgebra;
 
 public class PhysicsEngine {
 
-    static final float NORMAL_TH = 0.001f;
+    public static final float NORMAL_TH = 0.001f;
     private static final float ANGLE_TH = 5f;
     private static final float C = 0.001f;
     public static final float MIN_MOV_REQ = 0.000f;

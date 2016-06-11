@@ -1,4 +1,4 @@
-package physics;
+package physics.utils;
 
 import java.util.ArrayList;
 
@@ -6,6 +6,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import entities.playable.Ball;
 import physics.collisions.PhysicalFace;
+import physics.engine.PhysicsEngine;
 import toolbox.LinearAlgebra;
 
 public class FaceComposite {

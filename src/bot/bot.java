@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import physics.PhysicsEngine;
+import physics.engine.PhysicsEngine;
 import entities.playable.Ball;
 import entities.camera.Camera;
 import guis.GuiTexture;

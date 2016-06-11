@@ -12,7 +12,7 @@ import models.TexturedModel;
 import programStates.GameState;
 import renderEngine.utils.DisplayManager;
 import physics.collisions.PhysicalFace;
-import physics.PhysicsEngine;
+import physics.engine.PhysicsEngine;
 
 public class RealBall extends Entity implements Ball {
 

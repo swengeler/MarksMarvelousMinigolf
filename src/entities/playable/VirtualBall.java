@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.lwjgl.util.vector.Vector3f;
 
 import physics.collisions.PhysicalFace;
-import physics.PhysicsEngine;
+import physics.engine.PhysicsEngine;
 
 public class VirtualBall implements Ball {
 	

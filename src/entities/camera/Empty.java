@@ -6,7 +6,7 @@ import entities.playable.RealBall;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 
-import physics.PhysicsEngine;
+import physics.engine.PhysicsEngine;
 import models.TexturedModel;
 import renderEngine.utils.DisplayManager;
 import terrains.World;

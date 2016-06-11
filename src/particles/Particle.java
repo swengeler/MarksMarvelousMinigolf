@@ -3,7 +3,7 @@ package particles;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import physics.PhysicsEngine;
+import physics.engine.PhysicsEngine;
 import entities.camera.Camera;
 import renderEngine.utils.DisplayManager;
 

@@ -17,7 +17,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import physics.PhysicsEngine;
+import physics.engine.PhysicsEngine;
 import bot.bot;
 import gameEngine.MainGameLoop;
 import guis.GuiRenderer;
