@@ -1,0 +1,13 @@
+# Blender MTL File: 'ad_column.blend'
+# Material Count: 1
+
+newmtl Material.001
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd E:\Simon\Documents\Google Drive\University Material\Project 1.2\Phase 3\Blender and OBJ Files\ad column si.png
