@@ -13,6 +13,7 @@ import entities.playable.RealBall;
 import entities.playable.VirtualBall;
 import entities.playable.Ball;
 import entities.obstacles.Entity;
+import physics.noise.NoiseHandler;
 import physics.utils.ShotData;
 import physics.collisions.PhysicalFace;
 import programStates.GameState;
@@ -37,22 +38,26 @@ public class PhysicsEngine {
 
     private static final double FRICTION_STD = 0.5;
 
-
     private List<RealBall> balls;
     private World world;
+    private NoiseHandler noiseHandler;
 
     private Random r;
     private boolean enabled;
-    private final float minenergy=1;
+    private final float minenergy = 1;
 
     private ArrayList<Vector3f> globalAccel;
 
-    public PhysicsEngine(List<Ball> balls, World world) {
+    public PhysicsEngine(List<Ball> balls, World world, NoiseHandler noiseHandler) {
         this.balls = new ArrayList<RealBall>();
         for (Ball b : balls)
             if (b instanceof RealBall)
                 this.balls.add((RealBall) b);
         this.world = world;
+        if (noiseHandler == null)
+            this.noiseHandler = new NoiseHandler();
+        else
+            this.noiseHandler = noiseHandler;
         this.enabled = true;
         this.r = new Random();
         this.globalAccel = new ArrayList<Vector3f>();
@@ -80,8 +85,8 @@ public class PhysicsEngine {
     }
 
     public void tick() {
-        //GameState.wmr.increaseRotation(0, 0, 0.5f);
-        GameState.two.increaseRotation(0f, 0.5f, 0f);
+        GameState.wmr.increaseRotation(0, 0, 0.5f);
+        //GameState.two.increaseRotation(0f, 0.5f, 0f);
         //GameState.two.increaseRotation(0.1f, 1f, 0.5f);
         for (RealBall b : balls) {
             /*if (!b.isMoving() && b.getPosition().y > 1.5f) {
@@ -91,6 +96,7 @@ public class PhysicsEngine {
             }*/
             b.applyGlobalAccel(this.globalAccel, r);
             b.applyAccel();
+            noiseHandler.applyWind(b.getVelocity());
             if ((b.isMoving() && (b.movedLastStep() || b.getLastTimeElapsed() == 0)) || MainGameLoop.getCounter() < 10) {
                 b.updateAndMove();
                 System.out.println("\n---- Collision detection starts ----\n");
@@ -379,6 +385,8 @@ public class PhysicsEngine {
                 }
             }
         }
+
+        resolvePlaneCollision(b, forResolution);
         System.out.println("COLLISION WITH OBSTACLE RESOLVED");
         //MainGameLoop.currState.cleanUp();
         //DisplayManager.closeDisplay();
@@ -469,7 +477,7 @@ public class PhysicsEngine {
 				b.setVelocity(b.getVelocity().x*COEFF_RESTITUTION, b.getVelocity().y*COEFF_RESTITUTION, zSpeed(b));
 				applySpin(b);
 			} else*/
-            b.scaleVelocity(COEFF_RESTITUTION);
+            b.scaleVelocity(noiseHandler.getRestitutionNoise());
 
             //System.out.println(b.getRotation().x + " " + b.getRotation().y + " " + b.getRotation().z);
         } else {
@@ -489,9 +497,8 @@ public class PhysicsEngine {
             // since F = m * a <=> F/m = a <=> F/m * t = v the effect on the velocity is computed as done below (Ffriction = coeffFriction * Fnormal)
             float angleIncl = Vector3f.angle(new Vector3f(frictionDir.x, 0, frictionDir.z), frictionDir);
             angleIncl = (float) Math.min(Math.PI - angleIncl, angleIncl);
-            float frictionVelComponent = randomiseFriction() * (PhysicsEngine.GRAVITY.length() * (float) (Math.cos(angleIncl))) * b.getTimeElapsed();
+            float frictionVelComponent = noiseHandler.getFrictionNoise() * (PhysicsEngine.GRAVITY.length() * (float) (Math.cos(angleIncl))) * b.getTimeElapsed();
             frictionDir = (Vector3f) frictionDir.scale(-frictionVelComponent);
-            //randomiseFriction(frictionDir);
 
             // finally, the velocity of the ball is set to the projection (since the ball is not supposed to be bouncing)
             // then friction is applied (if the effect of friction is larger than the actual velocity, the ball just stops)
@@ -504,14 +511,6 @@ public class PhysicsEngine {
             }
         }
         System.out.println("Ball's velocity after collision resolution: " + b.getVelocity());
-    }
-
-    private float randomiseFriction() {
-        double std = FRICTION_STD * COEFF_FRICTION;
-        double newFriction = r.nextGaussian() * std + COEFF_FRICTION;
-
-        System.out.println("\nFRICTION FROM " + COEFF_FRICTION + " TO " + newFriction + "\n");
-        return (float) newFriction;
     }
 
     public ShotData performVirtualShot(RealBall b, Vector3f shotVel) {

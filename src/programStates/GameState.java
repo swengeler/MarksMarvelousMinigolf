@@ -112,7 +112,7 @@ public class GameState implements State {
 		balls.get(0).setPosition(world.getStart());
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
-		mainEngine = new PhysicsEngine(balls, world);
+		mainEngine = new PhysicsEngine(balls, world, null);
 		// addRandomWind();
 		System.out.println("Before loading particle system for the first time");
 		loadParticleSystem();
@@ -122,9 +122,9 @@ public class GameState implements State {
 		//world.setEnd(new Vector2f(world.getStart().x + 50, world.getStart().z + 50));
         //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
 		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
-		//createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
+		createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
 		two = createRotatingEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), new Vector3f(0, 180, 0), 5, new Vector3f());
-		//wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 76, world.getStart().z + 150 - 26f), new Vector3f(), 10, new Vector3f());
+		wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 76, world.getStart().z + 150 - 26f), new Vector3f(), 10, new Vector3f());
 		//two = createRotatingEntity("sphere_offcenter", new Vector3f(world.getStart().x, 50, world.getStart().z - 300), new Vector3f(), 10, new Vector3f());
 
 		createTerrain(0, 0, "grass", false);
@@ -154,7 +154,7 @@ public class GameState implements State {
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
 		System.out.println("newEngine");
-		mainEngine = new PhysicsEngine(balls, world);
+		mainEngine = new PhysicsEngine(balls, world, null);
 		loadWater();
 		loadParticleSystem();
 		setCameraToBall(currBall);
@@ -354,7 +354,7 @@ public class GameState implements State {
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("hole");
         ModelData ramp = OBJFileLoader.loadOBJ("ramp_hole");
-        ModelData windmill = OBJFileLoader.loadOBJ("windmill_tower");
+        ModelData windmill = OBJFileLoader.loadOBJ("windmill_tower2");
         ModelData windmill_rot = OBJFileLoader.loadOBJ("windmill_wings");
         ModelData sphere_offcenter = OBJFileLoader.loadOBJ("test");
 		ModelData ad_column = OBJFileLoader.loadOBJ("ad_column");
@@ -421,7 +421,7 @@ public class GameState implements State {
         tModels.put("windmill_rot", new TexturedModel(windmillRotModel, new ModelTexture(loader.loadTexture("windmill_wings_alt"))));
         tModels.put("sphere_offcenter", new TexturedModel(sphereModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("ad_column", new TexturedModel(columnModel, new ModelTexture(loader.loadTexture("ad column si"))));
+		tModels.put("ad_column", new TexturedModel(columnModel, new ModelTexture(loader.loadTexture("ad column default"))));
 
 		tModels.get("barrel").getTexture().setShineDamper(10);
 		tModels.get("barrel").getTexture().setReflectivity(0.3f);
