@@ -101,12 +101,12 @@ public class Entity {
 		float minX = Float.MAX_VALUE;
 		float minY = minX;
 		float minZ = minX;
-		float maxX = Float.MIN_VALUE;
+		float maxX = -Float.MIN_VALUE;
 		float maxY = maxX;
 		float maxZ = maxX;
 
 		float overallMin = Float.MAX_VALUE;
-		float overallMax = Float.MIN_VALUE;
+		float overallMax = -Float.MIN_VALUE;
 
 		PhysicalFace face;
 		int[] curInd = new int[3];

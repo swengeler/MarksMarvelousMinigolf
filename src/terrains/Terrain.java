@@ -42,7 +42,7 @@ public class Terrain {
 		this.texture = texture;
 		this.x = gridX * getSize();
 		this.z = gridZ * getSize();
-		this.maxHeight = Float.MIN_VALUE;
+		this.maxHeight = -Float.MIN_VALUE;
 		this.minHeight = Float.MAX_VALUE;
 		this.model = generateTerrain(loader, rand);
 		
@@ -53,7 +53,7 @@ public class Terrain {
 		this.texture = texture;
 		this.x = gridX * getSize();
 		this.z = gridZ * getSize();
-		this.maxHeight = Float.MIN_VALUE;
+		this.maxHeight = -Float.MIN_VALUE;
 		this.minHeight = Float.MAX_VALUE;
 		this.model = generateTerrain(loader, heightMap);
 		

@@ -64,10 +64,6 @@ public class PhysicsEngine {
         this.addGlobalAccel(PhysicsEngine.GRAVITY);
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -80,14 +76,8 @@ public class PhysicsEngine {
         this.globalAccel.add(accel);
     }
 
-    public void removeGlobalAccel(Vector3f accel) {
-        this.globalAccel.remove(accel);
-    }
-
     public void tick() {
         GameState.wmr.increaseRotation(0, 0, 0.5f);
-        //GameState.two.increaseRotation(0f, 0.5f, 0f);
-        //GameState.two.increaseRotation(0.1f, 1f, 0.5f);
         for (RealBall b : balls) {
             /*if (!b.isMoving() && b.getPosition().y > 1.5f) {
                 MainGameLoop.currState.cleanUp();
@@ -96,7 +86,10 @@ public class PhysicsEngine {
             }*/
             b.applyGlobalAccel(this.globalAccel, r);
             b.applyAccel();
-            noiseHandler.applyWind(b.getVelocity());
+            if (b.isMoving()) {
+                System.out.println("Since the ball moved wind is applied");
+                noiseHandler.applyWind(b.getVelocity());
+            }
             if ((b.isMoving() && (b.movedLastStep() || b.getLastTimeElapsed() == 0)) || MainGameLoop.getCounter() < 10) {
                 b.updateAndMove();
                 System.out.println("\n---- Collision detection starts ----\n");
@@ -412,7 +405,7 @@ public class PhysicsEngine {
                     }
 
                     // this coefficient of restitution should be adapted to belong to ball-ball collisions (should be higher than for ball-green collisions)
-                    b1.getVelocity().scale(COEFF_RESTITUTION);
+                    b1.getVelocity().scale(noiseHandler.getRestitutionNoise());
 
                     // using simple geometry the magnitudes of the balls' velocity's after collision are calculated (their directions are along normal and tangent of the collision)
                     float alpha = Vector3f.angle(b1.getVelocity(), normal);
