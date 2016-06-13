@@ -300,6 +300,7 @@ public class RealBall extends Entity implements Ball {
 	//new
 	public void setRotation(Vector3f v){
 	this.spin=v;
+		System.out.println("fuck you" + " "+ spin.x +" " + spin.y +" "+spin.z);
 	}
 	public Vector3f getRotation(){
 		return spin;
