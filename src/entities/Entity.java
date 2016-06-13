@@ -1,5 +1,6 @@
 package entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Matrix4f;
@@ -12,7 +13,7 @@ import models.TexturedModel;
 import objConverter.ModelData;
 import toolbox.Maths;
 
-public class Entity {
+public class Entity implements Serializable{
 
 	private TexturedModel model;
 	private CollisionData cdata;

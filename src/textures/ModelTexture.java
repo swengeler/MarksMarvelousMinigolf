@@ -1,6 +1,8 @@
 package textures;
 
-public class ModelTexture {
+import java.io.Serializable;
+
+public class ModelTexture implements Serializable{
     
     private int textureID;
     private int normalMap;

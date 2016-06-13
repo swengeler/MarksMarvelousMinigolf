@@ -2,6 +2,7 @@ package entities;
 
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
@@ -13,7 +14,7 @@ import models.TexturedModel;
 import renderEngine.DisplayManager;
 import terrains.World;
 
-public class Empty extends RealBall{
+public class Empty extends RealBall implements Serializable{
 
 	private static final float RUN_SPEED = 20;
 	private static final float TURN_SPEED = 100;

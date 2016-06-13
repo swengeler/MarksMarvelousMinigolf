@@ -16,6 +16,8 @@ public class Camera {
 	
 	private Ball ball;
 	
+	public Camera(){}
+	
 	public Camera(Ball ball){
 		this.ball = ball;
 		if (ball instanceof Empty){

@@ -3,6 +3,7 @@ package terrains;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -18,7 +19,7 @@ import models.RawModel;
 import renderEngine.Loader;
 import textures.ModelTexture;
 
-public class Terrain {
+public class Terrain implements Serializable{
 
 	private static final float SIZE = 800;
 	private static final float MAX_HEIGHT = 40;

@@ -1,10 +1,12 @@
 package entities;
 
+import java.io.Serializable;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 
-public class CameraDesigner extends Camera{
+public class CameraDesigner extends Camera implements Serializable{
 
 	private float distanceFromBall = 100;
 	private float angleAroundBall = 0;
@@ -15,6 +17,8 @@ public class CameraDesigner extends Camera{
 	private float roll;				//How much the camera is tilted
 	
 	private Ball ball;
+	
+	public CameraDesigner() {super();}
 	
 	public CameraDesigner(Ball ball){
 		super(ball);

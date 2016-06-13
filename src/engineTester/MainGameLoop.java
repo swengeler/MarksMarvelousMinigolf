@@ -35,6 +35,7 @@ public class MainGameLoop {
 				counter++;
 
 				DisplayManager.updateDisplay();
+				//System.out.println("DisplayManager.getFrameTimeSeconds(): " + DisplayManager.getFrameTimeSeconds());
 			}
 		}
 		currState.cleanUp();

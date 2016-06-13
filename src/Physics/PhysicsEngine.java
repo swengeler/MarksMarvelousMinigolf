@@ -500,7 +500,7 @@ public class PhysicsEngine {
     // this method totally makes sense in the physics engine, trust me
     public Vector3f[] getEvasionVector(Vector3f position, Entity e) {
         // check in which region the ball is currently: either closest to an edge/corner of the bounding box or closest to one of its faces/sides
-        Vector3f[] result = new Vector3f[];
+        Vector3f[] result = new Vector3f[2];
         float minX = e.getCollisionData().getBoundingBox().getMinX(), maxX = e.getCollisionData().getBoundingBox().getMaxX(), minZ = e.getCollisionData().getBoundingBox().getMinZ(), maxZ = e.getCollisionData().getBoundingBox().getMaxZ();
         Vector3f[] corners = {new Vector3f(minX, position.y, minZ), new Vector3f(minX, position.y, maxZ), new Vector3f(maxX, position.y, maxZ), new Vector3f(maxX, position.y, minZ)};
         Vector3f closestCorner = new Vector3f();

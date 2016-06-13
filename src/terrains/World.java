@@ -1,5 +1,6 @@
 package terrains;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import toolbox.Maths;
 import entities.Ball;
 import entities.Camera;
 
-public class World {
+public class World implements Serializable{
 	private List<Terrain> terrains = new ArrayList<Terrain>();
 	private List<Entity> entities = new ArrayList<Entity>();
 	private List<Entity> normalEntities = new ArrayList<Entity>();
@@ -57,6 +58,10 @@ public class World {
 	
 	public void addEntities(List<Entity> entity){
 		entities.addAll(entity);
+	}
+	
+	public void setEntities(List<Entity> entity){
+		entities = entity;
 	}
 	
 	public void addLights(List<Light> light){

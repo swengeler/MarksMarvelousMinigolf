@@ -20,6 +20,7 @@ import entities.Empty;
 import entities.Entity;
 import entities.Light;
 import entities.RealBall;
+import fileExplorers.FileFrame;
 import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.RawModel;
@@ -30,6 +31,7 @@ import objConverter.OBJFileLoader;
 import particles.ParticleMaster;
 import particles.ParticleSystem;
 import particles.ParticleTexture;
+import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import terrains.Terrain;
@@ -183,6 +185,19 @@ public class DesignerState implements State{
 		}
 		if (BallPlaced && HolePlaced && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			MainGameLoop.loadGame(world, 3);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
+			FileFrame tmpFrame = new FileFrame("save", world);
+			tmpFrame.setVisible();
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
+			FileFrame tmpFrame = new FileFrame("load", world);
+			world = tmpFrame.returnWorld();
+			
+			//world.setEntities(tmpWorld.getEntities());
+			
+			tmpFrame.setVisible();
+			DisplayManager.reset();
 		}
 	}
 	
