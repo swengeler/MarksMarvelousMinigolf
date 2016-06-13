@@ -55,7 +55,7 @@ public class PhysicsEngine {
                 this.balls.add((RealBall) b);
         this.world = world;
         if (noiseHandler == null)
-            this.noiseHandler = new NoiseHandler();
+            this.noiseHandler = new NoiseHandler(NoiseHandler.OFF, NoiseHandler.WIND);
         else
             this.noiseHandler = noiseHandler;
         this.enabled = true;

@@ -6,6 +6,7 @@ public class NoiseHandler {
 
     private static NoiseHandler instance;
 
+    public static final int OFF = -1;
     public static final int EASY = 0;
     public static final int MEDIUM = 1;
     public static final int HARD = 2;
@@ -23,21 +24,28 @@ public class NoiseHandler {
     public NoiseHandler(int difficulty, int... modes) {
         float x, y, z;
         for (int i : modes) {
-            if (i == WIND) {
+            if (i == OFF) {
+                System.out.println("Noise off");
+                wind = null;
+                friction = null;
+                restitution = null;
+                surfaceNoise = null;
+                return;
+            } else if (i == WIND) {
                 if (difficulty == EASY) {
-                    x = (float) (Math.random() * 10);
-                    y = (float) (Math.random() * 2);
-                    z = (float) (Math.random() * 10);
+                    x = (float) (Math.random() * 1.0);
+                    y = (float) (Math.random() * .2);
+                    z = (float) (Math.random() * 1.0);
                     wind = Wind.getInstance(x, y, z, 500, 0.1);
                 } else if (difficulty == MEDIUM) {
-                    x = (float) (Math.random() * 20);
-                    y = (float) (Math.random() * 3);
-                    z = (float) (Math.random() * 20);
+                    x = (float) (Math.random() * 2.0);
+                    y = (float) (Math.random() * .3);
+                    z = (float) (Math.random() * 2.0);
                     wind = Wind.getInstance(x, y, z, 1000, 0.3);
                 } else if (difficulty == HARD) {
-                    x = (float) (Math.random() * 40);
-                    y = (float) (Math.random() * 5);
-                    z = (float) (Math.random() * 40);
+                    x = (float) (Math.random() * 4.0);
+                    y = (float) (Math.random() * .5);
+                    z = (float) (Math.random() * 4.0);
                     wind = Wind.getInstance(x, y, z, 2000, 0.5);
                 }
             } else if (i == FRICTION) {
