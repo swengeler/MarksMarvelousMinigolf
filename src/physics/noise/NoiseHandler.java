@@ -33,19 +33,19 @@ public class NoiseHandler {
                 return;
             } else if (i == WIND) {
                 if (difficulty == EASY) {
-                    x = (float) (Math.random() * 1.0);
-                    y = (float) (Math.random() * .2);
-                    z = (float) (Math.random() * 1.0);
+                    x = (float) (Math.random() * 0.25 * Wind.MAX_XZ - 0.125 * Wind.MAX_XZ);
+                    y = (float) (Math.random() * 0.25 * Wind.MAX_Y - 0.125 * Wind.MAX_Y);
+                    z = (float) (Math.random() * 0.25 * Wind.MAX_XZ - 0.25 * Wind.MAX_XZ);
                     wind = Wind.getInstance(x, y, z, 500, 0.1);
                 } else if (difficulty == MEDIUM) {
-                    x = (float) (Math.random() * 2.0);
-                    y = (float) (Math.random() * .3);
-                    z = (float) (Math.random() * 2.0);
+                    x = (float) (Math.random() * 0.5 * Wind.MAX_XZ - 0.25 * Wind.MAX_XZ);
+                    y = (float) (Math.random() * 0.5 * Wind.MAX_Y - 0.25 * Wind.MAX_Y);
+                    z = (float) (Math.random() * 0.5 * Wind.MAX_XZ - 0.25 * Wind.MAX_XZ);
                     wind = Wind.getInstance(x, y, z, 1000, 0.3);
                 } else if (difficulty == HARD) {
-                    x = (float) (Math.random() * 4.0);
-                    y = (float) (Math.random() * .5);
-                    z = (float) (Math.random() * 4.0);
+                    x = (float) (Math.random() * 2 * Wind.MAX_XZ - Wind.MAX_XZ);
+                    y = (float) (Math.random() * 2 * Wind.MAX_Y - Wind.MAX_Y);
+                    z = (float) (Math.random() * 2 * Wind.MAX_XZ - Wind.MAX_XZ);
                     wind = Wind.getInstance(x, y, z, 2000, 0.5);
                 }
             } else if (i == FRICTION) {

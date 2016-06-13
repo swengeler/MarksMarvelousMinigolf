@@ -55,12 +55,12 @@ public class PhysicsEngine {
                 this.balls.add((RealBall) b);
         this.world = world;
         if (noiseHandler == null)
-            this.noiseHandler = new NoiseHandler(NoiseHandler.OFF, NoiseHandler.WIND);
+            this.noiseHandler = new NoiseHandler(NoiseHandler.HARD, NoiseHandler.WIND);
         else
             this.noiseHandler = noiseHandler;
         this.enabled = true;
         this.r = new Random();
-        this.globalAccel = new ArrayList<Vector3f>();
+        this.globalAccel = new ArrayList<>();
         this.addGlobalAccel(PhysicsEngine.GRAVITY);
     }
 
