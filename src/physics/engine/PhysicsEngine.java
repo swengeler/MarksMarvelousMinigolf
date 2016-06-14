@@ -55,7 +55,7 @@ public class PhysicsEngine {
                 this.balls.add((RealBall) b);
         this.world = world;
        if (noiseHandler == null)
-            this.noiseHandler = new NoiseHandler(NoiseHandler.HARD, NoiseHandler.WIND);
+            this.noiseHandler = new NoiseHandler(NoiseHandler.HARD, NoiseHandler.OFF);
         else
             this.noiseHandler = noiseHandler;
         this.enabled = true;
@@ -77,7 +77,8 @@ public class PhysicsEngine {
     }
 
     public void tick() {
-        GameState.wmr.increaseRotation(0, 0, 0.5f);
+        //GameState.wmr.increaseRotation(0, 0, 0.5f);
+        GameState.two.increaseRotation(0, 0.2f, 0);
         for (RealBall b : balls) {
             /*if (!b.isMoving() && b.getPosition().y > 1.5f) {
                 MainGameLoop.currState.cleanUp();
@@ -458,12 +459,12 @@ public class PhysicsEngine {
             // the ball is bouncing and the velocity can simply remain as is, only the coefficient of restitution has to be applied
             System.out.println("BOUNCING");
             System.out.println(b.getVelocity().x + " " + b.getVelocity().y + " " + b.getVelocity().z);
-            b.setVelocity(AfterCollisionSpeed(b, normal));
-            applySpin(b,normal);
+            //b.setVelocity(AfterCollisionSpeed(b, normal));
+            //applySpin(b,normal);
 
 
             //b.scaleVelocity(COEFF_RESTITUTION);
-            System.out.println(b.getVelocity().x + " " + b.getVelocity().y + " " + b.getVelocity().z);
+            //System.out.println(b.getVelocity().x + " " + b.getVelocity().y + " " + b.getVelocity().z);
 			/*if (b.getVelocity().x != 0 && b.getVelocity().z != 0){
 				b.setVelocity(xSpeed(b), b.getVelocity().y*COEFF_RESTITUTION, zSpeed(b));
 				applySpin(b);
@@ -474,9 +475,9 @@ public class PhysicsEngine {
 				b.setVelocity(b.getVelocity().x*COEFF_RESTITUTION, b.getVelocity().y*COEFF_RESTITUTION, zSpeed(b));
 				applySpin(b);
 			} else*/
-           // b.scaleVelocity(noiseHandler.getRestitutionNoise());
+            b.scaleVelocity(noiseHandler.getRestitutionNoise());
 
-            //System.out.println(b.getRotation().x + " " + b.getRotation().y + " " + b.getRotation().z);
+            System.out.println(b.getRotation().x + " " + b.getRotation().y + " " + b.getRotation().z);
         } else {
             // the ball is rolling (or sliding but that is not implemented (yet)), therefore a projection on the plane instead of a reflection is used
             System.out.println("ROLLING");
