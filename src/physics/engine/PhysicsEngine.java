@@ -47,6 +47,8 @@ public class PhysicsEngine {
     private final float minenergy = 1;
 
     private ArrayList<Vector3f> globalAccel;
+    
+    private static PhysicsEngine instance;
 
     public PhysicsEngine(List<Ball> balls, World world, NoiseHandler noiseHandler) {
         this.balls = new ArrayList<RealBall>();
@@ -62,6 +64,11 @@ public class PhysicsEngine {
         this.r = new Random();
         this.globalAccel = new ArrayList<>();
         this.addGlobalAccel(PhysicsEngine.GRAVITY);
+        instance = this;
+    }
+    
+    public static PhysicsEngine getInstance(){
+    	return instance;
     }
 
     public void setEnabled(boolean enabled) {
@@ -534,7 +541,7 @@ public class PhysicsEngine {
             counter++;
         }
 
-        return new ShotData(shotVel, ball.getPosition(), obstaclesHit);
+        return new ShotData(shotVel, b.getPosition(), ball.getPosition(), obstaclesHit);
     }
 
     public Matrix3f convertingCoordinateSystem(Vector3f oldAxis, Vector3f newAxis) {
