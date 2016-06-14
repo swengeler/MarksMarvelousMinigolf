@@ -9,7 +9,7 @@ import org.lwjgl.util.vector.Vector4f;
 
 import terrains.Terrain;
 import terrains.World;
-import entities.Camera;
+import entities.camera.Camera;
 
 public class MousePicker {
 
@@ -28,7 +28,7 @@ public class MousePicker {
 	public MousePicker(Camera cam, Matrix4f projection, World world) {
 		camera = cam;
 		projectionMatrix = projection;
-		viewMatrix = Maths.createViewMatrix(camera);
+		viewMatrix = LinearAlgebra.createViewMatrix(camera);
 		this.world = world;
 	}
 	
@@ -41,7 +41,7 @@ public class MousePicker {
 	}
 
 	public void update() {
-		viewMatrix = Maths.createViewMatrix(camera);
+		viewMatrix = LinearAlgebra.createViewMatrix(camera);
 		currentRay = calculateMouseRay();
 		if (intersectionInRange(0, RAY_RANGE, currentRay)) {
 			currentTerrainPoint = binarySearch(0, 0, RAY_RANGE, currentRay);

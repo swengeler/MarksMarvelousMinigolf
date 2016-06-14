@@ -7,11 +7,11 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import entities.Camera;
-import entities.Light;
-import toolbox.Maths;
+import entities.camera.Camera;
+import entities.lights.Light;
+import toolbox.LinearAlgebra;
 
-public class StaticShader extends ShaderProgram{
+public class StaticShader extends ShaderProgram {
 	
 	private static final int MAX_LIGHTS = 4;
 	
@@ -114,7 +114,7 @@ public class StaticShader extends ShaderProgram{
 	}
 	
 	public void loadviewMatrix(Camera camera){
-		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
+		Matrix4f viewMatrix = LinearAlgebra.createViewMatrix(camera);
 		super.loadMatrix(location_viewMatrix, viewMatrix);
 	}
 	

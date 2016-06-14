@@ -5,9 +5,8 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import entities.Camera;
-import renderEngine.DisplayManager;
-import renderEngine.MasterRenderer;
+import entities.camera.Camera;
+import renderEngine.renderers.MasterRenderer;
 
 /**
  * Represents the 3D cuboidal area of the world in which objects will cast

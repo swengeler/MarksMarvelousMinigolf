@@ -3,10 +3,10 @@ package skybox;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-import entities.Camera;
-import renderEngine.DisplayManager;
+import entities.camera.Camera;
+import renderEngine.utils.DisplayManager;
 import shaders.ShaderProgram;
-import toolbox.Maths;
+import toolbox.LinearAlgebra;
 
 public class SkyboxShader extends ShaderProgram{
 
@@ -33,7 +33,7 @@ public class SkyboxShader extends ShaderProgram{
 	}
 
 	public void loadViewMatrix(Camera camera){
-		Matrix4f matrix = Maths.createViewMatrix(camera);
+		Matrix4f matrix = LinearAlgebra.createViewMatrix(camera);
 		matrix.m30 = 0;
 		matrix.m31 = 0;
 		matrix.m32 = 0;

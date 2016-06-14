@@ -7,10 +7,8 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 
 import models.RawModel;
-import programStates.GameState;
-import renderEngine.DisplayManager;
-import renderEngine.Loader;
-import entities.Camera;
+import renderEngine.utils.Loader;
+import entities.camera.Camera;
 
 public class SkyboxRenderer {
 

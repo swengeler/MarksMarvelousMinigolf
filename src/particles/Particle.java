@@ -3,9 +3,9 @@ package particles;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import Physics.PhysicsEngine;
-import entities.Camera;
-import renderEngine.DisplayManager;
+import physics.engine.PhysicsEngine;
+import entities.camera.Camera;
+import renderEngine.utils.DisplayManager;
 
 public class Particle {
 	

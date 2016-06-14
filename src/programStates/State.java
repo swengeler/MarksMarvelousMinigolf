@@ -1,6 +1,6 @@
 package programStates;
 
-import renderEngine.Loader;
+import renderEngine.utils.Loader;
 
 public interface State {
 	public void init(Loader loader);

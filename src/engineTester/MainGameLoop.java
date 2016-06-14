@@ -7,8 +7,8 @@ import programStates.State;
 import programStates.DesignerState;
 import programStates.GameState;
 import programStates.MenuState;
-import renderEngine.DisplayManager;
-import renderEngine.Loader;
+import renderEngine.utils.DisplayManager;
+import renderEngine.utils.Loader;
 import terrains.World;
 
 public class MainGameLoop {

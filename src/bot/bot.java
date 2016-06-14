@@ -6,15 +6,13 @@ import java.util.Map;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import Physics.PhysicsEngine;
-import entities.Ball;
-import entities.Camera;
-import entities.RealBall;
-import entities.VirtualBall;
+import physics.engine.PhysicsEngine;
+import entities.playable.Ball;
+import entities.camera.Camera;
 import guis.GuiTexture;
 import models.TexturedModel;
 import objConverter.ModelData;
-import renderEngine.Loader;
+import renderEngine.utils.Loader;
 import terrains.World;
 import water.WaterTile;
 
