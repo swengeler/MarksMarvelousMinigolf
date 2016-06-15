@@ -12,6 +12,11 @@ public class Node {
 	private ArrayList<Edge> edges = new ArrayList<Edge>();
 	private Node parent;
 	
+	private Node north;
+	private Node south;
+	private Node east;
+	private Node west;
+	
 	private Vector3f position;
 	
 	private float d = Integer.MAX_VALUE;
