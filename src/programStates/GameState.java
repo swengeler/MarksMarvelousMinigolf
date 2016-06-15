@@ -105,7 +105,7 @@ public class GameState implements State {
 		this.loader = loader;
 		loadModels();
 		loadGuis();
-		createBall(new Vector3f(500, 1, 500), true);
+		createBall(new Vector3f(0.5f, 2, 0.5f), true);
 		camera = new Camera(balls.get(0));
 		world = new World(camera);
 		//balls.get(0).setPosition(world.getStart());

@@ -26,7 +26,8 @@ public class BobTheBot {
 	}
 	
 	public void setAlgorithm(int algorithm){
-		
+		if(algorithm == 0)
+			alg = new SimpleAlgorithm();
 	}
 	
 }

@@ -14,7 +14,11 @@ public class Node {
 	
 	private Vector3f position;
 	
-	private int d = Integer.MAX_VALUE;
+	private float d = Integer.MAX_VALUE;
+	private float g = Integer.MAX_VALUE;
+	private float h = -1;
+	
+	private boolean walkable = false;
 	
 	public Node(Vector3f position){
 		this.position = position;
@@ -22,8 +26,7 @@ public class Node {
 	
 	public void connect(Node n, ShotData data){
 		Vector3f dist = Vector3f.sub(position, n.getPosition(), null);
-		Edge weight = new Edge(data)
-		
+		Edge weight = new Edge(data, dist.lengthSquared());
 		
 		this.neighbours.add(n);
 		this.edges.add(weight);
@@ -44,16 +47,12 @@ public class Node {
 		return edges.get(index);
 	}
 	
-	public int getFCost(Node end){
-		return d;
+	public float getGCost(){
+		return g;
 	}
 	
-	public void setDistance(int newD){
-		d = newD;
-	}
-	
-	public int getDistance(){
-		return d;
+	public void setG(float newG){
+		g = newG;
 	}
 	
 	public void setParent(Node n){
@@ -74,6 +73,42 @@ public class Node {
 	
 	public Vector3f getPosition(){
 		return position;
+	}
+	
+	//Using length squared to optimize calculations
+	public float getSqDistance(Node target){
+		Vector3f distVec = Vector3f.sub(this.getPosition(), target.getPosition(), null);
+		return distVec.lengthSquared();
+	}
+	
+	public float getHValue(Node endNode){
+		if(h == -1)
+			h =  getSqDistance(endNode);
+		return h;
+	}
+	
+	public float getFValue(Node endNode){
+		return g + getHValue(endNode);
+	}
+	
+	public float getThetaValue(Node node){
+		return getGCost() + getSqDistance(node);
+	}
+	
+	public float getD(){
+		return d;
+	}
+	
+	public void setD(float newD){
+		d = newD;
+	}
+	
+	public boolean isWalkable(){
+		return walkable;
+	}
+	
+	public void setWalkable(boolean w){
+		walkable = w;
 	}
 	
 }
