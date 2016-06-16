@@ -5,39 +5,39 @@ public class CheckDist {
 	public CheckDist(){
 	}
 		
-	public void labelDistance(Node node, int distance){
+	public void labelDistance(Node node, float distance){
 		
-		if(node.north().isWalkable()){
-			if(node.north().getDistance() > distance + 1){
-				node.north().setDistance(distance+1);
+		if(node.getNorth().isWalkable()){
+			if(node.getNorth().getDistance() > distance + 1){
+				node.getNorth().setDistance(distance+1);
 			}
-			labelDistance(Node node.north(), node.north().getDistance());
+			labelDistance(node.getNorth(), node.getNorth().getDistance());
 		}
 		
 		
 		
-		if(node.south().isWalkable()){
-			if(node.south().getDistance() > distance + 1){
-				node.south().setDistance(distance+1);
+		if(node.getSouth().isWalkable()){
+			if(node.getSouth().getDistance() > distance + 1){
+				node.getSouth().setDistance(distance+1);
 			}
-			labelDistance(Node node.south(), node.south().getDistance());
+			labelDistance(node.getSouth(), node.getSouth().getDistance());
 		}
 		
 		
-		if(node.west().isWalkable()){
-			if(node.west().getDistance()> distance + 1){
-				node.west().setDistance(distance+1);
+		if(node.getWest().isWalkable()){
+			if(node.getWest().getDistance()> distance + 1){
+				node.getWest().setDistance(distance+1);
 			}
-			labelDistance(Node node.west(), node.west().getDistance());
+			labelDistance(node.getWest(), node.getWest().getDistance());
 		}
 
 		
-		if(node.east().isWalkable()){
-			if(node.east().getDistance()> distance + 1){
-				node.east().setDistance(distance+1);
+		if(node.getEast().isWalkable()){
+			if(node.getEast().getDistance()> distance + 1){
+				node.getEast().setDistance(distance+1);
 			}
 
-			labelDistance(Node node.east(), node.east().getDistance());
+			labelDistance(node.getEast(), node.getEast().getDistance());
 		}
 	}
 
