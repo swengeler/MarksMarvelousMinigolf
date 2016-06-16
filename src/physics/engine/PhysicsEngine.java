@@ -67,8 +67,15 @@ public class PhysicsEngine {
         instance = this;
     }
     
-    public static PhysicsEngine getInstance(){
-    	return instance;
+    public static PhysicsEngine getInstance(List<Ball> balls, World world, NoiseHandler noiseHandler){
+    	if (instance == null) {
+            return (instance = new PhysicsEngine(balls, world, noiseHandler));
+        }
+        return instance;
+    }
+
+    public static PhysicsEngine getInstance() {
+        return instance;
     }
 
     public void setEnabled(boolean enabled) {
@@ -620,7 +627,7 @@ public class PhysicsEngine {
     }
 
     public float getHeightAt(float x, float z) {
-        Ball b = new VirtualBall(new Vector3f(x, 100, z));
+        Ball b = new VirtualBall(new Vector3f(x, 20, z));
         Entity belowBall = null;
         for (Entity e : world.getEntities()) {
             if (e.inHorizontalBounds(b)) {
