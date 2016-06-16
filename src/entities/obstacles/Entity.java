@@ -180,6 +180,10 @@ public class Entity implements Serializable{
 	public boolean inBounds(Ball b) {
 		return this.cdata.inBounds(b);
 	}
+
+	public boolean inHorizontalBounds(Ball b) {
+		return this.cdata.inHorizontalBounds(b);
+	}
 	
 	public boolean collides(Ball b) {
 		return this.cdata.collides(b);

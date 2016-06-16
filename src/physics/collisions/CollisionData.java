@@ -40,6 +40,10 @@ public class CollisionData implements Serializable{
 	public boolean inBounds(Ball b) {
 		return bbox.inBoundingBox(b);
 	}
+
+	public boolean inHorizontalBounds(Ball b) {
+		return bbox.inHorizontalBoundingRectangle(b);
+	}
 	
 	public boolean collides(Ball b) {
 		for (PhysicalFace f : faces) {

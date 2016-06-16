@@ -73,7 +73,7 @@ public class Wind {
             System.out.println("Wind with avDuration = " + avDuration + " and avPauses = " + avPauses + " is applied at time " + System.currentTimeMillis() + ".");
             // should then return a vector that is roughly the same as baseDirection but has minor deviations in direction and magnitude
             double stdX = standardDeviation * x;
-            double newX = r.nextGaussian() * stdX;
+            double newX = r.nextGaussian() * stdX
             ballVelocity.x += ((float) x);
 
             double stdY = standardDeviation * y;

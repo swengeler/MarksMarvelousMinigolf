@@ -619,4 +619,27 @@ public class PhysicsEngine {
         return result;
     }
 
+    public float getHeightAt(float x, float z) {
+        Ball b = new VirtualBall(new Vector3f(x, 100, z));
+        Entity belowBall = null;
+        for (Entity e : world.getEntities()) {
+            if (e.inHorizontalBounds(b)) {
+                belowBall = e;
+            }
+        }
+
+        if (belowBall == null) {
+            return world.getHeightOfTerrain(x, z);
+        } else {
+            while (!belowBall.collides(b)) {
+                b.increasePosition(0, -1f, 0);
+            }
+            ArrayList<PhysicalFace> collidingFaces = belowBall.getCollidingFaces(b);
+            while (b.collidesWith(collidingFaces)) {
+                b.increasePosition(0, 0.01f, 0);
+            }
+            return b.getPosition().y - Ball.RADIUS;
+        }
+    }
+
 }
