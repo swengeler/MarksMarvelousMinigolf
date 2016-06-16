@@ -36,17 +36,17 @@ public class NoiseHandler {
                     x = (float) (Math.random() * 0.25 * Wind.MAX_XZ - 0.125 * Wind.MAX_XZ);
                     y = (float) (Math.random() * 0.25 * Wind.MAX_Y - 0.125 * Wind.MAX_Y);
                     z = (float) (Math.random() * 0.25 * Wind.MAX_XZ - 0.25 * Wind.MAX_XZ);
-                    wind = Wind.getInstance(x, y, z, 500, 10000, 0.1);
+                    wind = Wind.getInstance(x, y, z, 500, 10000, 0);
                 } else if (difficulty == MEDIUM) {
                     x = (float) (Math.random() * 0.5 * Wind.MAX_XZ - 0.25 * Wind.MAX_XZ);
                     y = (float) (Math.random() * 0.5 * Wind.MAX_Y - 0.25 * Wind.MAX_Y);
                     z = (float) (Math.random() * 0.5 * Wind.MAX_XZ - 0.25 * Wind.MAX_XZ);
-                    wind = Wind.getInstance(x, y, z, 1000, 8000, 0.3);
+                    wind = Wind.getInstance(x, y, z, 1000, 8000, 0);
                 } else if (difficulty == HARD) {
                     x = (float) (Math.random() * 2 * Wind.MAX_XZ - Wind.MAX_XZ);
                     y = (float) (Math.random() * 2 * Wind.MAX_Y - Wind.MAX_Y);
                     z = (float) (Math.random() * 2 * Wind.MAX_XZ - Wind.MAX_XZ);
-                    wind = Wind.getInstance(x, y, z, 2000, 5000, 0.5);
+                    wind = Wind.getInstance(x, y, z, 2000, 5000, 0);
                 }
             } else if (i == FRICTION) {
                 if (difficulty == EASY) {
@@ -87,7 +87,7 @@ public class NoiseHandler {
         wind = Wind.getInstance(0, 0, 0, 0, 0, 0);
         friction = Friction.getInstance(0);
         restitution = Restitution.getInstance(0);
-        surfaceNoise = SurfaceNoise.getInstance();
+        surfaceNoise = SurfaceNoise.getInstance(0);
     }
 
     public float getFrictionNoise() {
