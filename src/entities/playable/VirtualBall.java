@@ -26,6 +26,10 @@ public class VirtualBall implements Ball {
 		this.spin= new Vector3f();
 	}
 	
+	public VirtualBall(Vector3f position) {
+		this.position = new Vector3f(position.x, position.y, position.z);
+	}
+
 	public void updateAndMove() {
 		lastPosition.set(position.x, position.y, position.z);
 
@@ -46,11 +50,13 @@ public class VirtualBall implements Ball {
 	}
 	
 	public void addAccel(Vector3f accel) {
-		accelerations.add(accel);
+		if(accelerations != null)
+			accelerations.add(accel);
 	}
 
 	public void removeAccel(Vector3f accel) {
-		accelerations.remove(accel);
+		if(accelerations != null)
+			accelerations.remove(accel);
 	}
 	
 	public void applyAccelerations() {

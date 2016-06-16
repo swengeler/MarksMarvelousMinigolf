@@ -92,7 +92,7 @@ public class World implements Serializable{
 	public ArrayList<Entity> getCollidingEntities(Ball b) {
 		ArrayList<Entity> obstaclesHit = new ArrayList<Entity>();
 		for (Entity e : entities) {
-			if (e.collides(b)) {
+			if (e.inBounds(b) && e.collides(b)) {
 				obstaclesHit.add(e);
 			}
 		}

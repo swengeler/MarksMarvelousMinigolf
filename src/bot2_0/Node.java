@@ -2,62 +2,34 @@ package bot2_0;
 
 import java.util.ArrayList;
 
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import physics.utils.ShotData;
 
 public class Node {
 	
-	private ArrayList<Node> neighbours = new ArrayList<Node>();
-	private ArrayList<Edge> edges = new ArrayList<Edge>();
 	private Node parent;
 	
 	private Node north;
+	private float nDist;
 	private Node south;
+	private float sDist;
 	private Node east;
+	private float eDist;
 	private Node west;
+	private float wDist;
 	
 	private Vector3f position;
 	
 	private float d = Integer.MAX_VALUE;
-	private float g = Integer.MAX_VALUE;
-	private float h = -1;
+	private float height;
 	
 	private boolean walkable = false;
+	private boolean visited = false;
 	
 	public Node(Vector3f position){
 		this.position = position;
-	}
-	
-	public void connect(Node n, ShotData data){
-		Vector3f dist = Vector3f.sub(position, n.getPosition(), null);
-		Edge weight = new Edge(data, dist.lengthSquared());
-		
-		this.neighbours.add(n);
-		this.edges.add(weight);
-		
-		n.neighbours.add(this);
-		n.edges.add(weight);
-	}
-	
-	public ArrayList<Node> getNeighbours(){
-		return neighbours;
-	}
-	
-	public ArrayList<Edge> getEdges(){
-		return edges;
-	}
-	
-	public Edge getEdge(int index){
-		return edges.get(index);
-	}
-	
-	public float getGCost(){
-		return g;
-	}
-	
-	public void setG(float newG){
-		g = newG;
 	}
 	
 	public void setParent(Node n){
@@ -86,18 +58,9 @@ public class Node {
 		return distVec.lengthSquared();
 	}
 	
-	public float getHValue(Node endNode){
-		if(h == -1)
-			h =  getSqDistance(endNode);
-		return h;
-	}
-	
-	public float getFValue(Node endNode){
-		return g + getHValue(endNode);
-	}
-	
-	public float getThetaValue(Node node){
-		return getGCost() + getSqDistance(node);
+	public float getDistance(Node target){
+		Vector3f distVec = Vector3f.sub(this.getPosition(), target.getPosition(), null);
+		return distVec.lengthSquared();
 	}
 	
 	public float getD(){
@@ -120,32 +83,86 @@ public class Node {
 		return north;
 	}
 
-	public void setNorth(Node north) {
+	public void setNorth(Node north, float nDist) {
 		this.north = north;
+		this.nDist = nDist;
 	}
 
 	public Node getSouth() {
 		return south;
 	}
 
-	public void setSouth(Node south) {
+	public void setSouth(Node south, float sDist) {
 		this.south = south;
+		this.sDist = sDist;
 	}
 
 	public Node getEast() {
 		return east;
 	}
 
-	public void setEast(Node east) {
+	public void setEast(Node east, float eDist) {
 		this.east = east;
+		this.eDist = eDist;
 	}
 
 	public Node getWest() {
 		return west;
 	}
 
-	public void setWest(Node west) {
+	public void setWest(Node west, float wDist) {
 		this.west = west;
+		this.wDist = wDist;
+	}
+
+	public float getnDist() {
+		return nDist;
+	}
+
+	public float getsDist() {
+		return sDist;
+	}
+
+	public float geteDist() {
+		return eDist;
+	}
+
+	public float getwDist() {
+		return wDist;
+	}
+	
+	
+
+	public void setnDist(float nDist) {
+		this.nDist = nDist;
+	}
+
+	public void setsDist(float sDist) {
+		this.sDist = sDist;
+	}
+
+	public void seteDist(float eDist) {
+		this.eDist = eDist;
+	}
+
+	public void setwDist(float wDist) {
+		this.wDist = wDist;
+	}
+
+	public float getHeight() {
+		return height;
+	}
+
+	public void setHeight(float height) {
+		this.height = height;
+	}
+
+	public boolean isVisited() {
+		return visited;
+	}
+	
+	public void setVisited(boolean v){
+		visited = v;
 	}
 	
 	
