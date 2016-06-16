@@ -24,7 +24,7 @@ import toolbox.LinearAlgebra;
 
 
 public class PhysicsEngine {
-
+    float count=0;
     public static final float NORMAL_TH = 0.001f;
     private static final float ANGLE_TH = 5f;
     private static final float C = 0.001f;
@@ -47,6 +47,8 @@ public class PhysicsEngine {
     private final float minenergy = 1;
 
     private ArrayList<Vector3f> globalAccel;
+    
+    private static PhysicsEngine instance;
 
     public PhysicsEngine(List<Ball> balls, World world, NoiseHandler noiseHandler) {
         this.balls = new ArrayList<RealBall>();
@@ -54,7 +56,7 @@ public class PhysicsEngine {
             if (b instanceof RealBall)
                 this.balls.add((RealBall) b);
         this.world = world;
-        if (noiseHandler == null)
+       if (noiseHandler == null)
             this.noiseHandler = new NoiseHandler(NoiseHandler.HARD, NoiseHandler.WIND);
         else
             this.noiseHandler = noiseHandler;
@@ -62,10 +64,11 @@ public class PhysicsEngine {
         this.r = new Random();
         this.globalAccel = new ArrayList<>();
         this.addGlobalAccel(PhysicsEngine.GRAVITY);
+        instance = this;
     }
-
-    public boolean isEnabled() {
-        return enabled;
+    
+    public static PhysicsEngine getInstance(){
+    	return instance;
     }
 
     public void setEnabled(boolean enabled) {
@@ -80,14 +83,7 @@ public class PhysicsEngine {
         this.globalAccel.add(accel);
     }
 
-    public void removeGlobalAccel(Vector3f accel) {
-        this.globalAccel.remove(accel);
-    }
-
     public void tick() {
-        //GameState.wmr.increaseRotation(0, 0, 0.5f);
-        //GameState.two.increaseRotation(0f, 0.5f, 0f);
-        //GameState.two.increaseRotation(0.1f, 1f, 0.5f);
         for (RealBall b : balls) {
             /*if (!b.isMoving() && b.getPosition().y > 1.5f) {
                 MainGameLoop.currState.cleanUp();
@@ -96,7 +92,10 @@ public class PhysicsEngine {
             }*/
             b.applyGlobalAccel(this.globalAccel, r);
             b.applyAccel();
-            noiseHandler.applyWind(b.getVelocity());
+            if (b.isMoving()) {
+                System.out.println("Since the ball moved wind is applied");
+                noiseHandler.applyWind(b.getVelocity());
+            }
             if ((b.isMoving() && (b.movedLastStep() || b.getLastTimeElapsed() == 0)) || MainGameLoop.getCounter() < 10) {
                 b.updateAndMove();
                 System.out.println("\n---- Collision detection starts ----\n");
@@ -113,30 +112,9 @@ public class PhysicsEngine {
     }
 
     public void resolveTerrainCollision(Ball b) {
-		/*
-		 * The collision detection and resolution works according to the following steps:
-		 * 1. Collision is detected based on triangle mesh of the terrain (NOT JUST height below ball)
-		 * 2. Ball is pushed upwards until it no longer collides (according to the ball/mesh criteria)
-		 * 3. The then-closest plane/triangle is taken as the point of contact and all further calculations are using that one plane
-		 * 4. The movement of the ball is adjusted based on angle of incidence, velocity, friction/restitution etc. with the selected plane
-		 */
-
-        // get all faces/triangles of the terrain mesh that the ball collides with
-        //ArrayList<PhysicalFace> collidingFaces = new ArrayList<PhysicalFace>();
-        //collidingFaces.addAll(world.getCollidingFacesTerrains(b));
-
-        // e.g. if the ball is above the maximum height of the terrain, then there is no need to actually resolve any collision
-        //if (collidingFaces.isEmpty())
-        //return;
-
-        // push the ball out of the terrain so it remains on the surface
-        // since its a terrain (which comes with certain restrictions) the ball is simply pushed upwards to simplify matters
-        //while (b.collidesWith(collidingFaces))
-        //b.increasePosition(0, 0.01f, 0);
-
-        if (((Vector3f) Vector3f.sub(b.getPosition(), new Vector3f(world.getEnd().x, b.getPosition().y, world.getEnd().z), null)).lengthSquared() < 100f) {
+        /*if (((Vector3f) Vector3f.sub(b.getPosition(), new Vector3f(world.getEnd().x, b.getPosition().y, world.getEnd().z), null)).lengthSquared() < 100f) {
             return;
-        }
+        }*/
 
         if (world.getHeightOfTerrain(b.getPosition().x, b.getPosition().z) > b.getPosition().y - Ball.RADIUS) {
             b.setPosition(new Vector3f(b.getPosition().x, world.getHeightOfTerrain(b.getPosition().x, b.getPosition().z) + Ball.RADIUS, b.getPosition().z));
@@ -154,7 +132,7 @@ public class PhysicsEngine {
             int gridZ = (int) Math.floor(terrainZ / gridSquareSize);
             float xCoord = (terrainX % gridSquareSize) / gridSquareSize;
             float zCoord = (terrainZ % gridSquareSize) / gridSquareSize;
-            PhysicalFace forResolution = null;
+            PhysicalFace forResolution;
             if (xCoord <= (1 - zCoord)) {
                 Vector3f v1 = new Vector3f(), v2 = new Vector3f(), p1 = new Vector3f(), p2 = new Vector3f(), p3 = new Vector3f(), normal = new Vector3f();
                 p1.set(0, t.getHeights()[gridX][gridZ], 0);
@@ -412,7 +390,7 @@ public class PhysicsEngine {
                     }
 
                     // this coefficient of restitution should be adapted to belong to ball-ball collisions (should be higher than for ball-green collisions)
-                    b1.getVelocity().scale(COEFF_RESTITUTION);
+                    b1.getVelocity().scale(noiseHandler.getRestitutionNoise());
 
                     // using simple geometry the magnitudes of the balls' velocity's after collision are calculated (their directions are along normal and tangent of the collision)
                     float alpha = Vector3f.angle(b1.getVelocity(), normal);
@@ -465,21 +443,8 @@ public class PhysicsEngine {
             // the ball is bouncing and the velocity can simply remain as is, only the coefficient of restitution has to be applied
             System.out.println("BOUNCING");
             System.out.println(b.getVelocity().x + " " + b.getVelocity().y + " " + b.getVelocity().z);
-            //b.scaleVelocity(COEFF_RESTITUTION);
-            System.out.println(b.getVelocity().x + " " + b.getVelocity().y + " " + b.getVelocity().z);
-			/*if (b.getVelocity().x != 0 && b.getVelocity().z != 0){
-				b.setVelocity(xSpeed(b), b.getVelocity().y*COEFF_RESTITUTION, zSpeed(b));
-				applySpin(b);
-			} else if(b.getVelocity().x !=0 && b.getVelocity().z == 0){
-				b.setVelocity(xSpeed(b), b.getVelocity().y*COEFF_RESTITUTION, b.getVelocity().z*COEFF_RESTITUTION);
-				applySpin(b);
-			} else if(b.getVelocity().x==0 && b.getVelocity().z!=0){
-				b.setVelocity(b.getVelocity().x*COEFF_RESTITUTION, b.getVelocity().y*COEFF_RESTITUTION, zSpeed(b));
-				applySpin(b);
-			} else*/
             b.scaleVelocity(noiseHandler.getRestitutionNoise());
-
-            //System.out.println(b.getRotation().x + " " + b.getRotation().y + " " + b.getRotation().z);
+            System.out.println(b.getRotation().x + " " + b.getRotation().y + " " + b.getRotation().z);
         } else {
             // the ball is rolling (or sliding but that is not implemented (yet)), therefore a projection on the plane instead of a reflection is used
             System.out.println("ROLLING");
@@ -535,12 +500,17 @@ public class PhysicsEngine {
             counter++;
         }
 
-        return new ShotData(shotVel, ball.getPosition(), obstaclesHit);
+        return new ShotData(shotVel, b.getPosition(), ball.getPosition(), obstaclesHit);
     }
 
     public Matrix3f convertingCoordinateSystem(Vector3f oldAxis, Vector3f newAxis) {
         // finding out about which axis to rotate the oldAxis to obtain the newAxis and at which angle to rotate it around that
         Vector3f rotAxis = Vector3f.cross(oldAxis, newAxis, null);
+        if (rotAxis.lengthSquared() == 0) {
+            Matrix3f identity = new Matrix3f();
+            identity.setIdentity();
+            return identity;
+        }
         rotAxis.normalise();
         float angle = Vector3f.angle(oldAxis, newAxis);
 
@@ -597,60 +567,6 @@ public class PhysicsEngine {
         Matrix3f.add(rodriguesRotMatrix, summandTwo, rodriguesRotMatrix);
 
         return rodriguesRotMatrix;
-    }
-
-    public void spinToSpeed(Ball b) {
-        float xenergy, yenergy, zenergy, xspeed, yspeed, zspeed;
-
-        xenergy = (float) 0.5 * b.getRadius() * b.getRadius() * b.REAL_MASS * b.getRotation().x * b.getRotation().x;
-        yenergy = (float) 0.5 * b.getRadius() * b.getRadius() * b.REAL_MASS * b.getRotation().y * b.getRotation().y;
-        zenergy = (float) 0.5 * b.getRadius() * b.getRadius() * b.REAL_MASS * b.getRotation().z * b.getRotation().z;
-
-        if (xenergy < -minenergy || xenergy > minenergy) {
-            b.increaseVelocity((float) Math.sqrt(2 * xenergy * 0.1 / b.REAL_MASS), 0, 0);
-            xenergy = (float) 0.9 * xenergy;
-        } else {
-            b.increaseVelocity((float) Math.sqrt(2 * xenergy / b.REAL_MASS), 0, 0);
-            xenergy = 0;
-        }
-
-        if (yenergy < -minenergy || yenergy > minenergy) {
-            b.increaseVelocity((float) Math.sqrt(2 * yenergy * 0.1 / b.REAL_MASS), 0, 0);
-            yenergy = (float) 0.9 * yenergy;
-        } else {
-            b.increaseVelocity((float) Math.sqrt(2 * yenergy / b.REAL_MASS), 0, 0);
-            yenergy = 0;
-
-            if (zenergy < -minenergy || zenergy > minenergy) {
-                b.increaseVelocity((float) Math.sqrt(2 * zenergy * 0.1 / b.REAL_MASS), 0, 0);
-                zenergy = (float) 0.9 * zenergy;
-            } else {
-                b.increaseVelocity((float) Math.sqrt(2 * zenergy / b.REAL_MASS), 0, 0);
-                zenergy = 0;
-            }
-        }
-    }
-
-    public void applySpin(Ball b) {
-        float x, z;
-        float a = 0.4f;
-        x = b.getRotation().x * ((a - COEFF_RESTITUTION) / (1 + a) + (((1 + COEFF_RESTITUTION) / (1 + a)) * b.getVelocity().x / (b.getRadius() * b.getRotation().x)));
-        z = b.getRotation().z * ((a - COEFF_RESTITUTION) / (1 + a) + (((1 + COEFF_RESTITUTION) / (1 + a)) * b.getVelocity().z / (b.getRadius() * b.getRotation().z)));
-        b.setRotation(new Vector3f(x, b.getRotation().y, z));
-    }
-
-    public float xSpeed(Ball b) {
-        float x;
-        float a = 0.4f;
-        x = b.getVelocity().x * ((1 - a * COEFF_RESTITUTION) / (1 + a) + (a * (1 + COEFF_RESTITUTION) / (1 + a)) * (b.getRadius() * b.getRotation().x) / b.getVelocity().x);
-        return x;
-    }
-
-    public float zSpeed(Ball b) {
-        float z;
-        float a = 0.4f;
-        z = b.getVelocity().z * ((1 - a * COEFF_RESTITUTION) / (1 + a) + (a * (1 + COEFF_RESTITUTION) / (1 + a)) * (b.getRadius() * b.getRotation().z) / b.getVelocity().z);
-        return z;
     }
 
     // this method totally makes sense in the physics engine, trust me

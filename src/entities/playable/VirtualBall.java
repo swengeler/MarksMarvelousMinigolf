@@ -18,7 +18,7 @@ public class VirtualBall implements Ball {
 	public VirtualBall(RealBall cloneOf, Vector3f initVelocity) {
 		this.cloneOf = cloneOf;
 		this.position = new Vector3f(cloneOf.getPosition().x, cloneOf.getPosition().y, cloneOf.getPosition().z);
-		this.lastPosition  = new Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
+		this.lastPosition  = new Vector3f(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
 		this.velocity = new Vector3f(initVelocity.x, initVelocity.y, initVelocity.z);
 		this.accelerations = new ArrayList<Vector3f>();
 		accelerations.add(PhysicsEngine.GRAVITY);
@@ -119,7 +119,7 @@ public class VirtualBall implements Ball {
 	}
 	
 	public void resetLastPos() {
-		lastPosition.set(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
+		lastPosition.set(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
 	}
 
 	public Vector3f getPosition() {

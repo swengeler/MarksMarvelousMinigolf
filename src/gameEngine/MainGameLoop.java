@@ -80,7 +80,6 @@ public class MainGameLoop {
 		DisplayManager.closeDisplay();
 		DisplayManager.createDisplay();
 		currState = new MenuState(loader);
-		
 	}
 
 }

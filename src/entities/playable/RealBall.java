@@ -51,9 +51,9 @@ public class RealBall extends Entity implements Ball {
 		super(model, position, rotX, rotY, rotZ, scale, "ball");
         this.currentVel = new Vector3f();
         this.currentAcc = new Vector3f();
-        this.lastPosition  = new Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
+        this.lastPosition  = new Vector3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
         this.accelerations = new ArrayList<Vector3f>();
-		this.moving = true;
+		this.moving = false;
 		this.spin = new Vector3f();
 	}
 
@@ -130,7 +130,7 @@ public class RealBall extends Entity implements Ball {
     }
 
 	public void resetLastPos() {
-		lastPosition.set(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
+		lastPosition.set(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
 	}
 
 	public void setMoving(boolean moving) {
@@ -151,7 +151,6 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public void checkInputs() {
-
 		if(Keyboard.isKeyDown(Keyboard.KEY_Y)){
 			//System.out.println("Here swapping from the ball at position " + this.getPosition().x );
 			GameState.getInstance().swap();
@@ -300,6 +299,7 @@ public class RealBall extends Entity implements Ball {
 	//new
 	public void setRotation(Vector3f v){
 	this.spin=v;
+		System.out.println("fuck you" + " "+ spin.x +" " + spin.y +" "+spin.z);
 	}
 	public Vector3f getRotation(){
 		return spin;

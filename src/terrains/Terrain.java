@@ -19,9 +19,9 @@ import models.RawModel;
 import renderEngine.utils.Loader;
 import textures.ModelTexture;
 
-public class Terrain implements Serializable{
+public class Terrain implements Serializable {
 
-	private static final float SIZE = 800;
+	private static final float SIZE = 300;
 	private static final float MAX_HEIGHT = 40;
 	private static final float RADIUS = 15;
 	private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;

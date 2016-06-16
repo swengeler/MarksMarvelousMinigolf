@@ -68,7 +68,6 @@ public class GameState implements State {
 	
 	private WaterFrameBuffers fbos;
 	
-	
 	private boolean water = false;
 	private boolean particle = true;
 	private boolean shadow = true;
@@ -106,10 +105,10 @@ public class GameState implements State {
 		this.loader = loader;
 		loadModels();
 		loadGuis();
-		createBall(new Vector3f(100, 20, 100), true);
+		createBall(new Vector3f(0.5f, 2, 0.5f), true);
 		camera = new Camera(balls.get(0));
 		world = new World(camera);
-		balls.get(0).setPosition(world.getStart());
+		//balls.get(0).setPosition(world.getStart());
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
 		mainEngine = new PhysicsEngine(balls, world, null);
@@ -122,9 +121,10 @@ public class GameState implements State {
 		//world.setEnd(new Vector2f(world.getStart().x + 50, world.getStart().z + 50));
         //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
 		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
-		createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
-		two = createRotatingEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), new Vector3f(0, 180, 0), 5, new Vector3f());
-		wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 76, world.getStart().z + 150 - 26f), new Vector3f(), 10, new Vector3f());
+		//createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
+		//two = createRotatingEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), new Vector3f(0, 180, 0), 5, new Vector3f());
+		two = createEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), 0, 180, 0, 5);
+		//wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 76, world.getStart().z + 150 - 26f), new Vector3f(), 10, new Vector3f());
 		//two = createRotatingEntity("sphere_offcenter", new Vector3f(world.getStart().x, 50, world.getStart().z - 300), new Vector3f(), 10, new Vector3f());
 
 		createTerrain(0, 0, "grass", false);
@@ -271,14 +271,22 @@ public class GameState implements State {
 
 	@Override
 	public void cleanUp() {
-		fbos.cleanUp();
-		guiRenderer.cleanUp();
-		waterRenderer.getShader().cleanUp();
-		renderer.cleanUp();
-		loader.cleanUp();
+		if (fbos != null)
+			fbos.cleanUp();
+		if (guiRenderer != null)
+			guiRenderer.cleanUp();
+		if (waterRenderer != null && waterRenderer.getShader() != null)
+			waterRenderer.getShader().cleanUp();
+		if (renderer != null)
+			renderer.cleanUp();
+		if (loader != null)
+			loader.cleanUp();
 		ParticleMaster.cleanUp();
-		tModels.clear();
-		mData.clear();
+		if (tModels != null)
+			tModels.clear();
+		if (mData != null)
+			mData.clear();
+		System.out.println("CLEANUP IN GAMESTATE CALLED");
 	}
 	
 	public Terrain createTerrain(int gridX, int gridY, String texName, boolean rand) {
@@ -421,7 +429,7 @@ public class GameState implements State {
         tModels.put("windmill_rot", new TexturedModel(windmillRotModel, new ModelTexture(loader.loadTexture("windmill_wings_alt"))));
         tModels.put("sphere_offcenter", new TexturedModel(sphereModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("ad_column", new TexturedModel(columnModel, new ModelTexture(loader.loadTexture("ad column default"))));
+		tModels.put("ad_column", new TexturedModel(columnModel, new ModelTexture(loader.loadTexture("Yep"))));
 
 		tModels.get("barrel").getTexture().setShineDamper(10);
 		tModels.get("barrel").getTexture().setReflectivity(0.3f);
