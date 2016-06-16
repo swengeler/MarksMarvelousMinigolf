@@ -115,5 +115,39 @@ public class Node {
 	public void setWalkable(boolean w){
 		walkable = w;
 	}
+
+	public Node getNorth() {
+		return north;
+	}
+
+	public void setNorth(Node north) {
+		this.north = north;
+	}
+
+	public Node getSouth() {
+		return south;
+	}
+
+	public void setSouth(Node south) {
+		this.south = south;
+	}
+
+	public Node getEast() {
+		return east;
+	}
+
+	public void setEast(Node east) {
+		this.east = east;
+	}
+
+	public Node getWest() {
+		return west;
+	}
+
+	public void setWest(Node west) {
+		this.west = west;
+	}
+	
+	
 	
 }

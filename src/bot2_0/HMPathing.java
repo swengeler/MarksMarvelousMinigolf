@@ -21,5 +21,5 @@ public class HMPathing extends Algorithm {
 		
 		return null;
 	}
-
+	
 }
