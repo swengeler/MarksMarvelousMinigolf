@@ -1,10 +1,11 @@
 package physics.collisions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import entities.playable.Ball;
 
-public class CollisionData {
+public class CollisionData implements Serializable{
 
 	private BoundingBox bbox;
 	protected ArrayList<PhysicalFace> faces;

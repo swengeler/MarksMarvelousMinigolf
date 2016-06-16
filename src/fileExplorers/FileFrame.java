@@ -24,9 +24,9 @@ import terrains.World;
 @SuppressWarnings("serial")
 public class FileFrame extends JFrame {
 	
-	private World tmpWorld;
+	private SaveableWorld tmpWorld;
 	
-	public FileFrame(String option, World world) {
+	public FileFrame(String option, SaveableWorld world) {
 		this.setPreferredSize(new Dimension(300,200));
 		this.setLocationRelativeTo(null);
 		JPanel panel = new JPanel();
@@ -69,7 +69,7 @@ public class FileFrame extends JFrame {
 		        try {
 		        	FileInputStream fis = new FileInputStream(pathname);
 					ObjectInputStream ois = new ObjectInputStream(fis);
-					tmpWorld = (World) ois.readObject();
+					tmpWorld = (SaveableWorld) ois.readObject();
 					ois.close();
 		        } catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -92,7 +92,7 @@ public class FileFrame extends JFrame {
 		setVisible(true);
 	}
 	
-	public World returnWorld() {
+	public SaveableWorld returnWorld() {
 		return tmpWorld;
 	}
 	

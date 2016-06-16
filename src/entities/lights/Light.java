@@ -1,8 +1,10 @@
 package entities.lights;
 
+import java.io.Serializable;
+
 import org.lwjgl.util.vector.Vector3f;
 
-public class Light {
+public class Light implements Serializable{
 
 	private Vector3f position;
 	private Vector3f colour;

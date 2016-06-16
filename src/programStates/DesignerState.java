@@ -19,6 +19,7 @@ import entities.obstacles.Entity;
 import entities.lights.Light;
 import entities.playable.RealBall;
 import fileExplorers.FileFrame;
+import fileExplorers.SaveableWorld;
 import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.RawModel;
@@ -62,9 +63,6 @@ public class DesignerState implements State{
 	private ArrayList<ParticleSystem> particles = new ArrayList<ParticleSystem>();
 
 	private WaterFrameBuffers fbos;
-
-	boolean HolePlaced = false;
-	boolean BallPlaced = false;
 
 	private boolean water = false;
 	private boolean particle = true;
@@ -167,14 +165,12 @@ public class DesignerState implements State{
 			}
 
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_R) && !BallPlaced && picker.getCurrentTerrainPoint() != null) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_R) && !world.hasStart() && picker.getCurrentTerrainPoint() != null) {
 			createNotCollidingEntity("disk", 0, new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 1);
-			BallPlaced = true;
 			world.setStart(new Vector2f(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z));
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_T) && !HolePlaced && picker.getCurrentTerrainPoint() != null) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_T) && !world.hasEnd() && picker.getCurrentTerrainPoint() != null) {
 			createNotCollidingEntity("flag", 0, new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 5);
-			HolePlaced = true;
 			world.setEnd(new Vector2f(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z));
 		}
 		if (loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_F ) && picker.getCurrentTerrainPoint() != null) {
@@ -183,21 +179,33 @@ public class DesignerState implements State{
 		if (loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_G) && picker.getCurrentTerrainPoint() != null) {
 			createEntity("box", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 3);
 		}
-		if (BallPlaced && HolePlaced && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+		if (world.hasStart() && world.hasEnd() && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			MainGameLoop.loadGame(world, 3);
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
-			FileFrame tmpFrame = new FileFrame("save", world);
+			SaveableWorld tmpWorld = new SaveableWorld(world);
+			FileFrame tmpFrame = new FileFrame("save", tmpWorld);
 			tmpFrame.setVisible();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			FileFrame tmpFrame = new FileFrame("load", world);
-			world = tmpFrame.returnWorld();
+			SaveableWorld tmpWorld = null;
+			FileFrame tmpFrame = new FileFrame("load", tmpWorld);
+			tmpWorld = tmpFrame.returnWorld();
+			if (tmpWorld != null) {
+				world = new World(camera);
+				world.addEntities(tmpWorld.getEntities());
+				world.addLights(tmpWorld.getLights());
+				world.addNormE(tmpWorld.getNormEntities());
+				world.add(tmpWorld.getTerrains().get(0));
+				createTerrain(0, 0, "grass", world.getTerrains().get(0).getHeights());
+				world.setStart(tmpWorld.getStart());
+				world.setEnd(tmpWorld.getEnd());
+				world.setHasStart(tmpWorld.hasStart());
+				world.setHasEnd(tmpWorld.hasEnd());
+				tmpFrame.setVisible();
+				DisplayManager.reset();
+			} else System.out.println("Something happened...");
 			
-			//world.setEntities(tmpWorld.getEntities());
-			
-			tmpFrame.setVisible();
-			DisplayManager.reset();
 		}
 	}
 
@@ -235,6 +243,15 @@ public class DesignerState implements State{
 	public Terrain createTerrain(int gridX, int gridY, String texName, String heightMap){
 		Terrain t = new Terrain(gridX, gridY, loader, new ModelTexture(loader.loadTexture(texName)), heightMap);
 		world.add(t);
+		return t;
+	}
+	
+	public Terrain createTerrain(int gridX, int gridY, String texName, float[][] height){
+		long before = System.currentTimeMillis();
+		Terrain t = new Terrain(gridX, gridY, loader, new ModelTexture(loader.loadTexture(texName)), height, new Vector2f(world.getEnd().x, world.getEnd().z));
+		world.removeTerrain();
+		world.add(t);
+		System.out.println("Loading terrain: " + (System.currentTimeMillis() - before) + "ms");
 		return t;
 	}
 

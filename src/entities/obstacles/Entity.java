@@ -1,5 +1,6 @@
 package entities.obstacles;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import entities.playable.Ball;
@@ -13,7 +14,7 @@ import models.TexturedModel;
 import objConverter.ModelData;
 import toolbox.LinearAlgebra;
 
-public class Entity {
+public class Entity implements Serializable{
 
 	protected TexturedModel model;
 	protected CollisionData cdata;

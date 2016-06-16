@@ -22,6 +22,7 @@ public class World implements Serializable{
 	private Camera camera;
 	private Vector2f Start = new Vector2f(Terrain.getSize()/2f, Terrain.getSize()/2f);
 	private Vector2f End = new Vector2f(Terrain.getSize()/4f, Terrain.getSize()/4f);
+	private boolean hasStart = false, hasEnd = false;
 	
 	
 	public World(Camera camera){
@@ -203,11 +204,13 @@ public class World implements Serializable{
 	
 	public void setStart(Vector2f position) {
 		this.Start = position;
+		this.hasStart = true;
 	}
 	
 	public void setEnd(Vector2f position) {
 		System.out.println("New hole at x: " + position.x + " z: " + position.y);
 		this.End =  position;
+		this.hasEnd = true;
 	}
 	
 	public Vector3f getStart() {
@@ -216,6 +219,22 @@ public class World implements Serializable{
 	
 	public Vector3f getEnd() {
 		return new Vector3f(End.x, getHeightOfTerrain(End.x, End.y), End.y);
+	}
+	
+	public boolean hasStart() {
+		return hasStart;
+	}
+	
+	public boolean hasEnd() {
+		return hasEnd;
+	}
+	
+	public void setHasStart(boolean b) {
+		this.hasStart = b;
+	}
+	
+	public void setHasEnd(boolean b) {
+		this.hasEnd = b;
 	}
 	
 }

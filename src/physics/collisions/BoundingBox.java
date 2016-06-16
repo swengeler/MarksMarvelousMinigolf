@@ -1,10 +1,12 @@
 package physics.collisions;
 
+import java.io.Serializable;
+
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.playable.Ball;
 
-public class BoundingBox {
+public class BoundingBox implements Serializable{
 
 	private float minX, minY, minZ, maxX, maxY, maxZ;
 

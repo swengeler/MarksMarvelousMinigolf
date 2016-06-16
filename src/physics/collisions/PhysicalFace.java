@@ -1,12 +1,14 @@
 package physics.collisions;
 
 
+import java.io.Serializable;
+
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.playable.Ball;
 import toolbox.LinearAlgebra;
 
-public class PhysicalFace {
+public class PhysicalFace implements Serializable{
 
 	protected Vector3f normal, point1, point2, point3, dist;
 

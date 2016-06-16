@@ -85,7 +85,7 @@ public class PhysicsEngine {
     }
 
     public void tick() {
-        GameState.wmr.increaseRotation(0, 0, 0.5f);
+        //GameState.wmr.increaseRotation(0, 0, 0.5f);
         //GameState.two.increaseRotation(0f, 0.5f, 0f);
         //GameState.two.increaseRotation(0.1f, 1f, 0.5f);
         for (RealBall b : balls) {
