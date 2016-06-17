@@ -1,3 +1,4 @@
+/*
 package bot2_0;
 
 public class CheckDist {
@@ -42,3 +43,4 @@ public class CheckDist {
 	}
 
 }
+*/
