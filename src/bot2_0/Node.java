@@ -12,13 +12,16 @@ public class Node {
 	private Node parent;
 	
 	private Node north;
-	private float nDist;
+	private Edge nEdge;
 	private Node south;
-	private float sDist;
+	private Edge sEdge;
 	private Node east;
-	private float eDist;
+	private Edge eEdge;
 	private Node west;
-	private float wDist;
+	private Edge wEdge;
+	
+	private ArrayList<Node> neighbours = new ArrayList<Node>();
+	private ArrayList<Edge> edges = new ArrayList<Edge>();
 	
 	private Vector3f position;
 	
@@ -27,6 +30,8 @@ public class Node {
 	
 	private boolean walkable = false;
 	private boolean visited = false;
+	private boolean tested = false;
+	private boolean isTesting = false;
 	
 	public Node(Vector3f position){
 		this.position = position;
@@ -52,6 +57,10 @@ public class Node {
 		return position;
 	}
 	
+	public void setPosition(Vector3f newP){
+		this.position = newP;
+	}
+	
 	//Using length squared to optimize calculations
 	public float getSqDistance(Node target){
 		Vector3f distVec = Vector3f.sub(this.getPosition(), target.getPosition(), null);
@@ -59,8 +68,7 @@ public class Node {
 	}
 	
 	public float getDistance(Node target){
-		Vector3f distVec = Vector3f.sub(this.getPosition(), target.getPosition(), null);
-		return distVec.lengthSquared();
+		return Vector3f.sub(this.getPosition(), target.getPosition(), null).length();
 	}
 	
 	public float getD(){
@@ -78,77 +86,78 @@ public class Node {
 	public void setWalkable(boolean w){
 		walkable = w;
 	}
-
+	
 	public Node getNorth() {
 		return north;
 	}
 
-	public void setNorth(Node north, float nDist) {
-		this.north = north;
-		this.nDist = nDist;
+	public void setNorth(Node node, float nDist) {
+		this.north = node;
+		this.nEdge = new Edge(nDist);
 	}
 
 	public Node getSouth() {
 		return south;
 	}
 
-	public void setSouth(Node south, float sDist) {
-		this.south = south;
-		this.sDist = sDist;
+	public void setSouth(Node node, float sDist) {
+		this.south = node;
+		this.sEdge = new Edge(sDist);
 	}
 
 	public Node getEast() {
 		return east;
 	}
 
-	public void setEast(Node east, float eDist) {
-		this.east = east;
-		this.eDist = eDist;
+	public void setEast(Node node, float eDist) {
+		this.east = node;
+		this.eEdge = new Edge(eDist);
 	}
 
 	public Node getWest() {
 		return west;
 	}
 
-	public void setWest(Node west, float wDist) {
-		this.west = west;
-		this.wDist = wDist;
+	public void setWest(Node node, float wDist) {
+		this.west = node;
+		this.wEdge = new Edge(wDist);
+			
 	}
 
 	public float getnDist() {
-		return nDist;
+		return nEdge.getLength();
 	}
 
 	public float getsDist() {
-		return sDist;
+		return sEdge.getLength();
 	}
 
 	public float geteDist() {
-		return eDist;
+		return eEdge.getLength();
 	}
 
 	public float getwDist() {
-		return wDist;
+		return eEdge.getLength();
 	}
 	
 	
 
 	public void setnDist(float nDist) {
-		this.nDist = nDist;
+		this.nEdge.setLength(nDist);
 	}
 
 	public void setsDist(float sDist) {
-		this.sDist = sDist;
+		this.sEdge.setLength(sDist);
 	}
 
 	public void seteDist(float eDist) {
-		this.eDist = eDist;
+		this.eEdge.setLength(eDist);
 	}
 
 	public void setwDist(float wDist) {
-		this.wDist = wDist;
+		this.wEdge.setLength(wDist);
 	}
-
+	
 	public float getHeight() {
 		return height;
 	}
@@ -165,6 +174,55 @@ public class Node {
 		visited = v;
 	}
 	
+	
+	public Node getNode(int i){
+		if(i == 0)
+			return north;
+		else if(i == 1)
+			return east;
+		else if(i == 2)
+			return south;
+		else
+			return west;
+	}
+	
+	public void setNode(int i, Node node){
+		if(i == 0)
+			north = node;
+		else if(i == 1)
+			east = node;
+		else if(i == 2)
+			south = node;
+		else
+			west = node;
+	}
+	
+	public Edge getEdge(int i){
+		if(i == 0)
+			return nEdge;
+		else if(i == 1)
+			return eEdge;
+		else if(i == 2)
+			return sEdge;
+		else
+			return wEdge;
+	}
+
+	public boolean isTested() {
+		return tested;
+	}
+
+	public void setTested(boolean tested) {
+		this.tested = tested;
+	}
+
+	public boolean isTesting() {
+		return isTesting;
+	}
+
+	public void setTesting(boolean isTesting) {
+		this.isTesting = isTesting;
+	}
 	
 	
 }

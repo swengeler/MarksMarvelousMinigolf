@@ -19,6 +19,7 @@ import org.lwjgl.util.vector.Vector4f;
 
 import physics.engine.PhysicsEngine;
 import bot.bot;
+import bot2_0.BobTheBot;
 import gameEngine.MainGameLoop;
 import guis.GuiRenderer;
 import guis.GuiTexture;
@@ -79,7 +80,7 @@ public class GameState implements State {
 
 	private float timeBallStill;
 	
-	private bot bot;
+	private BobTheBot bob;
 	
 	public GameState(Loader loader, int numberOfPlayers){
 		instance = this;
@@ -136,7 +137,7 @@ public class GameState implements State {
 		system.setSpeedError(0.25f);
 		system.randomizeRotation();
 		system.setDirection(new Vector3f(1,0,0), 0.1f);
-		bot = new bot(world);
+		bob = new BobTheBot(0, balls.get(0),world);
 		DisplayManager.reset();
 	}
 	
@@ -160,7 +161,7 @@ public class GameState implements State {
 		setCameraToBall(currBall);
 		System.out.println("done game with world");
 		createTerrain(0, 1, "grass", false);
-		bot = new bot(world);
+		bob = new BobTheBot(0, balls.get(0),world);
 		DisplayManager.reset();
 
 	}
@@ -210,12 +211,8 @@ public class GameState implements State {
 	@Override
 	public void checkInputs() {
 		balls.get(currBall).checkInputs();
-		if(Keyboard.isKeyDown(Keyboard.KEY_M)&&!((RealBall) balls.get(currBall)).isPlayed()){
-			System.out.println("fuck you");
-			balls.get(currBall).setVelocity(bot.ab(balls.get(currBall)));
-			balls.get(currBall).setMoving(true);
-			((RealBall) balls.get(currBall)).setPlayed(true);
-			System.out.println("bot velocity= "+ bot.ab(balls.get(currBall)));
+		if(Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
+			bob.shoot();
 		}
 	}
 	

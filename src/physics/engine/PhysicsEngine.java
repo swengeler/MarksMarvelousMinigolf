@@ -8,6 +8,9 @@ import java.util.Random;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Vector3f;
 
+import bot2_0.AIShot;
+import bot2_0.Algorithm;
+import bot2_0.Node;
 import gameEngine.MainGameLoop;
 import entities.playable.RealBall;
 import entities.playable.VirtualBall;
@@ -57,7 +60,7 @@ public class PhysicsEngine {
                 this.balls.add((RealBall) b);
         this.world = world;
        if (noiseHandler == null)
-            this.noiseHandler = new NoiseHandler(NoiseHandler.HARD, NoiseHandler.WIND);
+            this.noiseHandler = new NoiseHandler(NoiseHandler.HARD, NoiseHandler.OFF);
         else
             this.noiseHandler = noiseHandler;
         this.enabled = true;
@@ -509,6 +512,35 @@ public class PhysicsEngine {
 
         return new ShotData(shotVel, b.getPosition(), ball.getPosition(), obstaclesHit);
     }
+    
+    public AIShot aiTestShot(RealBall b, Vector3f shotVel, Node[][] grid){
+    	AIShot shot = new AIShot(shotVel);
+    	VirtualBall ball = new VirtualBall(b, shotVel);
+        System.out.printf("Initial position of the virtual ball: (%f|%f|%f)\n", ball.getPosition().x, ball.getPosition().y, ball.getPosition().z);
+        int counter = 0;
+        while (ball.isMoving() || counter < 10) {
+            ball.applyAccelerations();
+            if ((ball.isMoving() && ball.movedLastStep()) || counter < 10) {
+                ball.updateAndMove();
+                resolveTerrainCollision(ball);
+                resolveBallCollision(ball);
+                //resolveObstacleCollision(ball);
+            } else {
+                ball.setVelocity(0, 0, 0);
+                ball.setMoving(false);
+            }
+            
+            int gridX = (int)(ball.getPosition().x / Algorithm.CELL_SIZE);
+            int gridZ = (int)(ball.getPosition().z / Algorithm.CELL_SIZE);
+            if(gridX >= 0 && gridZ >= 0 && gridX < grid.length && gridZ < grid.length){
+            	Node n = grid[gridX][gridZ];
+            	shot.addNode(n);
+        	}
+            counter++;
+        }
+    	
+    	return shot;
+    }
 
     public Matrix3f convertingCoordinateSystem(Vector3f oldAxis, Vector3f newAxis) {
         // finding out about which axis to rotate the oldAxis to obtain the newAxis and at which angle to rotate it around that
@@ -626,6 +658,7 @@ public class PhysicsEngine {
         return result;
     }
 
+
     public float getHeightAt(float x, float z) {
         Ball b = new VirtualBall(new Vector3f(x, 20, z));
         Entity belowBall = null;
@@ -641,10 +674,12 @@ public class PhysicsEngine {
             while (!belowBall.collides(b)) {
                 b.increasePosition(0, -1f, 0);
             }
+            
             ArrayList<PhysicalFace> collidingFaces = belowBall.getCollidingFaces(b);
-            while (b.collidesWith(collidingFaces)) {
-                b.increasePosition(0, 0.01f, 0);
+            while(b.collidesWith(collidingFaces)){
+            	b.increasePosition(0, 0.01f, 0);
             }
+            System.out.println("Difference in value " + Math.abs(world.getHeightOfTerrain(x, z) - b.getPosition().y));
             return b.getPosition().y - Ball.RADIUS;
         }
     }

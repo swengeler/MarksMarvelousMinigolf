@@ -4,29 +4,29 @@ import physics.utils.ShotData;
 
 public class Edge {
 	
-	private ShotData data;
-	private float sqDistance;
+	private float length;
+	private boolean visited = false;
 	
-	public Edge(ShotData sData, float d){
-		data = sData;
-		sqDistance = d;
+	public Edge(float length){
+		this.length = length;
 	}
 
-	public ShotData getData() {
-		return data;
+	public float getLength() {
+		return length;
 	}
 
-	public void setData(ShotData data) {
-		this.data = data;
+	public void setLength(float length) {
+		this.length = length;
 	}
 
-	public float getDistance() {
-		return sqDistance;
+	public boolean isVisited() {
+		return visited;
 	}
 
-	public void setDistance(float distance) {
-		this.sqDistance = distance;
+	public void setVisited(boolean visited) {
+		this.visited = visited;
 	}
+	
 	
 	
 	

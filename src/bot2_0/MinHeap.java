@@ -1,115 +1,211 @@
 package bot2_0;
 
-public class MinHeap {
+import org.lwjgl.util.vector.Vector3f;
 
-	private Node[] heap;
-	private int size;
-	private int maxSize;
-	private static final int FRONT = 1;
-	private Node endNode;
-	
-	public MinHeap(int maxSize, Node endNode){
-	    this.heap = new Node[maxSize+1];
-	    heap[0] = null;
-	    this.size = 0;
-	    this.endNode = endNode;
+/**
+ * Copyright (c) 2008-2010  Morten Silcowitz.
+ *
+ * This file is part of the Jinngine physics library
+ *
+ * Jinngine is published under the GPL license, available 
+ * at http://www.gnu.org/copyleft/gpl.html. 
+ */
+//package jinngine.util;
+import java.util.*;
+
+/**
+ * Minimum heap implementation. See [Cormen et al 1999] for formal theory. 
+ * Maintains all elements in a min-heap, such that the minimum element will
+ * be the top-most node in the heap at all times. Among many other uses, heaps are ideal for 
+ * representing priority queues. 
+ */
+public class MinHeap<T> implements Comparator{
+  private int size;
+  final private List<Element> heap;
+  final private Comparator<T> comparator;
+
+  private class Element {
+    public T element;
+    public int position;
+  }    
+
+  /**
+   * Create a new heap
+   * @param comparator A comparator that handles elements of type T
+   */
+  public MinHeap() {
+    size = 0;
+    //Allocate space
+    heap = new ArrayList<Element>();
+
+    //Comparator
+    this.comparator = this;
+
+    //initialy clear
+    //for (int i=0;i<maxSize;i++) heap[i] = null;
+  }
+
+  /**
+   * Insert element into the heap. O(lg n) where n is the number of elements/Elements in the heap  
+   * @param element new element to be inserted
+   */
+  public void insert( final T element ) {
+    size++;
+    Element Element = new Element();
+    Element.element = element;
+    Element.position = size-1;
+    heap.add(Element);
+    decreaseKey( Element );
+    //return Element;
+  }
+
+  public final void clear() {
+    heap.clear();
+    size = 0;
+  }
+
+  /**
+   * Return a reference to the top-most element on the heap. The method does not change the state
+   * of the heap in any way. O(k).
+   * @return Reference to top-most element of heap
+   */
+  public final T top() {
+    return heap.get(0).element;
+  }
+
+  //bound check missing
+
+  /**
+   * Pop an element of the heap. O(lg n) where n is the number of elements in heap.
+   */
+  public T pop() {
+    T returnElement = top();
+    exchange( 0, size-1 );
+    heap.remove(size-1);
+    size--;
+
+    //if any elements left in heap, do minHeapify
+    if (size>0) {
+      minHeapify( heap.get(0) );
+    }
+    
+    return returnElement;
+  }
+
+  //  private final void reinsert( final Element n ) {
+  //    if ( !decreaseKey(n) ) {
+  //      minHeapify(n);
+  //    }
+  //  }
+
+  public final int size() {
+    return size;
+  }
+
+
+  private final boolean decreaseKey( final Element Element ) {
+    int index = Element.position;
+    boolean modified = false;
+
+    //    while ( index>0 &&  (heap[parent(index)]).compareTo( heap[index]) >= 0 ) {
+    while ( index>0 &&  comparator.compare(heap.get(parent(index)).element, heap.get(index).element ) >= 0 ) {
+      exchange( index, parent(index) );
+      index = parent(index);
+      modified = true;
+    }
+
+    return modified;
+  }
+
+  private final void minHeapify( final Element Element ) {
+    int smallest;
+    int index = Element.position;
+    int left = left(index);
+    int right = right(index);
+
+    //  if (left<size && (heap[left]).compareTo(heap[index]) <= 0 )
+    if (left<size && comparator.compare(heap.get(left).element, heap.get(index).element) <= 0 )
+      smallest= left;
+    else
+      smallest = index;
+
+    //    if (right<size && (heap[right]).compareTo(heap[smallest]) <=0 )
+    if (right<size && comparator.compare(heap.get(right).element, heap.get(smallest).element ) <=0 )
+      smallest= right;
+    if (smallest!= index) {
+      exchange( index, smallest );
+      minHeapify( heap.get(smallest) );
+    }
+  }
+
+  private final void exchange( final int index, final int index2 ) {
+    Element temp = heap.get(index);
+    temp.position = index2;
+
+    Element temp2 = heap.get(index2);
+    temp2.position = index;
+
+    heap.set(index, temp2 );
+    heap.set( index2, temp);
+
+
+    //Update posistion in Element
+    //    heap.get(index).position=index;
+    //    heap.get(index2).position=index2;
+  }
+
+
+  private final int parent(final int i) {
+    return i/2;
+  }
+
+  private final int left(final int i) {
+    return 2*i;
+  }
+
+  private final int right(final int i) {
+    return 2*i+1;
+  }
+
+  /**
+   * Returns an iterator that iterates over all elements of the heap, in no particular order
+   * @return
+   */
+  public final Iterator<T> iterator() {
+    return new Iterator<T>() {
+      private Iterator<Element> iterator = heap.iterator(); 
+      @Override
+      public boolean hasNext() { return iterator.hasNext(); }
+      @Override
+      public T next() { return iterator.next().element; }
+      @Override
+      public void remove() { }
+    };
+  }
+
+@Override
+	public int compare(Object node1, Object node2) {
+		Node n1 = (Node) node1;
+		Node n2 = (Node) node2;
+		if(n1.getD() < n2.getD())
+			return -1;
+		else if(n1.getD() > n2.getD())
+			return 1;
+		return 0;
 	}
-	
-	private int getParent(int position){
-	    return position/2;
-	}
-	
-	private int getLeftChild(int position){
-	    return 2*position;
-	}
-	
-	private int getRightChild(int position){
-	    return 2*position+1;
-	}
-	
-	private void swap(int position1, int position2){
-	    Node temp = heap[position1];
-	    heap[position1] = heap[position2];
-	    heap[position2] = temp;
-	}
-	
-	private boolean isLeaf(int position){
-	
-	    if(position > size/2){
-	        return true;
-	    }
-	    return false;
-	}
-	
-	public void insert(Node data){
-	    heap[++size] = data;
-	    int currentItem = size;
-	    while( heap[getParent(currentItem)].getFValue(endNode) > heap[currentItem].getFValue(endNode) ){
-	        swap(getParent(currentItem),currentItem);
-	        currentItem = getParent(currentItem);
-	    }
-	}
-	
-	public Node delete(){
-	    Node itemPopped = heap[FRONT];
-	    heap[FRONT] = heap[size--];
-	    heapify(FRONT);
-	    return itemPopped;
-	}
-	
-	private void heapify(int position){
-	    if(isLeaf(position)){
-	        return;
-	    }
-	
-	    if ( heap[position].getFValue(endNode) > heap[getLeftChild(position)].getFValue(endNode) || heap[position].getFValue(endNode) > heap[getRightChild(position)].getFValue(endNode)){
-	
-	        if(heap[getLeftChild(position)].getFValue(endNode) < heap[getRightChild(position)].getFValue(endNode)){
-	            swap(position , getLeftChild(position));
-	            heapify(getLeftChild(position));
-	        }
-	        else{
-	            swap(position , getRightChild(position));
-	            heapify(getRightChild(position));
-	        }
-	    }
-	}
-	
-	@Override
-	public String toString(){
-	    StringBuilder output = new StringBuilder();
-	    for(int i=1; i<= size/2; i++){
-	        output.append("Parent :"+ heap[i]);
-	        output.append("LeftChild : "+heap[getLeftChild(i)] +" RightChild :"+ heap[getRightChild(i)]).append("\n");
-	    }
-	    return output.toString();
-	}
-	
-	public boolean isEmpty(){
-		return size == 0;
-	}
-	
-	public int indexOf(Node n){
-		for(int i=0; i<=size; i++){
-			if(heap[i] != null && heap[i].equals(n))
-				return i;
-		}
-		return -1;
-	}
-	
-	public boolean contains(Node n){
-		for(int i=0; i<=size; i++){
-			if(heap[i] != null && heap[i].equals(n))
-				return true;
-		}
-		return false;
-	}
-	
-	public void delete(Node n){
-		int index = indexOf(n);
-		if(index >= 0){
-			heap[index] = heap[size-1];
-		}
-		heapify(index);
-	}
+
+  //  public void printHeap() {
+  //    int step =1;
+  //    int i = 0;
+  //    for (int n=0;n<size;n++) {
+  //      i++;
+  //      //System.out.print(""+ ((Contact)heap[n].item).relativeV + "*");
+  //      if (i%step == 0 ) {
+  //        step *=2; i=0;
+  //        System.out.println("");
+  //      }
+  //    }
+  //
+  //    System.out.println("");
+  //  }
 }
