@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import entities.playable.Ball;
+import org.lwjgl.util.vector.Vector3f;
+import physics.engine.PhysicsEngine;
 
 public class CollisionData implements Serializable{
 
@@ -43,6 +45,39 @@ public class CollisionData implements Serializable{
 
 	public boolean inHorizontalBounds(Ball b) {
 		return bbox.inHorizontalBoundingRectangle(b);
+	}
+
+	public boolean inHorizontalBounds(float x, float z) {
+		return bbox.inHorizontalBoundingRectangle(x, z);
+	}
+
+	public float getHighestPointOnLine(Vector3f p, Vector3f q) {
+		Vector3f pq = Vector3f.sub(q, p, null);
+		Vector3f m = Vector3f.cross(pq, q, null);
+		Vector3f r = new Vector3f(), a = new Vector3f(), b = new Vector3f(), c = new Vector3f(), temp = new Vector3f();
+		float u, v, w, denom, curHeight, maxHeight = - Float.MAX_VALUE;
+		for (PhysicalFace f : faces) {
+			a.set(f.getP1());
+			b.set(f.getP2());
+			c.set(f.getP3());
+
+			u = Vector3f.dot(pq, Vector3f.cross(c, b, temp)) + Vector3f.dot(m, Vector3f.sub(c, b, temp));
+			v = Vector3f.dot(pq, Vector3f.cross(a, c, temp)) + Vector3f.dot(m, Vector3f.sub(a, c, temp));
+			w = Vector3f.dot(pq, Vector3f.cross(b, a, temp)) + Vector3f.dot(m, Vector3f.sub(b, a, temp));
+
+			if ((u * v) > 0 && (u * w) > 0) {
+				denom = 1 / (u + v + w);
+				u *= denom;
+				v *= denom;
+				w *= denom;
+
+				curHeight = a.y * u + b.y * v + c.y * w;
+
+				if (curHeight > maxHeight)
+					maxHeight = curHeight;
+			}
+		}
+		return maxHeight;
 	}
 	
 	public boolean collides(Ball b) {

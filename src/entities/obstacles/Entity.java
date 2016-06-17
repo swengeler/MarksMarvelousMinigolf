@@ -177,12 +177,20 @@ public class Entity implements Serializable{
 		return cdata.getCollidingFaces(b);
 	}
 
+	public float getHighestPointOnLine(Vector3f p, Vector3f q) {
+		return cdata.getHighestPointOnLine(p, q);
+	}
+
 	public boolean inBounds(Ball b) {
 		return this.cdata.inBounds(b);
 	}
 
 	public boolean inHorizontalBounds(Ball b) {
 		return this.cdata.inHorizontalBounds(b);
+	}
+
+	public boolean inHorizontalBounds(float x, float z) {
+		return this.cdata.inHorizontalBounds(x, z);
 	}
 	
 	public boolean collides(Ball b) {

@@ -1,5 +1,6 @@
 package toolbox;
 
+import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -147,6 +148,72 @@ public class LinearAlgebra {
 		Vector3f dist = new Vector3f();
 		Vector3f.sub(p1, p2, dist);
 		return dist.lengthSquared();
+	}
+
+	public static Matrix3f convertingCoordinateSystem(Vector3f oldAxis, Vector3f newAxis) {
+		// finding out about which axis to rotate the oldAxis to obtain the newAxis and at which angle to rotate it around that
+		Vector3f rotAxis = Vector3f.cross(oldAxis, newAxis, null);
+		if (rotAxis.lengthSquared() == 0) {
+			Matrix3f identity = new Matrix3f();
+			identity.setIdentity();
+			return identity;
+		}
+		rotAxis.normalise();
+		float angle = Vector3f.angle(oldAxis, newAxis);
+
+		// setting up the final transformation matrix (R) that will be returned and is given by:
+		// R = I + sin(angle) * K + (1 - cos(angle)) * K^2
+		Matrix3f rodriguesRotMatrix = new Matrix3f();
+		rodriguesRotMatrix.setIdentity();
+
+		// constructing a cross product matrix (K) for the rotation axis that will be used later
+		Matrix3f crossProductMatrix = new Matrix3f();
+		crossProductMatrix.setZero();
+		crossProductMatrix.m10 = -rotAxis.z;
+		crossProductMatrix.m20 = rotAxis.y;
+		crossProductMatrix.m01 = rotAxis.z;
+		crossProductMatrix.m21 = -rotAxis.x;
+		crossProductMatrix.m02 = -rotAxis.y;
+		crossProductMatrix.m12 = rotAxis.x;
+
+		// computing the first summand for the formula given above: sin(angle) * K
+		Matrix3f summandOne = new Matrix3f();
+		summandOne.setZero();
+		double factorOne = Math.sin(angle);
+		summandOne.m10 = (float) (crossProductMatrix.m10 * factorOne);
+		summandOne.m20 = (float) (crossProductMatrix.m20 * factorOne);
+		summandOne.m01 = (float) (crossProductMatrix.m01 * factorOne);
+		summandOne.m21 = (float) (crossProductMatrix.m21 * factorOne);
+		summandOne.m02 = (float) (crossProductMatrix.m02 * factorOne);
+		summandOne.m12 = (float) (crossProductMatrix.m12 * factorOne);
+
+		// computing the first summand for the formula given above: (1 - cos(angle)) * K^2
+		Matrix3f summandTwo = new Matrix3f();
+		summandTwo.setZero();
+		double factorTwo = 1 - Math.cos(angle);
+		summandTwo.m10 = crossProductMatrix.m10;
+		summandTwo.m20 = crossProductMatrix.m20;
+		summandTwo.m01 = crossProductMatrix.m01;
+		summandTwo.m21 = crossProductMatrix.m21;
+		summandTwo.m02 = crossProductMatrix.m02;
+		summandTwo.m12 = crossProductMatrix.m12;
+		Matrix3f.mul(summandTwo, summandTwo, summandTwo);
+
+		summandTwo.m00 *= factorTwo;
+		summandTwo.m01 *= factorTwo;
+		summandTwo.m02 *= factorTwo;
+		summandTwo.m10 *= factorTwo;
+		summandTwo.m11 *= factorTwo;
+		summandTwo.m12 *= factorTwo;
+		summandTwo.m20 *= factorTwo;
+		summandTwo.m21 *= factorTwo;
+		summandTwo.m22 *= factorTwo;
+
+		// adding up the summands to get the final transformation matrix
+		Matrix3f.add(rodriguesRotMatrix, summandOne, rodriguesRotMatrix);
+		Matrix3f.add(rodriguesRotMatrix, summandTwo, rodriguesRotMatrix);
+
+		return rodriguesRotMatrix;
 	}
 	
 	public static float barryCentric(Vector3f p1, Vector3f p2, Vector3f p3, Vector2f pos) {

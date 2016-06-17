@@ -56,6 +56,11 @@ public class BoundingBox implements Serializable{
 				(b.getPosition().z - Ball.RADIUS <= maxZ && b.getPosition().z + Ball.RADIUS >= minZ);
 	}
 
+	public boolean inHorizontalBoundingRectangle(float x, float z) {
+		return 	(x - Ball.RADIUS <= maxX && x + Ball.RADIUS >= minX) &&
+				(z - Ball.RADIUS <= maxZ && z + Ball.RADIUS >= minZ);
+	}
+
 	public void print() {
 		System.out.printf(	"\n\n" +
 							"     (%9.4f|%9.4f|%9.4f) _____________ (%9.4f|%9.4f|%9.4f)\n" +
