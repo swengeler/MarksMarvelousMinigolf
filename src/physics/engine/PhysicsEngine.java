@@ -35,7 +35,7 @@ public class PhysicsEngine {
 
     public static final float REAL_GRAVITY = 9.813f;
 
-    public static final Vector3f GRAVITY = new Vector3f(0, -230f, 0);
+    public static final Vector3f GRAVITY = new Vector3f(0, -(REAL_GRAVITY / Ball.REAL_RADIUS), 0);
     public static final float COEFF_RESTITUTION = 0.75f;
     public static final float COEFF_FRICTION = 0.15f;
 
@@ -45,11 +45,8 @@ public class PhysicsEngine {
     private World world;
     private NoiseHandler noiseHandler;
 
-    private Random r;
     private boolean enabled;
     private final float minenergy = 1;
-
-    private ArrayList<Vector3f> globalAccel;
     
     private static PhysicsEngine instance;
 
@@ -64,9 +61,6 @@ public class PhysicsEngine {
         else
             this.noiseHandler = noiseHandler;
         this.enabled = true;
-        this.r = new Random();
-        this.globalAccel = new ArrayList<>();
-        this.addGlobalAccel(PhysicsEngine.GRAVITY);
         instance = this;
     }
     
@@ -89,19 +83,9 @@ public class PhysicsEngine {
         this.balls.add(ball);
     }
 
-    public void addGlobalAccel(Vector3f accel) {
-        this.globalAccel.add(accel);
-    }
-
     public void tick() {
         for (RealBall b : balls) {
-            /*if (!b.isMoving() && b.getPosition().y > 1.5f) {
-                MainGameLoop.currState.cleanUp();
-                DisplayManager.closeDisplay();
-                System.out.println("TERMINATED BECAUSE BALL HANGS IN THE AIR");
-            }*/
-            b.applyGlobalAccel(this.globalAccel, r);
-            b.applyAccel();
+            b.applyAccel(GRAVITY);
             if (b.isMoving()) {
                 System.out.println("Since the ball moved wind is applied");
                 noiseHandler.applyWind(b.getVelocity());
@@ -495,49 +479,56 @@ public class PhysicsEngine {
         VirtualBall ball = new VirtualBall(b, shotVel);
         System.out.printf("Initial position of the virtual ball: (%f|%f|%f)\n", ball.getPosition().x, ball.getPosition().y, ball.getPosition().z);
         int counter = 0;
+        long one = System.currentTimeMillis();
         while (ball.isMoving() || counter < 10) {
-            ball.applyAccelerations();
+            ball.applyAccel(GRAVITY);
             if ((ball.isMoving() && ball.movedLastStep()) || counter < 10) {
                 ball.updateAndMove();
-                resolveTerrainCollision(ball);
                 resolveBallCollision(ball);
-                obstaclesHit.addAll(world.getCollidingEntities(ball));
-                //resolveObstacleCollision(ball);
+                if (resolveObstacleCollision(ball))
+                    obstaclesHit.addAll(world.getCollidingEntities(ball));
+                else
+                    resolveTerrainCollision(ball);
             } else {
                 ball.setVelocity(0, 0, 0);
                 ball.setMoving(false);
             }
             counter++;
         }
+        long two = System.currentTimeMillis();
+        System.out.println("Virtual shot took " + (two - one) + "ms");
 
         return new ShotData(shotVel, b.getPosition(), ball.getPosition(), obstaclesHit);
     }
     
     public AIShot aiTestShot(RealBall b, Vector3f shotVel, Node[][] grid){
     	AIShot shot = new AIShot(shotVel);
-    	VirtualBall ball = new VirtualBall(b, shotVel);
+        VirtualBall ball = new VirtualBall(b, shotVel);
         System.out.printf("Initial position of the virtual ball: (%f|%f|%f)\n", ball.getPosition().x, ball.getPosition().y, ball.getPosition().z);
         int counter = 0;
+        long one = System.currentTimeMillis();
         while (ball.isMoving() || counter < 10) {
-            ball.applyAccelerations();
+            ball.applyAccel(GRAVITY);
             if ((ball.isMoving() && ball.movedLastStep()) || counter < 10) {
                 ball.updateAndMove();
-                resolveTerrainCollision(ball);
                 resolveBallCollision(ball);
-                //resolveObstacleCollision(ball);
+                if (!resolveObstacleCollision(ball))
+                    resolveTerrainCollision(ball);
             } else {
                 ball.setVelocity(0, 0, 0);
                 ball.setMoving(false);
             }
-            
-            int gridX = (int)(ball.getPosition().x / Algorithm.CELL_SIZE);
-            int gridZ = (int)(ball.getPosition().z / Algorithm.CELL_SIZE);
-            if(gridX >= 0 && gridZ >= 0 && gridX < grid.length && gridZ < grid.length){
-            	Node n = grid[gridX][gridZ];
-            	shot.addNode(n);
-        	}
             counter++;
+
+            int gridX = (int) (ball.getPosition().x / Algorithm.CELL_SIZE);
+            int gridZ = (int) (ball.getPosition().z / Algorithm.CELL_SIZE);
+            if (gridX >= 0 && gridZ >= 0 && gridX < grid.length && gridZ < grid.length){
+                Node n = grid[gridX][gridZ];
+                shot.addNode(n);
+            }
         }
+        long two = System.currentTimeMillis();
+        System.out.println("Virtual shot took " + (two - one) + "ms");
     	
     	return shot;
     }

@@ -26,8 +26,7 @@ public interface Ball {
 	void increaseVelocity(float x, float y, float z);
 	void increaseVelocity(Vector3f v);
 	void scaleVelocity(float s);
-	void addAccel(Vector3f accel);
-	void removeAccel(Vector3f accel);
+	void applyAccel(Vector3f v);
 	void setMoving(boolean moving);
 	boolean isMoving();
 	boolean movedLastStep();

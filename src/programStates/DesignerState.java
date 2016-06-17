@@ -205,7 +205,7 @@ public class DesignerState implements State{
 				tmpFrame.setVisible();
 				DisplayManager.reset();
 			} else System.out.println("Something happened...");
-			
+
 		}
 	}
 
@@ -245,7 +245,7 @@ public class DesignerState implements State{
 		world.add(t);
 		return t;
 	}
-	
+
 	public Terrain createTerrain(int gridX, int gridY, String texName, float[][] height){
 		long before = System.currentTimeMillis();
 		Terrain t = new Terrain(gridX, gridY, loader, new ModelTexture(loader.loadTexture(texName)), height, new Vector2f(world.getEnd().x, world.getEnd().z));

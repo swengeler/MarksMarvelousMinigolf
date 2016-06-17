@@ -32,7 +32,6 @@ public class RealBall extends Entity implements Ball {
 	private Vector3f currentVel;
 	private Vector3f currentAcc;
     private Vector3f lastPosition;
-	private ArrayList<Vector3f> accelerations;
 	private boolean gameover=false;
 	private float currentTurnSpeed;
 	private float lastTimeElapsed;
@@ -52,7 +51,6 @@ public class RealBall extends Entity implements Ball {
         this.currentVel = new Vector3f();
         this.currentAcc = new Vector3f();
         this.lastPosition  = new Vector3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
-        this.accelerations = new ArrayList<Vector3f>();
 		this.moving = false;
 		this.spin = new Vector3f();
 	}
@@ -81,52 +79,12 @@ public class RealBall extends Entity implements Ball {
 		super.increasePosition(delta);
 	}
 
-	public void addAccel(Vector3f accel) {
-		accelerations.add(accel);
-	}
-
-	public void removeAccel(Vector3f accel) {
-		accelerations.remove(accel);
-	}
-
-    public void applyAccel() {
-        for (Vector3f a : accelerations) {
-			System.out.printf("Acceleration applied: (%f|%f|%f)\n", a.x, a.y, a.z);
-			currentAcc.set(a.x, a.y, a.z);
-			currentAcc.scale(getTimeElapsed());
-			Vector3f.add(currentVel, currentAcc, currentVel);
-			System.out.printf("... and velocity after: (%f|%f|%f)\n", currentVel.x, currentVel.y, currentVel.z);
-		}
-    }
-
-    public void applyGlobalAccel(ArrayList<Vector3f> accels, Random r) {
-        for (Vector3f a : accels) {
-            if (a != PhysicsEngine.GRAVITY) {
-                currentAcc.set(a.x, a.y, a.z);
-                currentAcc.scale(getTimeElapsed());
-
-                double meanX = currentAcc.x;
-                double stdX = 0.5 * meanX;
-                double newX = r.nextGaussian() * stdX + meanX;
-                currentAcc.setX((float) newX);
-
-                double meanY = currentAcc.y;
-                double stdY = 0.5 * meanX;
-                double newY = r.nextGaussian() * stdY + meanY;
-                currentAcc.setY((float) newY);
-
-                double meanZ = currentAcc.z;
-                double stdZ = 0.5 * meanZ;
-                double newZ = r.nextGaussian() * stdZ + meanZ;
-                currentAcc.setZ((float) newZ);
-
-                Vector3f.add(currentVel, currentAcc, currentVel);
-            } else {
-                currentAcc.set(a.x, a.y, a.z);
-                currentAcc.scale(getTimeElapsed());
-                Vector3f.add(currentVel, currentAcc, currentVel);
-			}
-        }
+    public void applyAccel(Vector3f accel) {
+		//System.out.printf("Acceleration applied: (%f|%f|%f)\n", accel.x, accel.y, accel.z);
+		currentAcc.set(accel.x, accel.y, accel.z);
+		currentAcc.scale(getTimeElapsed());
+		Vector3f.add(currentVel, currentAcc, currentVel);
+		//System.out.printf("... and velocity after: (%f|%f|%f)\n", currentVel.x, currentVel.y, currentVel.z);
     }
 
 	public void resetLastPos() {

@@ -76,7 +76,8 @@ public class GameState implements State {
 	private boolean multiplayer;
 	private int numberOfPlayers;
 	
-	private boolean gameover=true;
+	private boolean gameover = true;
+	private long virtualShotTest = -1;
 
 	private float timeBallStill;
 	
@@ -211,8 +212,17 @@ public class GameState implements State {
 	@Override
 	public void checkInputs() {
 		balls.get(currBall).checkInputs();
-		if(Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
+		if (Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
 			bob.shoot();
+		} else if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
+			if (virtualShotTest == -1) {
+				System.out.println("\n\n\nVIRTUALBALL TEST STARTING\n");
+				mainEngine.performVirtualShot((RealBall) balls.get(0), new Vector3f(150, 0, 150));
+				balls.get(0).setVelocity(150, 0, 150);
+				balls.get(0).setMoving(true);
+				System.out.println("\nVIRTUALBALL TEST ENDING\n\n\n");
+				virtualShotTest = 0;
+			}
 		}
 	}
 	
@@ -533,12 +543,4 @@ public class GameState implements State {
 		balls.remove(currBall);
 	}
 
-	public void addRandomWind() {
-        int a = 20;
-		Vector3f wind = new Vector3f();
-		wind.set((float) (Math.random() * a - a/2), 0, (float) (Math.random() * a - a/2));
-        System.out.printf("Wind: (%f|%f|%f)\n", wind.x, wind.y, wind.z);
-		mainEngine.addGlobalAccel(wind);
-		wind.set(0, 0,0);
-	}
 }

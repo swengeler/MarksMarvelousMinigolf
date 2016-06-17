@@ -19,7 +19,7 @@ public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 1.5f; // That is the maximum height difference between two adjacent cell for them to be connected
 	private static final float MAX_SHOT_POWER = 5;
-	private static final float DELTA_ANGLE = 5; // In degrees
+	private static final float DELTA_ANGLE = 360; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 10;
 	
 	private Node[][] grid;
@@ -33,21 +33,20 @@ public class HMPathing extends Algorithm {
 	}
 	
 	public void shootBall() {
-		
 		int xBallGrid = (int)(b.getPosition().x/CELL_SIZE);
 		int zBallGrid = (int)(b.getPosition().z/CELL_SIZE);
 		Node ballNode = grid[xBallGrid][zBallGrid];
 		float ballD = ballNode.getD();
 		
 		AIShot bestShot = null;
-		ArrayList<AIShot> shots = new ArrayList<AIShot>();
+		ArrayList<AIShot> shots = new ArrayList<>();
 		int shotsTaken = 0;
-		for(int i = 0; i < 360; i += DELTA_ANGLE){
+		for (int i = 0; i < 360; i += DELTA_ANGLE){
 			shotsTaken++;
 			System.out.println("Shots taken: " + shotsTaken);
 			Vector3f vec = generateShot(i, MAX_SHOT_POWER);
-			AIShot shot = PhysicsEngine.getInstance().aiTestShot((RealBall)b, vec, grid);
-			if(bestShot == null || (shot.getClosestNode().getD() < bestShot.getClosestNode().getD())){
+			AIShot shot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, vec, grid);
+			if (bestShot == null || (shot.getClosestNode().getD() < bestShot.getClosestNode().getD())){
 				bestShot = shot;
 			}
 		}
@@ -235,6 +234,5 @@ public class HMPathing extends Algorithm {
 		}
 		
 	}
-
 	
 }

@@ -10,8 +10,7 @@ import physics.engine.PhysicsEngine;
 public class VirtualBall implements Ball {
 	
 	private RealBall cloneOf;
-	private Vector3f position, lastPosition, velocity;
-	private ArrayList<Vector3f> accelerations;
+	private Vector3f position, lastPosition, velocity, acceleration;
 	private boolean moving;
 	private Vector3f spin;
 	
@@ -20,8 +19,7 @@ public class VirtualBall implements Ball {
 		this.position = new Vector3f(cloneOf.getPosition().x, cloneOf.getPosition().y, cloneOf.getPosition().z);
 		this.lastPosition  = new Vector3f(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
 		this.velocity = new Vector3f(initVelocity.x, initVelocity.y, initVelocity.z);
-		this.accelerations = new ArrayList<Vector3f>();
-		accelerations.add(PhysicsEngine.GRAVITY);
+		this.acceleration = new Vector3f();
 		this.moving = true;
 		this.spin= new Vector3f();
 	}
@@ -37,6 +35,8 @@ public class VirtualBall implements Ball {
 		Vector3f delta = new Vector3f(velocity.x, velocity.y, velocity.z);
 		delta.scale(getTimeElapsed());
 		increasePosition(delta.x, delta.y, delta.z);
+		//System.out.printf("\nVirtualBall's position after updating: (%f|%f|%f)\n", position.x, position.y, position.z);
+		//System.out.printf("VirtualBall's velocity after updating: (%f|%f|%f)\n", velocity.x, velocity.y, velocity.z);
 	}
 
 	public void move() {
@@ -46,27 +46,15 @@ public class VirtualBall implements Ball {
 	}
 	
 	public float getTimeElapsed() {
-		return 0.05f;
-	}
-	
-	public void addAccel(Vector3f accel) {
-		if(accelerations != null)
-			accelerations.add(accel);
+		return 0.02f;
 	}
 
-	public void removeAccel(Vector3f accel) {
-		if(accelerations != null)
-			accelerations.remove(accel);
-	}
-	
-	public void applyAccelerations() {
-		Vector3f currentAcc = new Vector3f();
-		for (Vector3f a : accelerations) {
-			//System.out.printf("Acceleration applied: (%f|%f|%f)\n", a.x, a.y, a.z);
-			currentAcc.set(a.x, a.y, a.z);
-			currentAcc.scale(getTimeElapsed());
-			Vector3f.add(velocity, currentAcc, velocity);
-		}
+	public void applyAccel(Vector3f accel) {
+		//System.out.printf("Acceleration applied: (%f|%f|%f)\n", accel.x, accel.y, accel.z);
+		acceleration.set(accel.x, accel.y, accel.z);
+		acceleration.scale(getTimeElapsed());
+		Vector3f.add(velocity, acceleration, velocity);
+		//System.out.printf("... and velocity after: (%f|%f|%f)\n", velocity.x, velocity.y, velocity.z);
 	}
 	
 	public void setMoving(boolean moving) {
