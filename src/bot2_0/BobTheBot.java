@@ -1,14 +1,17 @@
 package bot2_0;
 
 import entities.playable.Ball;
+import terrains.World;
 
 public class BobTheBot {
 
 	private Algorithm alg;
 	private Ball ball;
+	private World world;
 	
-	public BobTheBot(int algorithm, Ball ball){
+	public BobTheBot(int algorithm, Ball ball, World world){
 		this.ball = ball;
+		this.world = world;
 		setAlgorithm(algorithm);
 		
 	}
@@ -27,7 +30,12 @@ public class BobTheBot {
 	
 	public void setAlgorithm(int algorithm){
 		if (algorithm == 0) {}
-			//alg = new SimpleAlgorithm();
+			alg = new HMPathing(ball, world);
+	}
+	
+	public void shoot(){
+		if(!ball.isMoving())
+			alg.shootBall();
 	}
 	
 }

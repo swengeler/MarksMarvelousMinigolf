@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import bot2_0.AIShot;
 import physics.collisions.PhysicalFace;
 
 public interface Ball {

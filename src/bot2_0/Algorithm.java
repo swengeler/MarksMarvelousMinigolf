@@ -7,8 +7,10 @@ import physics.utils.ShotData;
 import terrains.World;
 
 public abstract class Algorithm {
-
-	public abstract ArrayList<ShotData> getPath(Ball b, World w);
-	public abstract Node createGraph(Ball b, World w);
+	
+	public static final float CELL_SIZE = 1f;
+	
+	public abstract void shootBall();
+	public abstract Node createGraph();
 	
 }

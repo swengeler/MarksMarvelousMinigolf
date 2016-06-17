@@ -21,7 +21,7 @@ public class World implements Serializable{
 	private List<Light> lights = new ArrayList<Light>();
 	private Camera camera;
 	private Vector2f Start = new Vector2f(Terrain.getSize()/2f, Terrain.getSize()/2f);
-	private Vector2f End = new Vector2f(Terrain.getSize()/4f, Terrain.getSize()/4f);
+	private Vector2f End = new Vector2f(20, Terrain.getSize() - 10);
 	private boolean hasStart = false, hasEnd = false;
 	
 	
