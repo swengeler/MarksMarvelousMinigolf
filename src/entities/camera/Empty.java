@@ -56,6 +56,7 @@ public class Empty extends RealBall {
 	}
 	
 	public void checkInputs(World world){
+		System.out.println("Checking inputs of empty");
 		if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
 			this.currentVel.x = (float) (RUN_SPEED * -Math.sin(Math.toRadians(-camera.getYaw())));
 			this.currentVel.z = (float) (RUN_SPEED * -Math.cos(Math.toRadians(-camera.getYaw())));

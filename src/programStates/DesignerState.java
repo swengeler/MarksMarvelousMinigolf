@@ -154,7 +154,7 @@ public class DesignerState implements State{
 	@Override
 	public void checkInputs() {
 
-		balls.get(currBall).checkInputs();
+		balls.get(0).checkInputs();
 		if (Keyboard.isKeyDown(Keyboard.KEY_Q) && loader.getVBOs() <= 350 && picker.getCurrentTerrainPoint() != null) {
 			world.getTerrains().get(0).updateTerrain(loader, ((picker.getCurrentTerrainPoint().x / (Terrain.getSize()/2)) * (world.getTerrains().get(0).getVertexCount()/2)), ((picker.getCurrentTerrainPoint().z / (Terrain.getSize()/2)) * (world.getTerrains().get(0).getVertexCount()/2)));
 			for (Entity e:world.getEntities()) {
@@ -181,6 +181,12 @@ public class DesignerState implements State{
 		}
 		if (world.hasStart() && world.hasEnd() && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			MainGameLoop.loadGame(world, 3);
+		}
+		if (loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_V) && picker.getCurrentTerrainPoint() != null) {
+			createEntity("wall", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 3);
+		}
+		if (loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_B) && picker.getCurrentTerrainPoint() != null) {
+			createEntity("wall", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 90f, 0f, 3);
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
 			SaveableWorld tmpWorld = new SaveableWorld(world);
@@ -402,7 +408,7 @@ public class DesignerState implements State{
 	}
 
 	public Ball createBall(Vector3f position){
-		Ball b = new Empty(tModels.get("empty"), position, 0f, 0f, 0f, 1f);
+		Empty b = new Empty(tModels.get("empty"), position, 0f, 0f, 0f, 1f);
 		balls.add(b);
 		return b;
 	}
