@@ -107,7 +107,7 @@ public class GameState implements State {
 		this.loader = loader;
 		loadModels();
 		loadGuis();
-		createBall(new Vector3f(0.5f, 2, 0.5f), true);
+		createBall(new Vector3f(0.5f, Ball.RADIUS, 0.5f), true);
 		camera = new Camera(balls.get(0));
 		world = new World(camera);
 		//balls.get(0).setPosition(world.getStart());
@@ -159,7 +159,7 @@ public class GameState implements State {
 			System.out.println(e);
 			System.out.println("cdata: " + e.getCollisionData());
 		}
-		createBall(new Vector3f(world.getStart().x, world.getStart().y, world.getStart().z), true);
+		createBall(new Vector3f(world.getStart().x, world.getStart().y + Ball.RADIUS, world.getStart().z), true);
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
 		System.out.println("newEngine");
@@ -357,7 +357,7 @@ public class GameState implements State {
 		System.out.println("Loading GUI: " + (System.currentTimeMillis() - before) + "ms");
 	}
 	
-	private void loadModels(){
+	private void loadModels() {
 		long before = System.currentTimeMillis();
 		ModelData human = OBJFileLoader.loadOBJ("person");
 		ModelData ball = OBJFileLoader.loadOBJ("ball_centred_high_scaled2");
@@ -420,21 +420,21 @@ public class GameState implements State {
         RawModel sphereModel = loader.loadToVAO(sphere_offcenter.getVertices(), sphere_offcenter.getTextureCoords(), sphere_offcenter.getNormals(), sphere_offcenter.getIndices());
 		RawModel columnModel = loader.loadToVAO(ad_column.getVertices(), ad_column.getTextureCoords(), ad_column.getNormals(), ad_column.getIndices());
 
-		tModels.put("human", new TexturedModel(humanModel,new ModelTexture(loader.loadTexture("playerTexture"))));
-		tModels.put("ball", new TexturedModel(ballModel,new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("tree", new TexturedModel(treeModel,new ModelTexture(loader.loadTexture("tree"))));
-		tModels.put("fern", new TexturedModel(fernModel,new ModelTexture(loader.loadTexture("fernAtlas"))));
-		tModels.put("grass", new TexturedModel(grassModel,new ModelTexture(loader.loadTexture("grassTexture"))));
-		tModels.put("pine", new TexturedModel(pineModel,new ModelTexture(loader.loadTexture("pine"))));
-		tModels.put("box", new TexturedModel(boxModel,new ModelTexture(loader.loadTexture("box"))));
-		tModels.put("flower", new TexturedModel(flowerModel,new ModelTexture(loader.loadTexture("flower"))));
+		tModels.put("human", new TexturedModel(humanModel, new ModelTexture(loader.loadTexture("playerTexture"))));
+		tModels.put("ball", new TexturedModel(ballModel, new ModelTexture(loader.loadTexture("white"))));
+		tModels.put("tree", new TexturedModel(treeModel, new ModelTexture(loader.loadTexture("tree"))));
+		tModels.put("fern", new TexturedModel(fernModel, new ModelTexture(loader.loadTexture("fernAtlas"))));
+		tModels.put("grass", new TexturedModel(grassModel, new ModelTexture(loader.loadTexture("grassTexture"))));
+		tModels.put("pine", new TexturedModel(pineModel, new ModelTexture(loader.loadTexture("pine"))));
+		tModels.put("box", new TexturedModel(boxModel, new ModelTexture(loader.loadTexture("box"))));
+		tModels.put("flower", new TexturedModel(flowerModel, new ModelTexture(loader.loadTexture("flower"))));
 		tModels.put("barrel", new TexturedModel(NormalMappedObjLoader.loadOBJ("barrel", loader), new ModelTexture(loader.loadTexture("barrel"))));
 		tModels.put("crate", new TexturedModel(NormalMappedObjLoader.loadOBJ("crate", loader), new ModelTexture(loader.loadTexture("crate"))));
 		tModels.put("boulder", new TexturedModel(NormalMappedObjLoader.loadOBJ("boulder", loader), new ModelTexture(loader.loadTexture("boulder"))));
-		tModels.put("dragon", new TexturedModel(dragonModel,new ModelTexture(loader.loadTexture("white"))));
+		tModels.put("dragon", new TexturedModel(dragonModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("empty", new TexturedModel(emptyModel, new ModelTexture(loader.loadTexture("flower"))));
 		tModels.put("disk", new TexturedModel(diskModel, new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("flag", new TexturedModel(flagModel, new ModelTexture(loader.loadTexture("white"))));
+		tModels.put("flag", new TexturedModel(flagModel, new ModelTexture(loader.loadTexture("flag"))));
 		tModels.put("wall", new TexturedModel(wallModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
         tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("white"))));
@@ -506,11 +506,11 @@ public class GameState implements State {
 	
 	public Ball createBall(Vector3f position, boolean real){
 		Ball b;
-		if(real){
+		if (real){
 			b = new RealBall(tModels.get("ball"), position, 0f, 0f, 0f, 1f);
 			if(mainEngine != null)
 				mainEngine.addBall((RealBall)b);
-		}else {
+		} else {
 			b = new Empty(tModels.get("ball"), position, 0f, 0f, 0f, 1f);
 		}
 		balls.add(b);
@@ -529,9 +529,9 @@ public class GameState implements State {
 	}
 	
 	public void swap() {
-		if(balls.size() < numberOfPlayers){
+		if (balls.size() < numberOfPlayers){
 			currBall++;
-			createBall(world.getStart(), true);
+			createBall(new Vector3f(world.getStart().x, world.getStart().y + Ball.RADIUS, world.getStart().z), true);
 			
 		} else {
 			currBall = (currBall + 1) % numberOfPlayers;

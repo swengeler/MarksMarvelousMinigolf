@@ -172,7 +172,7 @@ public class DesignerState implements State{
 			lastInput = System.currentTimeMillis();
 		}
 		if ((System.currentTimeMillis() - lastInput > 500) && Keyboard.isKeyDown(Keyboard.KEY_T) && !world.hasEnd() && picker.getCurrentTerrainPoint() != null) {
-			createNotCollidingEntity("flag", 0, new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 5);
+			createNotCollidingEntity("flag", 0, new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 45f, 0f, 5);
 			world.setEnd(new Vector2f(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z));
 			lastInput = System.currentTimeMillis();
 		}
@@ -294,7 +294,7 @@ public class DesignerState implements State{
 		guis = new ArrayList<GuiTexture>();
 	}
 
-	private void loadModels(){
+	private void loadModels() {
 		ModelData human = OBJFileLoader.loadOBJ("person");
 		ModelData ball = OBJFileLoader.loadOBJ("ball_centred_high_scaled2");
 		ModelData tree = OBJFileLoader.loadOBJ("tree");
@@ -306,24 +306,24 @@ public class DesignerState implements State{
 		ModelData dragon = OBJFileLoader.loadOBJ("dragon");
 		ModelData empty = OBJFileLoader.loadOBJ("empty");
 		ModelData disk = OBJFileLoader.loadOBJ("disk");
-		ModelData flag = OBJFileLoader.loadOBJ("flag_rounded");
+		ModelData flag = OBJFileLoader.loadOBJ("flag");
 		ModelData wall = OBJFileLoader.loadOBJ("wall");
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("hole");
 
-		mData.put("human",human);
-	    mData.put("ball",ball);
-	    mData.put("tree",tree);
-	    mData.put("fern",fern);
-	    mData.put("grass",grass);
-	    mData.put("pine",pine);
-	    mData.put("flower",flower);
-	    mData.put("box",box);
-	    mData.put("dragon",dragon);
-	    mData.put("wall",wall);
-	    mData.put("dragon_low",dragon_low);
-	    mData.put("flag",flag);
-	    mData.put("hole",hole);
+		mData.put("human", human);
+	    mData.put("ball", ball);
+	    mData.put("tree", tree);
+	    mData.put("fern", fern);
+	    mData.put("grass", grass);
+	    mData.put("pine", pine);
+	    mData.put("flower", flower);
+	    mData.put("box", box);
+	    mData.put("dragon", dragon);
+	    mData.put("wall", wall);
+	    mData.put("dragon_low", dragon_low);
+	    mData.put("flag", flag);
+	    mData.put("hole", hole);
 
 		RawModel humanModel = loader.loadToVAO(human.getVertices(), human.getTextureCoords(), human.getNormals(), human.getIndices());
 		RawModel ballModel = loader.loadToVAO(ball.getVertices(), ball.getTextureCoords(), ball.getNormals(), ball.getIndices());
@@ -356,7 +356,7 @@ public class DesignerState implements State{
 		tModels.put("dragon", new TexturedModel(dragonModel,new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("empty", new TexturedModel(emptyModel, new ModelTexture(loader.loadTexture("flower"))));
 		tModels.put("disk", new TexturedModel(diskModel, new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("flag", new TexturedModel(flagModel, new ModelTexture(loader.loadTexture("white"))));
+		tModels.put("flag", new TexturedModel(flagModel, new ModelTexture(loader.loadTexture("flag"))));
 		tModels.put("wall", new TexturedModel(wallModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));

@@ -101,6 +101,7 @@ public class PhysicsEngine {
                 System.out.println("\n---- Collision detection ends ----\n");
             } else {
                 b.setVelocity(0, 0, 0);
+                b.setMoving(false);
             }
         }
     }
@@ -464,7 +465,7 @@ public class PhysicsEngine {
             b.setVelocity(projection.x, projection.y, projection.z);
             if (b.getVelocity().lengthSquared() > frictionDir.lengthSquared())
                 b.increaseVelocity(frictionDir);
-            else {
+            else if (b.isMoving()) {
                 b.setVelocity(0, 0, 0);
                 b.setMoving(false);
             }
@@ -489,7 +490,7 @@ public class PhysicsEngine {
                     obstaclesHit.addAll(world.getCollidingEntities(ball));
                 else
                     resolveTerrainCollision(ball);
-            } else {
+            } else if (ball.isMoving()) {
                 ball.setVelocity(0, 0, 0);
                 ball.setMoving(false);
             }
@@ -514,7 +515,7 @@ public class PhysicsEngine {
                 resolveBallCollision(ball);
                 if (!resolveObstacleCollision(ball))
                     resolveTerrainCollision(ball);
-            } else {
+            } else if (ball.isMoving()) {
                 ball.setVelocity(0, 0, 0);
                 ball.setMoving(false);
             }

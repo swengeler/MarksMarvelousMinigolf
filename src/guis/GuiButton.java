@@ -46,7 +46,7 @@ public class GuiButton {
 		this.texture = new GuiTexture(loader.loadTexture(guiTex), new Vector2f(pX,pY), new Vector2f(scaleX,scaleY));
 	}
 	
-	public boolean isInside(Vector2f p){
+	public boolean isInside(Vector2f p) {
 		if (p.x > position.x - width/2f && p.y > position.y - height/2f && p.x < position.x+width/2f && p.y < position.y+height/2f)
 			return true;
 		return false;
