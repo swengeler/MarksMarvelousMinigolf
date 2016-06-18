@@ -622,6 +622,8 @@ public class PhysicsEngine {
             return world.getHeightOfTerrain(x, z);
         }
 
+        System.out.println("Below ball: " + belowBall.get(0));
+
         float curHeight, maxHeight = -Float.MAX_VALUE;
         for (Entity e : belowBall) {
             if ((curHeight = e.getHighestPointOnLine(new Vector3f(x, 10, z), new Vector3f(x, 0, z))) > maxHeight)

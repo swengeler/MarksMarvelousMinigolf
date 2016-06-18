@@ -119,7 +119,8 @@ public class GameState implements State {
 		loadParticleSystem();
 		System.out.println("After loading particle system for the first time");
 
-		createEntity("box", new Vector3f(world.getStart().x + 70, -60f/*-60f*/, world.getStart().z - 120), 0, 0, 0, 20);
+		//createEntity("box", new Vector3f(world.getStart().x + 70, -60f/*-60f*/, world.getStart().z - 120), 0, 0, 0, 20);
+		createEntity("box", new Vector3f(world.getStart().x + 70, 0, world.getStart().z - 120), 0, 0, 0, 1);
 		//world.setEnd(new Vector2f(world.getStart().x + 50, world.getStart().z + 50));
         //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
 		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
@@ -138,8 +139,12 @@ public class GameState implements State {
 		system.setSpeedError(0.25f);
 		system.randomizeRotation();
 		system.setDirection(new Vector3f(1,0,0), 0.1f);
-		bob = new BobTheBot(0, balls.get(0),world);
+		//bob = new BobTheBot(0, balls.get(0),world);
 		DisplayManager.reset();
+
+		System.out.println("\nHEIGHT TEST");
+		System.out.println("Height at (" + (world.getEntities().get(0).getPosition().x + 0.001) + "|" + world.getEntities().get(0).getPosition().z + "): " + mainEngine.getHeightAt(world.getEntities().get(0).getPosition().x + 0.001f, world.getEntities().get(0).getPosition().z));
+		System.out.println("HEIGHT TEST\n");
 	}
 	
 	private void buildWithWorld(Loader loader, World world) {
