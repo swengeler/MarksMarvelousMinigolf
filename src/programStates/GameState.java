@@ -54,7 +54,7 @@ public class GameState implements State {
 	private Map<String,ModelData> mData = new HashMap<String,ModelData>();
 	private World world;
 	private ArrayList<WaterTile> waterTiles;
-	private ArrayList<GuiTexture> guis;
+	private ArrayList<GuiButton> guis;
 	private Camera camera;
 	private Loader loader;
 	
@@ -143,7 +143,7 @@ public class GameState implements State {
 		system.setSpeedError(0.25f);
 		system.randomizeRotation();
 		system.setDirection(new Vector3f(1,0,0), 0.1f);
-		bob = new BobTheBot(0, balls.get(0), world);
+		//bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 
 		System.out.println("\nHEIGHT TEST");
@@ -172,7 +172,7 @@ public class GameState implements State {
 		setCameraToBall(currBall);
 		System.out.println("done game with world");
 		createTerrain(0, 1, "grass", false);
-		bob = new BobTheBot(0, balls.get(0), world);
+		//bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 	}
 	
@@ -215,7 +215,7 @@ public class GameState implements State {
 			waterRenderer.render(waterTiles, camera);
 		ParticleMaster.renderParticles(camera);
 		ParticleMaster.update(camera);
-		guiRenderer.render(guis);
+		guiRenderer.renderButtons(guis);
 	}
 	
 	@Override
@@ -363,11 +363,9 @@ public class GameState implements State {
 	}
 
 	private void loadGuis() {
-		long before = System.currentTimeMillis();
 		guiRenderer = new GuiRenderer(loader);
 		guis = new ArrayList<>();
-		guis.add(new GuiTexture(loader.loadTexture("title"), new Vector2f(DisplayManager.getWidth()/2f,DisplayManager.getHeight()*8/10 + 55), new Vector2f(0.8f,0.8f)));
-		//System.out.println("Loading GUI: " + (System.currentTimeMillis() - before) + "ms");
+		guis.add(new GuiButton("controls", new Vector2f(1540, 675), new Vector2f(0.65f, 0.4f), loader, "overlay", null));
 	}
 	
 	private void loadModels() {

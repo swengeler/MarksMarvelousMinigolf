@@ -38,7 +38,7 @@ public class MenuState implements State {
 	
 	private void loadGuis() {
 		guiRenderer = new GuiRenderer(loader);
-		guis = new ArrayList<GuiButton>();
+		guis = new ArrayList<>();
 		loadMainMenu();
 	}
 
@@ -84,10 +84,13 @@ public class MenuState implements State {
 	
 	public void loadMainMenu(){
 		guis.clear();
-		createButton("title", new Vector2f(disW/2f,disH*8/10 + 55), new Vector2f(0.8f,0.8f), "static");
-		createButton("play_button", new Vector2f(disW/2f + 30,disH*6/10 - 20), new Vector2f(1f,0.66f), "play");
-		createButton("designer_button", new Vector2f(disW/2f + 210,disH*5/10 - 100), new Vector2f(1f,0.66f), "designer");
-		createButton("options_button", new Vector2f(disW/2f + 90,disH*3/10 - 80), new Vector2f(1f,0.66f), "main_options");
+		createButton("background2", new Vector2f(disW/2, 0), new Vector2f(1f, 1.9f), "static");
+		createButton("title2", new Vector2f(disW/2f + 500, disH*8/10 - 30), new Vector2f(1f, 1f), "static");
+		//createButton("play_button", new Vector2f(disW/2f + 30,disH*6/10 - 20), new Vector2f(1f, 0.66f), "play");
+		createButton("play2", new Vector2f(disW/2f + 30,disH*6/10 - 60), new Vector2f(0.8f, 0.8f), "play");
+		//createButton("designer_button", new Vector2f(disW/2f + 210,disH*5/10 - 100), new Vector2f(1f,0.66f), "designer");
+		createButton("course_designer", new Vector2f(disW/2f + 170, disH*5/10 - 160), new Vector2f(0.8f, 0.8f), "designer");
+		//createButton("options_button", new Vector2f(disW/2f + 90,disH*3/10 - 80), new Vector2f(1f,0.66f), "main_options");
 	}
 	
 	public void loadOptions(){

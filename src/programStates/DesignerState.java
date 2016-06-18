@@ -21,7 +21,7 @@ import entities.playable.RealBall;
 import fileExplorers.FileFrame;
 import fileExplorers.SaveableWorld;
 import guis.GuiRenderer;
-import guis.GuiTexture;
+import guis.GuiButton;
 import models.RawModel;
 import models.TexturedModel;
 import normalMapping.objConverter.NormalMappedObjLoader;
@@ -48,7 +48,7 @@ public class DesignerState implements State{
 	private Map<String,ModelData> mData = new HashMap<String,ModelData>();
 	private World world;
 	private ArrayList<WaterTile> waterTiles;
-	private ArrayList<GuiTexture> guis;
+	private ArrayList<GuiButton> guis;
 	private Camera camera;
 	private Loader loader;
 
@@ -149,7 +149,7 @@ public class DesignerState implements State{
 			waterRenderer.render(waterTiles, camera);
 		//ParticleMaster.renderParticles(camera);
 		//ParticleMaster.update(camera);
-		//guiRenderer.render(guis);
+		guiRenderer.renderButtons(guis);
 
 	}
 
@@ -291,7 +291,8 @@ public class DesignerState implements State{
 
 	private void loadGuis() {
 		guiRenderer = new GuiRenderer(loader);
-		guis = new ArrayList<GuiTexture>();
+		guis = new ArrayList<>();
+		guis.add(new GuiButton("overlay", new Vector2f(1510, 510), new Vector2f(0.5f, 0.5f), loader, "overlay", null));
 	}
 
 	private void loadModels() {

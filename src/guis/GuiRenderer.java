@@ -23,7 +23,7 @@ public class GuiRenderer {
 		shader = new GuiShader();
 	}
 	
-	public void render(List<GuiTexture> guis){
+	public void render(List<GuiTexture> guis) {
 		shader.start();
 		GL30.glBindVertexArray(quad.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
@@ -44,7 +44,7 @@ public class GuiRenderer {
 		shader.stop();
 	}
 	
-	public void renderButtons(List<GuiButton> guis){
+	public void renderButtons(List<GuiButton> guis) {
 		shader.start();
 		GL30.glBindVertexArray(quad.getVaoID());
 		GL20.glEnableVertexAttribArray(0);

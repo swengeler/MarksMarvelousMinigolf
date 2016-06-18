@@ -23,7 +23,7 @@ public class GuiButton {
 	private String type;
 	private MenuState menu;
 	
-	public GuiButton(String guiTex, Vector2f position,Vector2f scale, Loader loader, String type, MenuState menu){
+	public GuiButton(String guiTex, Vector2f position, Vector2f scale, Loader loader, String type, MenuState menu) {
 		this.type = type;
 		this.menu = menu;
 		BufferedImage image = null;
@@ -43,7 +43,7 @@ public class GuiButton {
 		float scaleY = height/SCREEN_HEIGHT;
 		//System.out.println("width=" + width + " height=" + height);
 		//System.out.println("px="+pX + ",py=" + pY + ",scalex=" + scaleX + ",scaleY=" + scaleY);
-		this.texture = new GuiTexture(loader.loadTexture(guiTex), new Vector2f(pX,pY), new Vector2f(scaleX,scaleY));
+		this.texture = new GuiTexture(loader.loadTexture(guiTex), new Vector2f(pX, pY), new Vector2f(scaleX, scaleY));
 	}
 	
 	public boolean isInside(Vector2f p) {
@@ -58,13 +58,13 @@ public class GuiButton {
 
 	public void click() {
 		//System.out.println("My size is: width=" + width +", height=" + height);
-		if(type.equals("main_menu")){
+		if(type.equals("main_menu")) {
 			
-		} else if (type.equals("play")){
+		} else if (type.equals("play")) {
 			MainGameLoop.loadGame(2);
-		} else if (type.equals("designer")){
+		} else if (type.equals("designer")) {
 			MainGameLoop.loadDesigner();
-		} else if (type.equals("main_options")){
+		} else if (type.equals("main_options")) {
 			menu.loadOptions();
 		}
 	}
