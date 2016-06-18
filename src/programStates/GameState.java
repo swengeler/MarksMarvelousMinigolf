@@ -133,7 +133,7 @@ public class GameState implements State {
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
 		createEntity("dragon", new Vector3f(100, getWorld().getHeightOfTerrain(100, 60), 60), -10f, 170f, 0f, 3 );
-		ParticleSystem system = createParticleSystem("fire", 8, 200, 30, -0.3f, 1.5f, 8.6f, new Vector3f(113,getWorld().getHeightOfTerrain(100, 60) + 21.3f,57));
+		ParticleSystem system = createParticleSystem("fire", 8, 200, 30, -0.05f, 1.5f, 8.6f, new Vector3f(113,getWorld().getHeightOfTerrain(100, 60) + 21.3f,57));
 		system.setLifeError(0.1f);
 		system.setScaleError(0.5f);
 		system.setSpeedError(0.25f);
