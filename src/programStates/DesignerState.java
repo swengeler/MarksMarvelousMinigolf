@@ -69,6 +69,8 @@ public class DesignerState implements State{
 	private boolean shadow = true;
 	private boolean normalMap = true;
 
+	private long lastInput;
+
 	public DesignerState(Loader loader){
 		init(loader);
 	}
@@ -153,40 +155,45 @@ public class DesignerState implements State{
 
 	@Override
 	public void checkInputs() {
-
 		balls.get(0).checkInputs();
-		if (Keyboard.isKeyDown(Keyboard.KEY_Q) && loader.getVBOs() <= 350 && picker.getCurrentTerrainPoint() != null) {
+		if ((System.currentTimeMillis() - lastInput > 500) && Keyboard.isKeyDown(Keyboard.KEY_Q) && loader.getVBOs() <= 350 && picker.getCurrentTerrainPoint() != null) {
 			world.getTerrains().get(0).updateTerrain(loader, ((picker.getCurrentTerrainPoint().x / (Terrain.getSize()/2)) * (world.getTerrains().get(0).getVertexCount()/2)), ((picker.getCurrentTerrainPoint().z / (Terrain.getSize()/2)) * (world.getTerrains().get(0).getVertexCount()/2)));
 			for (Entity e:world.getEntities()) {
 				float x = e.getPosition().x;
 				float z = e.getPosition().z;
 				float y = getWorld().getHeightOfTerrain(x, z);
-				e.setPosition(new Vector3f(x,y,z));
+				e.setPosition(new Vector3f(x, y, z));
 			}
-
+			lastInput = System.currentTimeMillis();
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_R) && !world.hasStart() && picker.getCurrentTerrainPoint() != null) {
+		if ((System.currentTimeMillis() - lastInput > 500) && Keyboard.isKeyDown(Keyboard.KEY_R) && !world.hasStart() && picker.getCurrentTerrainPoint() != null) {
 			createNotCollidingEntity("disk", 0, new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 1);
 			world.setStart(new Vector2f(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z));
+			lastInput = System.currentTimeMillis();
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_T) && !world.hasEnd() && picker.getCurrentTerrainPoint() != null) {
+		if ((System.currentTimeMillis() - lastInput > 500) && Keyboard.isKeyDown(Keyboard.KEY_T) && !world.hasEnd() && picker.getCurrentTerrainPoint() != null) {
 			createNotCollidingEntity("flag", 0, new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 5);
 			world.setEnd(new Vector2f(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z));
+			lastInput = System.currentTimeMillis();
 		}
-		if (loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_F ) && picker.getCurrentTerrainPoint() != null) {
+		if ((System.currentTimeMillis() - lastInput > 500) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_F ) && picker.getCurrentTerrainPoint() != null) {
 			createEntity("tree", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 5);
+			lastInput = System.currentTimeMillis();
 		}
-		if (loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_G) && picker.getCurrentTerrainPoint() != null) {
+		if ((System.currentTimeMillis() - lastInput > 500) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_G) && picker.getCurrentTerrainPoint() != null) {
 			createEntity("box", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 3);
+			lastInput = System.currentTimeMillis();
 		}
 		if (world.hasStart() && world.hasEnd() && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			MainGameLoop.loadGame(world, 3);
 		}
-		if (loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_V) && picker.getCurrentTerrainPoint() != null) {
+		if ((System.currentTimeMillis() - lastInput > 500) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_V) && picker.getCurrentTerrainPoint() != null) {
 			createEntity("wall", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 3);
+			lastInput = System.currentTimeMillis();
 		}
-		if (loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_B) && picker.getCurrentTerrainPoint() != null) {
+		if ((System.currentTimeMillis() - lastInput > 500) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_B) && picker.getCurrentTerrainPoint() != null) {
 			createEntity("wall", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 90f, 0f, 3);
+			lastInput = System.currentTimeMillis();
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
 			SaveableWorld tmpWorld = new SaveableWorld(world);
@@ -289,7 +296,7 @@ public class DesignerState implements State{
 
 	private void loadModels(){
 		ModelData human = OBJFileLoader.loadOBJ("person");
-		ModelData ball = OBJFileLoader.loadOBJ("ball_oth_high");
+		ModelData ball = OBJFileLoader.loadOBJ("ball_centred_high_scaled2");
 		ModelData tree = OBJFileLoader.loadOBJ("tree");
 		ModelData fern = OBJFileLoader.loadOBJ("fern");
 		ModelData grass = OBJFileLoader.loadOBJ("grassModel");
@@ -379,7 +386,7 @@ public class DesignerState implements State{
 	}
 
 	public Entity createEntity(String eName, Vector3f position, float rotX, float rotY, float rotZ, float scale){
-		Entity e = new Entity(tModels.get(eName), 0, mData.get(eName), position, rotX, rotY, rotZ, scale);
+		Entity e = new Entity(tModels.get(eName), 0, mData.get(eName), position, rotX, rotY, rotZ, scale, eName);
 		world.add(e);
 		return e;
 	}

@@ -13,7 +13,6 @@ public class BobTheBot {
 		this.ball = ball;
 		this.world = world;
 		setAlgorithm(algorithm);
-		
 	}
 
 	public Ball getBall() {

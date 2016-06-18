@@ -29,7 +29,9 @@ public class HMPathing extends Algorithm {
 	public HMPathing(Ball b, World w) {
 		this.b = b;
 		this.w = w;
+		long one = System.currentTimeMillis();
 		createGraph();
+		System.out.println("Time to build graph: " + (System.currentTimeMillis() - one) + "ms");
 	}
 	
 	public void shootBall() {
@@ -195,8 +197,8 @@ public class HMPathing extends Algorithm {
 			}
 		counter++;
 		int percentage = (int)((counter * 1.0 / (grid.length * grid.length)) * 100);
-		System.out.println("Percentage tested: " + percentage + "%");
-		System.out.println("Open set size: " + open.size());
+		//System.out.println("Percentage tested: " + percentage + "%");
+		//System.out.println("Open set size: " + open.size());
 		n.setTested(true);
 		n.setTesting(false);
 	}

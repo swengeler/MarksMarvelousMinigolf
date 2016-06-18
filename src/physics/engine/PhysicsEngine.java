@@ -611,7 +611,7 @@ public class PhysicsEngine {
     public float getHeightAt(float x, float z) {
         ArrayList<Entity> belowBall = null;
         for (Entity e : world.getEntities()) {
-            if (e.inHorizontalBounds(x, z)) {
+            if (e.isCollidable() && e.inHorizontalBounds(x, z)) {
                 if (belowBall == null)
                     belowBall = new ArrayList<>();
                 belowBall.add(e);
@@ -622,7 +622,7 @@ public class PhysicsEngine {
             return world.getHeightOfTerrain(x, z);
         }
 
-        System.out.println("Below ball: " + belowBall.get(0));
+        //System.out.println("Below ball: " + belowBall.get(0));
 
         float curHeight, maxHeight = -Float.MAX_VALUE;
         for (Entity e : belowBall) {

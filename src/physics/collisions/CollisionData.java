@@ -64,7 +64,7 @@ public class CollisionData implements Serializable{
 			u = Vector3f.dot(pq, Vector3f.cross(c, b, temp)) + Vector3f.dot(m, Vector3f.sub(c, b, temp));
 			v = Vector3f.dot(pq, Vector3f.cross(a, c, temp)) + Vector3f.dot(m, Vector3f.sub(a, c, temp));
 			w = Vector3f.dot(pq, Vector3f.cross(b, a, temp)) + Vector3f.dot(m, Vector3f.sub(b, a, temp));
-			System.out.println("Face " + f + " processed");
+			//System.out.println("Face " + f + " processed");
 			if ((u * v) > 0 && (u * w) > 0) {
 				denom = 1 / (u + v + w);
 				u *= denom;
@@ -72,11 +72,11 @@ public class CollisionData implements Serializable{
 				w *= denom;
 
 				curHeight = a.y * u + b.y * v + c.y * w;
-				System.out.println("Face " + f + " has height " + curHeight);
+				//System.out.println("Face " + f + " has height " + curHeight);
 
 				if (curHeight > maxHeight) {
 					maxHeight = curHeight;
-					System.out.println("Is also maxHeight");
+					//System.out.println("Is also maxHeight");
 				}
 			}
 		}

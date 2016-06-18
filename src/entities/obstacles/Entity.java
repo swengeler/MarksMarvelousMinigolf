@@ -14,7 +14,7 @@ import models.TexturedModel;
 import objConverter.ModelData;
 import toolbox.LinearAlgebra;
 
-public class Entity implements Serializable{
+public class Entity implements Serializable {
 
 	protected TexturedModel model;
 	protected CollisionData cdata;

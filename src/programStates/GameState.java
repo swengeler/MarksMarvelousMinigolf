@@ -124,6 +124,7 @@ public class GameState implements State {
 		//world.setEnd(new Vector2f(world.getStart().x + 50, world.getStart().z + 50));
         //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
 		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
+		createEntity("wall", new Vector3f(100, 0, 100), 0, 0, 0, 5);
 		//createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
 		//two = createRotatingEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), new Vector3f(0, 180, 0), 5, new Vector3f());
 		two = createEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), 0, 180, 0, 5);
@@ -139,7 +140,7 @@ public class GameState implements State {
 		system.setSpeedError(0.25f);
 		system.randomizeRotation();
 		system.setDirection(new Vector3f(1,0,0), 0.1f);
-		//bob = new BobTheBot(0, balls.get(0),world);
+		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 
 		System.out.println("\nHEIGHT TEST");
@@ -154,8 +155,9 @@ public class GameState implements State {
 		loadGuis();
 		this.world = world;
 		createTerrain(0, 0, "grass", world.getTerrains().get(0).getHeights());
-		for(Entity e:world.getEntities()) {
+		for (Entity e : world.getEntities()) {
 			System.out.println(e);
+			System.out.println("cdata: " + e.getCollisionData());
 		}
 		createBall(new Vector3f(world.getStart().x, world.getStart().y, world.getStart().z), true);
 		loadLights();
@@ -167,9 +169,8 @@ public class GameState implements State {
 		setCameraToBall(currBall);
 		System.out.println("done game with world");
 		createTerrain(0, 1, "grass", false);
-		bob = new BobTheBot(0, balls.get(0),world);
+		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
-
 	}
 	
 	@Override
@@ -370,7 +371,7 @@ public class GameState implements State {
 		ModelData empty = OBJFileLoader.loadOBJ("empty");
 		ModelData disk = OBJFileLoader.loadOBJ("disk");
 		ModelData flag = OBJFileLoader.loadOBJ("flag");
-		ModelData wall = OBJFileLoader.loadOBJ("wall3");
+		ModelData wall = OBJFileLoader.loadOBJ("wall");
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("hole");
         ModelData ramp = OBJFileLoader.loadOBJ("ramp_hole");
