@@ -71,7 +71,7 @@ public class Loader {
 		return new RawModel(vaoID, positions.length/dimensions);
 	}
 	
-	public int loadTexture(String fileName){
+	public int loadTexture(String fileName) {
 		Texture texture = null;
 		try {
 			texture = TextureLoader.getTexture("PNG",  new FileInputStream("res/" + fileName + ".png"));
@@ -80,7 +80,7 @@ public class Loader {
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0);
 			
 
-			if(GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic){
+			if (GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic){
 				float amount = Math.min(3f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
 				GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, amount);
 			

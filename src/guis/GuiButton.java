@@ -60,11 +60,11 @@ public class GuiButton {
 		//System.out.println("My size is: width=" + width +", height=" + height);
 		if(type.equals("main_menu")){
 			
-		} else if(type.equals("play")){
+		} else if (type.equals("play")){
 			MainGameLoop.loadGame(2);
-		} else if(type.equals("designer")){
+		} else if (type.equals("designer")){
 			MainGameLoop.loadDesigner();
-		} else if(type.equals("main_options")){
+		} else if (type.equals("main_options")){
 			menu.loadOptions();
 		}
 	}

@@ -30,7 +30,7 @@ public class GuiRenderer {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		for(GuiTexture gui: guis){
+		for (GuiTexture gui : guis){
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, gui.getTexture());
 			Matrix4f matrix = LinearAlgebra.createTransformationMatrix(gui.getPosition(), gui.getScale());

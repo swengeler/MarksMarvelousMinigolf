@@ -6,12 +6,13 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import physics.engine.PhysicsEngine;
+import physics.noise.Friction;
 import physics.utils.ShotData;
 import terrains.World;
 
 public class MonteCarlo {
 
-    private static final int NR_SHOTS = 10;
+    private static final int NR_SHOTS = 1;
     private static final float MAX_VELOCITY = 50;
 
     public Vector3f calculateShot(Ball b, World w) {
@@ -19,7 +20,8 @@ public class MonteCarlo {
         Vector3f initVelocity = new Vector3f(), bestVelocity = new Vector3f();
         float curDistanceSq, lowestDistanceSq = Float.MAX_VALUE;
         for (int i = 0; i < NR_SHOTS; i++) {
-            randomMagnitude(initVelocity, i);
+            straightShotNonRandom(initVelocity, w.getEnd(), b.getPosition());
+            //randomMagnitude(initVelocity, i);
             curShotData = PhysicsEngine.getInstance().performVirtualShot((RealBall) b, initVelocity);
             curDistanceSq = (Vector3f.sub(w.getEnd(), curShotData.getEndPosition(), null)).lengthSquared();
             if (curDistanceSq < lowestDistanceSq) {
@@ -48,6 +50,24 @@ public class MonteCarlo {
             velocity.set(rotVector.x, rotVector.y, rotVector.z);
             System.out.println("Velocity set to: " + velocity);
         }
+        return velocity;
+    }
+
+    private Vector3f straightShot(Vector3f velocity, Vector3f holePosition, Vector3f ballPosition) {
+        Vector3f temp = Vector3f.sub(holePosition, ballPosition, null);
+        float length = temp.length();
+        temp.normalise();
+        temp.scale((float) (Math.random() * 2 * length + length));
+        velocity.set(temp);
+        return velocity;
+    }
+
+    private Vector3f straightShotNonRandom(Vector3f velocity, Vector3f holePosition, Vector3f ballPosition) {
+        Vector3f temp = Vector3f.sub(holePosition, ballPosition, null);
+        float finalMagnitude = (float) Math.sqrt(2 * Friction.COEFFICIENT * 230 * temp.length());
+        temp.normalise();
+        temp.scale(finalMagnitude);
+        velocity.set(temp);
         return velocity;
     }
 

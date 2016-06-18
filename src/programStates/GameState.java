@@ -13,6 +13,7 @@ import entities.obstacles.RotatingEntity;
 import entities.lights.Light;
 import entities.playable.Ball;
 import entities.playable.RealBall;
+import guis.GuiButton;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -364,7 +365,8 @@ public class GameState implements State {
 	private void loadGuis() {
 		long before = System.currentTimeMillis();
 		guiRenderer = new GuiRenderer(loader);
-		guis = new ArrayList<GuiTexture>();
+		guis = new ArrayList<>();
+		guis.add(new GuiTexture(loader.loadTexture("title"), new Vector2f(DisplayManager.getWidth()/2f,DisplayManager.getHeight()*8/10 + 55), new Vector2f(0.8f,0.8f)));
 		//System.out.println("Loading GUI: " + (System.currentTimeMillis() - before) + "ms");
 	}
 	
