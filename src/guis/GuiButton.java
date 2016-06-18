@@ -41,8 +41,8 @@ public class GuiButton {
 		float pY = (position.y - SCREEN_HEIGHT/2f)/(SCREEN_HEIGHT/2f);
 		float scaleX = width/SCREEN_WIDTH;
 		float scaleY = height/SCREEN_HEIGHT;
-		System.out.println("width=" + width + " height=" + height);
-		System.out.println("px="+pX + ",py=" + pY + ",scalex=" + scaleX + ",scaleY=" + scaleY);
+		//System.out.println("width=" + width + " height=" + height);
+		//System.out.println("px="+pX + ",py=" + pY + ",scalex=" + scaleX + ",scaleY=" + scaleY);
 		this.texture = new GuiTexture(loader.loadTexture(guiTex), new Vector2f(pX,pY), new Vector2f(scaleX,scaleY));
 	}
 	
@@ -57,7 +57,7 @@ public class GuiButton {
 	}
 
 	public void click() {
-		System.out.println("My size is: width=" + width +", height=" + height);
+		//System.out.println("My size is: width=" + width +", height=" + height);
 		if(type.equals("main_menu")){
 			
 		} else if(type.equals("play")){

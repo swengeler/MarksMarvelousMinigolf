@@ -402,7 +402,7 @@ public class Terrain implements Serializable {
 	}
 
 	public ArrayList<PhysicalFace> getCollidingFaces(Ball b) {
-		System.out.println("getCollidingFaces in Terrain is called (Terrain at " + this.x + "|" + this.z + ")");
+		//System.out.println("getCollidingFaces in Terrain is called (Terrain at " + this.x + "|" + this.z + ")");
 		float ballR = Ball.RADIUS;
 		float ballX = b.getPosition().x - this.x;
 		float ballZ = b.getPosition().z - this.z;
@@ -442,7 +442,7 @@ public class Terrain implements Serializable {
 		else if (lowerZ < 0)
 			lowerZ = 0;
 
-		System.out.println("leftX = " + leftX + ", rightX = " + rightX + ", upperZ = " + upperZ + ", lowerZ = " + lowerZ);
+		//System.out.println("leftX = " + leftX + ", rightX = " + rightX + ", upperZ = " + upperZ + ", lowerZ = " + lowerZ);
 
 		Vector3f p1 = new Vector3f(0,0,0), p2 = new Vector3f(0,0,0), p3 = new Vector3f(0,0,0), normal = new Vector3f(0,0,0), v1 = new Vector3f(0,0,0), v2 = new Vector3f(0,0,0);
 
@@ -480,7 +480,7 @@ public class Terrain implements Serializable {
 				//System.out.println("Face added: " + collidingFaces.get(collidingFaces.size() - 1) + ".");
 			}
 		}
-		System.out.println("Number of colliding faces (in Terrain): " + collidingFaces.size());
+		//System.out.println("Number of colliding faces (in Terrain): " + collidingFaces.size());
 		return collidingFaces;
 	}
 	

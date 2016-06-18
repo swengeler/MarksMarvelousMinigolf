@@ -120,7 +120,7 @@ public class World implements Serializable{
 	}
 	
 	public ArrayList<PhysicalFace> getCollidingFacesTerrains(Ball b) {
-		System.out.println("getCollidingFaces in World is called (there are " + terrains.size() + " terrains)");
+		//System.out.println("getCollidingFaces in World is called (there are " + terrains.size() + " terrains)");
 		ArrayList<PhysicalFace> collidingFaces = new ArrayList<PhysicalFace>();
 		for (Terrain t : terrains) {
 			if (t.ballInTerrain(b))
@@ -208,7 +208,7 @@ public class World implements Serializable{
 	}
 	
 	public void setEnd(Vector2f position) {
-		System.out.println("New hole at x: " + position.x + " z: " + position.y);
+		//System.out.println("New hole at x: " + position.x + " z: " + position.y);
 		this.End =  position;
 		this.hasEnd = true;
 	}

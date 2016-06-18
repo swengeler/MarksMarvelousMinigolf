@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bot2_0.MonteCarlo;
 import entities.camera.Camera;
 import entities.camera.Empty;
 import entities.obstacles.Entity;
@@ -78,6 +79,7 @@ public class GameState implements State {
 	
 	private boolean gameover = true;
 	private long virtualShotTest = -1;
+	private long lastInput;
 
 	private float timeBallStill;
 	
@@ -218,9 +220,9 @@ public class GameState implements State {
 	@Override
 	public void checkInputs() {
 		balls.get(currBall).checkInputs();
-		if (Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
+		if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
 			bob.shoot();
-		} else if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
+		} else if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_I)) {
 			if (virtualShotTest == -1) {
 				System.out.println("\n\n\nVIRTUALBALL TEST STARTING\n");
 				mainEngine.performVirtualShot((RealBall) balls.get(0), new Vector3f(150, 0, 150));
@@ -229,6 +231,15 @@ public class GameState implements State {
 				System.out.println("\nVIRTUALBALL TEST ENDING\n\n\n");
 				virtualShotTest = 0;
 			}
+		} else if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_N)) {
+			MonteCarlo mc = new MonteCarlo();
+			System.out.println("Calculating shot test for ball " + currBall);
+			long one = System.currentTimeMillis();
+			Vector3f vel = mc.calculateShot(balls.get(currBall), world);
+			System.out.println("Calculated shot test for ball " + currBall + " in " + (System.currentTimeMillis() - one) + "ms");
+			balls.get(currBall).setMoving(true);
+			balls.get(currBall).setVelocity(vel);
+			((RealBall) balls.get(currBall)).setPlayed(true);
 		}
 	}
 	
@@ -307,7 +318,7 @@ public class GameState implements State {
 		long before = System.currentTimeMillis();
 		Terrain t = new Terrain(gridX, gridY, loader, new ModelTexture(loader.loadTexture(texName)), rand);
 		world.add(t);
-		System.out.println("Loading terrain: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading terrain: " + (System.currentTimeMillis() - before) + "ms");
 		return t;
 	}
 	
@@ -322,7 +333,7 @@ public class GameState implements State {
 		Terrain t = new Terrain(gridX, gridY, loader, new ModelTexture(loader.loadTexture(texName)), height, new Vector2f(world.getEnd().x, world.getEnd().z));
 		world.removeTerrain();
 		world.add(t);
-		System.out.println("Loading terrain: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading terrain: " + (System.currentTimeMillis() - before) + "ms");
 		return t;
 	}
 	
@@ -332,7 +343,7 @@ public class GameState implements State {
 			waterTiles.add(new WaterTile(tileCenterX, tileCenterZ, tileHeight));
 			return waterTiles.get(0);
 		} else {
-			System.out.println("Water disabled or already existent");
+			//System.out.println("Water disabled or already existent");
 			return null;
 		}
 	}
@@ -340,7 +351,7 @@ public class GameState implements State {
 	private void loadParticleSystem() {
 		long before = System.currentTimeMillis();
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());
-		System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading particle system: " + (System.currentTimeMillis() - before) + "ms");
 	}
 
 	private void loadWater() {
@@ -348,14 +359,14 @@ public class GameState implements State {
 		fbos = new WaterFrameBuffers();
 		WaterShader waterShader = new WaterShader();
 		waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), fbos);
-		System.out.println("Loading water: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading water: " + (System.currentTimeMillis() - before) + "ms");
 	}
 
 	private void loadGuis() {
 		long before = System.currentTimeMillis();
 		guiRenderer = new GuiRenderer(loader);
 		guis = new ArrayList<GuiTexture>();
-		System.out.println("Loading GUI: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading GUI: " + (System.currentTimeMillis() - before) + "ms");
 	}
 	
 	private void loadModels() {
@@ -460,7 +471,7 @@ public class GameState implements State {
 		tModels.get("ball").getTexture().setShineDamper(10);
 		tModels.get("ball").getTexture().setReflectivity(1);
 
-		System.out.println("Loading all models: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading all models: " + (System.currentTimeMillis() - before) + "ms");
 	}
 	
 	private void loadLights(){
@@ -469,14 +480,14 @@ public class GameState implements State {
 		List<Light> lights = new ArrayList<Light>();
 		lights.add(new Light(new Vector3f(1000000,1500000,-1000000),new Vector3f(1f,1f,1f)));
 		world.addLights(lights);
-		System.out.println("Loading lights: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading lights: " + (System.currentTimeMillis() - before) + "ms");
 	}
 	
 	public Entity createEntity(String eName, Vector3f position, float rotX, float rotY, float rotZ, float scale){
 		long before = System.currentTimeMillis();
 		Entity e = new Entity(tModels.get(eName), 0,mData.get(eName), position, rotX, rotY, rotZ, scale);
 		world.add(e);
-		System.out.println("Loading entity: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading entity: " + (System.currentTimeMillis() - before) + "ms");
 		return e;
 	}
 
@@ -484,7 +495,7 @@ public class GameState implements State {
 		long before = System.currentTimeMillis();
 		Entity e = new RotatingEntity(tModels.get(eName), 0,mData.get(eName), position, rotation, scale, rotVel);
 		world.add(e);
-		System.out.println("Loading entity: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading entity: " + (System.currentTimeMillis() - before) + "ms");
 		return e;
 	}
 	

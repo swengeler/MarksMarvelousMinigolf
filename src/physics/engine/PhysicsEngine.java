@@ -91,7 +91,7 @@ public class PhysicsEngine {
         for (RealBall b : balls) {
             b.applyAccel(GRAVITY);
             if (b.isMoving()) {
-                System.out.println("Since the ball moved wind is applied");
+                //System.out.println("Since the ball moved wind is applied");
                 noiseHandler.applyWind(b.getVelocity());
             }
             if ((b.isMoving() && (b.movedLastStep() || b.getLastTimeElapsed() == 0)) || MainGameLoop.getCounter() < 10) {
@@ -164,7 +164,7 @@ public class PhysicsEngine {
     public boolean resolveObstacleCollision(Ball b) {
         ArrayList<PhysicalFace> collidingFaces = new ArrayList<>();
         collidingFaces.addAll(world.getCollidingFacesEntities(b));
-        System.out.println("NUMBER OF COLLIDING FACES: " + collidingFaces.size());
+        //System.out.println("NUMBER OF COLLIDING FACES: " + collidingFaces.size());
 
         if (collidingFaces.size() == 0)
              return false;
@@ -173,7 +173,7 @@ public class PhysicsEngine {
 
         ArrayList<PhysicalFace> combined = new ArrayList<PhysicalFace>();
         combined.add(collidingFaces.get(0));
-        System.out.println("Normal added: (" + combined.get(0).getNormal().x + "|" + combined.get(0).getNormal().y + "|" + combined.get(0).getNormal().z + ")");
+       // System.out.println("Normal added: (" + combined.get(0).getNormal().x + "|" + combined.get(0).getNormal().y + "|" + combined.get(0).getNormal().z + ")");
         for (PhysicalFace f : collidingFaces) {
             boolean found = false;
             for (int i = 0; !found && i < combined.size(); i++) {
@@ -183,12 +183,12 @@ public class PhysicsEngine {
                     found = true;
             }
             if (!found) {
-                System.out.println("Normal added: (" + f.getNormal().x + "|" + f.getNormal().y + "|" + f.getNormal().z + ")");
+                //System.out.println("Normal added: (" + f.getNormal().x + "|" + f.getNormal().y + "|" + f.getNormal().z + ")");
                 combined.add(f);
             }
         }
 
-        System.out.println("Number of combined faces: " + combined.size());
+        //System.out.println("Number of combined faces: " + combined.size());
 
         PhysicalFace forResolution;
         ArrayList<PhysicalFace> stillColliding = new ArrayList<>();
@@ -217,9 +217,9 @@ public class PhysicsEngine {
                     stillColliding.add(f);
             }
             //stillColliding = collidingFaces;
-            System.out.println("Number of faces still colliding: " + stillColliding.size());
+            //System.out.println("Number of faces still colliding: " + stillColliding.size());
             for (PhysicalFace f : stillColliding) {
-                System.out.printf("Still colliding: (%f|%f|%f)\n", f.getNormal().x, f.getNormal().y, f.getNormal().z);
+                //System.out.printf("Still colliding: (%f|%f|%f)\n", f.getNormal().x, f.getNormal().y, f.getNormal().z);
             }
 
             if (stillColliding.size() == 1) {
@@ -237,10 +237,10 @@ public class PhysicsEngine {
                 if (Math.abs(closest1.x - closest2.x) < NORMAL_TH && Math.abs(closest1.y - closest2.y) < NORMAL_TH && Math.abs(closest1.z - closest2.z) < NORMAL_TH) {
                     Vector3f edge = stillColliding.get(0).getCommonEdge(stillColliding.get(1));
                     if (edge == null) {
-                        System.out.println("EDGE COULD NOT BE RESOLVED -> ONE PLANE CHOSEN RANDOMLY");
+                        //System.out.println("EDGE COULD NOT BE RESOLVED -> ONE PLANE CHOSEN RANDOMLY");
                         forResolution = stillColliding.get(0);
                     } else {
-                        System.out.println("Stuff for edge collision: " + Vector3f.dot(b.getVelocity(), closest1) + " - " + Vector3f.dot(b.getVelocity(), b.getPosition()) + " = " + (Vector3f.dot(b.getVelocity(), closest1) - Vector3f.dot(b.getVelocity(), b.getPosition())));
+                        //System.out.println("Stuff for edge collision: " + Vector3f.dot(b.getVelocity(), closest1) + " - " + Vector3f.dot(b.getVelocity(), b.getPosition()) + " = " + (Vector3f.dot(b.getVelocity(), closest1) - Vector3f.dot(b.getVelocity(), b.getPosition())));
                         Vector3f normal = new Vector3f();
                         /*Vector3f projOnEdge = new Vector3f(edge.x, edge.y, edge.z);
                         projOnEdge.scale(Vector3f.dot(edge, b.getVelocity()) / edge.lengthSquared());
@@ -248,14 +248,14 @@ public class PhysicsEngine {
                         System.out.printf("Projection of velocity on edge: (%f|%f|%f)\n", projOnEdge.x, projOnEdge.y, projOnEdge.z);
                         System.out.printf("Ball's velocity: (%f|%f|%f)\n", b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
                         Vector3f.sub(b.getVelocity(), projOnEdge, normal);*/
-                        System.out.printf("Closest point: (%f|%f|%f)\n", closest1.x, closest1.y, closest1.z);
+                        //System.out.printf("Closest point: (%f|%f|%f)\n", closest1.x, closest1.y, closest1.z);
                         Vector3f.sub(b.getPosition(), closest1, normal);
-                        System.out.printf("Normal for resolution: (%f|%f|%f)\n", normal.x, normal.y, normal.z);
+                        //System.out.printf("Normal for resolution: (%f|%f|%f)\n", normal.x, normal.y, normal.z);
                         forResolution = new PhysicalFace(normal, closest1, closest1, closest1);
                     }
                 } else if (LinearAlgebra.distancePtPtSq(closest1, b.getPosition()) < LinearAlgebra.distancePtPtSq(closest2, b.getPosition())) {
                     forResolution = stillColliding.get(0);
-                    System.out.println("Collision with first plane out of two: " + forResolution.getNormal());
+                    //System.out.println("Collision with first plane out of two: " + forResolution.getNormal());
                     // resetting the ball's position to prevent weird-looking behaviour where the ball could jump between positions
                     b.getPosition().set(resetPosition);
                     //b.move();
@@ -270,7 +270,7 @@ public class PhysicsEngine {
 
                 } else {
                     forResolution = stillColliding.get(1);
-                    System.out.println("Collision with second plane out of two: " + forResolution.getNormal());
+                    //System.out.println("Collision with second plane out of two: " + forResolution.getNormal());
                     // resetting the ball's position to prevent weird-looking behaviour where the ball could jump between positions
                     b.getPosition().set(resetPosition);
                     //b.move();
@@ -364,7 +364,7 @@ public class PhysicsEngine {
         }
 
         resolvePlaneCollision(b, forResolution);
-        System.out.println("COLLISION WITH OBSTACLE RESOLVED");
+        //System.out.println("COLLISION WITH OBSTACLE RESOLVED");
         //MainGameLoop.currState.cleanUp();
         //DisplayManager.closeDisplay();
         return true;
@@ -376,7 +376,7 @@ public class PhysicsEngine {
                 // the normal is chosen from b1 to b2 so that it will not only be parallel to the new vector of movement of b2 but will also point in the right direction
                 Vector3f normal = new Vector3f(b2.getPosition().x - b1.getPosition().x, b2.getPosition().y - b1.getPosition().y, b2.getPosition().z - b1.getPosition().z);
                 if (normal.lengthSquared() < Math.pow(2 * Ball.RADIUS, 2)) {
-                    System.out.println("BALL COLLISION OCCURS");
+                    //System.out.println("BALL COLLISION OCCURS");
 
                     // the moving ball (b1) is pushed out of the previously unmoving ball (b2)
                     Vector3f revM = new Vector3f(b1.getVelocity().x, b1.getVelocity().y, b1.getVelocity().z);
@@ -441,9 +441,9 @@ public class PhysicsEngine {
         if (angle > Math.toRadians(45) || (angle * b.getVelocity().lengthSquared() * C > 1 && angle > Math.toRadians(ANGLE_TH))) {
             // the ball is bouncing and the velocity can simply remain as is, only the coefficient of restitution has to be applied
             System.out.println("BOUNCING");
-            System.out.println(b.getVelocity().x + " " + b.getVelocity().y + " " + b.getVelocity().z);
+            //System.out.println(b.getVelocity().x + " " + b.getVelocity().y + " " + b.getVelocity().z);
             b.scaleVelocity(noiseHandler.getRestitutionNoise());
-            System.out.println(b.getRotation().x + " " + b.getRotation().y + " " + b.getRotation().z);
+            //System.out.println(b.getRotation().x + " " + b.getRotation().y + " " + b.getRotation().z);
         } else {
             // the ball is rolling (or sliding but that is not implemented (yet)), therefore a projection on the plane instead of a reflection is used
             System.out.println("ROLLING");

@@ -86,9 +86,9 @@ public class DesignerState implements State{
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
 		loadWater();
-		System.out.println("Before loading particle system for the first time in designerstate");
+		//System.out.println("Before loading particle system for the first time in designerstate");
 		loadParticleSystem();
-		System.out.println("After loading particle system for the first time in designerstate");
+		//System.out.println("After loading particle system for the first time in designerstate");
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
@@ -264,7 +264,7 @@ public class DesignerState implements State{
 		Terrain t = new Terrain(gridX, gridY, loader, new ModelTexture(loader.loadTexture(texName)), height, new Vector2f(world.getEnd().x, world.getEnd().z));
 		world.removeTerrain();
 		world.add(t);
-		System.out.println("Loading terrain: " + (System.currentTimeMillis() - before) + "ms");
+		//System.out.println("Loading terrain: " + (System.currentTimeMillis() - before) + "ms");
 		return t;
 	}
 
@@ -274,7 +274,7 @@ public class DesignerState implements State{
 			waterTiles.add(new WaterTile(tileCenterX, tileCenterZ, tileHeight));
 			return waterTiles.get(0);
 		} else {
-			System.out.println("Water disabled or already existent");
+			//System.out.println("Water disabled or already existent");
 			return null;
 		}
 	}

@@ -162,7 +162,7 @@ public class Entity implements Serializable {
 
 		long after = System.currentTimeMillis();
 		long difference = after - before;
-		System.out.println("Time to construct faces (for entity): " + difference + "\n");
+		//System.out.println("Time to construct faces (for entity): " + difference + "\n");
 	}
 
 	public CollisionData getCollisionData() {

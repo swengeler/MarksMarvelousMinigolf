@@ -12,14 +12,14 @@ import terrains.World;
 public class MonteCarlo {
 
     private static final int NR_SHOTS = 10;
-    private static final float MAX_VELOCITY = 20;
+    private static final float MAX_VELOCITY = 50;
 
     public Vector3f calculateShot(Ball b, World w) {
         ShotData curShotData;
         Vector3f initVelocity = new Vector3f(), bestVelocity = new Vector3f();
         float curDistanceSq, lowestDistanceSq = Float.MAX_VALUE;
         for (int i = 0; i < NR_SHOTS; i++) {
-            onlyRandom(initVelocity);
+            randomMagnitude(initVelocity, i);
             curShotData = PhysicsEngine.getInstance().performVirtualShot((RealBall) b, initVelocity);
             curDistanceSq = (Vector3f.sub(w.getEnd(), curShotData.getEndPosition(), null)).lengthSquared();
             if (curDistanceSq < lowestDistanceSq) {
@@ -40,11 +40,13 @@ public class MonteCarlo {
         Vector4f rotVector = new Vector4f(0, 0, 0, 1);
         if (step == 0) {
             velocity.set((float) (Math.random() * MAX_VELOCITY), 0, (float) (Math.random() * MAX_VELOCITY));
-            rotMatrix.rotate((float) (Math.PI / NR_SHOTS) * step, new Vector3f(0, 1, 0));
+            System.out.println("Velocity set initially to: " + velocity);
         } else {
+            rotMatrix.rotate((float) (Math.PI / NR_SHOTS) * step, new Vector3f(0, 1, 0));
             rotVector.set(velocity.x, velocity.y, velocity.z);
             Matrix4f.transform(rotMatrix, rotVector, rotVector);
             velocity.set(rotVector.x, rotVector.y, rotVector.z);
+            System.out.println("Velocity set to: " + velocity);
         }
         return velocity;
     }
