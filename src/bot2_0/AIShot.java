@@ -16,11 +16,11 @@ public class AIShot {
 	}
 	
 	public void addNode(Node node){
-		if(nodes.size() == 0 || nodes.get(nodes.size() - 1) != node){
+		if(nodes.size() == 0 || !nodes.get(nodes.size() - 1).equals(node)){
 			nodes.add(node);
 			if(closestNode == null)
 				closestNode = node;
-			if(node.getD() < closestNode.getD())
+			else if(node.getD() < closestNode.getD())
 				closestNode = node;
 		}
 	}
