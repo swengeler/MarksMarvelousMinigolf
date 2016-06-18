@@ -12,6 +12,7 @@ public interface Ball {
 	float REAL_RADIUS = 0.04267f;
 	float REAL_MASS = 0.04593f;
 	float RADIUS = 1f;
+	float MIN_VEL = 0.5f;
 
 	void updateAndMove();
 	void move();

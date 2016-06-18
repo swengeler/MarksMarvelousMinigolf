@@ -208,7 +208,7 @@ public class World implements Serializable{
 	}
 	
 	public void setEnd(Vector2f position) {
-		//System.out.println("New hole at x: " + position.x + " z: " + position.y);
+		System.out.println("New hole at x: " + position.x + " z: " + position.y);
 		this.End =  position;
 		this.hasEnd = true;
 	}

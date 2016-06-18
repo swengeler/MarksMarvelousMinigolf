@@ -19,8 +19,6 @@ import entities.obstacles.Entity;
 import physics.noise.NoiseHandler;
 import physics.utils.ShotData;
 import physics.collisions.PhysicalFace;
-import programStates.GameState;
-import renderEngine.utils.DisplayManager;
 import terrains.Terrain;
 import terrains.World;
 import toolbox.LinearAlgebra;
@@ -422,7 +420,8 @@ public class PhysicsEngine {
     }
 
     private void resolvePlaneCollision(Ball b, PhysicalFace forResolution) {
-        System.out.println("Ball's velocity before collision resolution: " + b.getVelocity());
+        System.out.print("Ball's position during collision resolution: " + b.getPosition() + " with plane: " + forResolution.getNormal());
+        System.out.print(", ball's velocity before:  " + b.getVelocity());
         // calculate the angle between the plane that is used for collision resolution and the velocity vector of the ball
         // since Vector3f.angle(x, y) can compute angles over 90 degrees, there is an additional check to make sure the angle is below 90 degrees
         float temp = Vector3f.angle(forResolution.getNormal(), b.getVelocity());
@@ -436,17 +435,16 @@ public class PhysicsEngine {
         Vector3f normalComponent = new Vector3f(normal.x, normal.y, normal.z);
         normalComponent.scale(2 * Vector3f.dot(b.getVelocity(), normal) * (1 / normal.lengthSquared()));
         Vector3f.sub(b.getVelocity(), normalComponent, b.getVelocity());
-
         // 45 degrees and 5 degrees are estimated
         if (angle > Math.toRadians(45) || (angle * b.getVelocity().lengthSquared() * C > 1 && angle > Math.toRadians(ANGLE_TH))) {
             // the ball is bouncing and the velocity can simply remain as is, only the coefficient of restitution has to be applied
-            System.out.println("BOUNCING");
+            System.out.print(" BOUNCING");
             //System.out.println(b.getVelocity().x + " " + b.getVelocity().y + " " + b.getVelocity().z);
             b.scaleVelocity(noiseHandler.getRestitutionNoise());
             //System.out.println(b.getRotation().x + " " + b.getRotation().y + " " + b.getRotation().z);
         } else {
             // the ball is rolling (or sliding but that is not implemented (yet)), therefore a projection on the plane instead of a reflection is used
-            System.out.println("ROLLING");
+            System.out.print(" ROLLING");
             Vector3f projection = new Vector3f();
             normalComponent.scale(-0.5f);
             Vector3f.sub(b.getVelocity(), normalComponent, projection);
@@ -474,7 +472,7 @@ public class PhysicsEngine {
                 b.setMoving(false);
             }
         }
-        System.out.println("Ball's velocity after collision resolution: " + b.getVelocity());
+        System.out.println(", ball's velocity after: " + b.getVelocity());
     }
 
     public ShotData performVirtualShot(RealBall b, Vector3f shotVel) {
@@ -485,6 +483,10 @@ public class PhysicsEngine {
         System.out.printf("Initial position of the virtual ball: (%f|%f|%f)\n", ball.getPosition().x, ball.getPosition().y, ball.getPosition().z);
         int counter = 0;
         long one = System.currentTimeMillis();
+
+        float hx = world.getEnd().x;
+        float hz = world.getEnd().z;
+
         while (ball.isMoving() || counter < 10) {
             ball.applyAccel(GRAVITY);
             if ((ball.isMoving() && ball.movedLastStep()) || counter < 10) {
@@ -499,6 +501,11 @@ public class PhysicsEngine {
                 ball.setMoving(false);
             }
             counter++;
+
+            if (ball.specialMovedLastStep() /* Math.abs(ball.getPosition().y - GameState.getInstance().getWorld().getHeightOfTerrain(ball.getPosition().x, ball.getPosition().z)) < 1*/ /*&& Math.abs(ball.getPosition().x - hx) < 2 && Math.abs(ball.getPosition().z - hz) < 2*/) {
+                ball.setVelocity(0, 0, 0);
+                ball.setMoving(false);
+            }
         }
         long two = System.currentTimeMillis();
         System.out.println("Virtual shot took " + (two - one) + "ms");

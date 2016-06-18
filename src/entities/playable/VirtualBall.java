@@ -6,6 +6,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import physics.collisions.PhysicalFace;
 import physics.engine.PhysicsEngine;
+import programStates.GameState;
 
 public class VirtualBall implements Ball {
 	
@@ -37,6 +38,9 @@ public class VirtualBall implements Ball {
 		increasePosition(delta.x, delta.y, delta.z);
 		//System.out.printf("\nVirtualBall's position after updating: (%f|%f|%f)\n", position.x, position.y, position.z);
 		//System.out.printf("VirtualBall's velocity after updating: (%f|%f|%f)\n", velocity.x, velocity.y, velocity.z);
+		if (getVelocity().length() < Ball.MIN_VEL && Math.abs(getPosition().y - GameState.getInstance().getWorld().getHeightOfTerrain(getPosition().x, getPosition().z)) < 1) {
+			setMoving(false);
+		}
 	}
 
 	public void move() {
@@ -109,6 +113,14 @@ public class VirtualBall implements Ball {
 						Math.pow(position.y - lastPosition.y, 2) +
 						Math.pow(position.z - lastPosition.z, 2) >
 						Math.pow(PhysicsEngine.MIN_MOV_REQ, 2));
+		return moved;
+	}
+
+	public boolean specialMovedLastStep() {
+		boolean moved = (Math.pow(position.x - lastPosition.x, 2) +
+				Math.pow(position.y - lastPosition.y, 2) +
+				Math.pow(position.z - lastPosition.z, 2) >
+				Math.pow(0.5, 2));
 		return moved;
 	}
 	

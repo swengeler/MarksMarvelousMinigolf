@@ -249,7 +249,6 @@ public class GameState implements State {
 		world.setCamera(camera);
 	}
 	
-	
 	@Override
 	public void update() {
 		if (mainEngine == null) {

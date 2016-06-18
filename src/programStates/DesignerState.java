@@ -185,7 +185,7 @@ public class DesignerState implements State{
 			lastInput = System.currentTimeMillis();
 		}
 		if (world.hasStart() && world.hasEnd() && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-			MainGameLoop.loadGame(world, 5);
+			MainGameLoop.loadGame(world, 3);
 		}
 		if ((System.currentTimeMillis() - lastInput > 500) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_V) && picker.getCurrentTerrainPoint() != null) {
 			createEntity("wall", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 3);
