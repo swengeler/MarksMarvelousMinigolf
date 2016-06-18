@@ -276,7 +276,7 @@ public class GameState implements State {
 		for (Ball b : balls){
 			float bx = b.getPosition().x;
 			float bz = b.getPosition().z;
-			if (Math.abs(bx-hx) < 4 && Math.abs(bz-hz) < 4){
+			if (Math.abs(bx-hx) < 2 && Math.abs(bz-hz) < 2){
 				return balls.indexOf(b);
 			}
 		}
@@ -533,7 +533,6 @@ public class GameState implements State {
 		if (balls.size() < numberOfPlayers){
 			currBall++;
 			createBall(new Vector3f(world.getStart().x, world.getStart().y + Ball.RADIUS, world.getStart().z), true);
-			
 		} else {
 			currBall = (currBall + 1) % numberOfPlayers;
 		}

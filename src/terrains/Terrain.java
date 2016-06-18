@@ -39,7 +39,6 @@ public class Terrain implements Serializable {
 	private int VERTEX_COUNT;
 	
 	public Terrain(int gridX, int gridZ, Loader loader, ModelTexture texture, boolean rand){
-		
 		this.texture = texture;
 		this.x = gridX * getSize();
 		this.z = gridZ * getSize();
@@ -50,7 +49,6 @@ public class Terrain implements Serializable {
 	}
 	
 	public Terrain(int gridX, int gridZ, Loader loader, ModelTexture texture, String heightMap){
-		
 		this.texture = texture;
 		this.x = gridX * getSize();
 		this.z = gridZ * getSize();
@@ -61,7 +59,6 @@ public class Terrain implements Serializable {
 	}
 	
 	public Terrain(int gridX, int gridZ, Loader loader, ModelTexture texture, float[][] heights, Vector2f hole){
-		
 		this.texture = texture;
 		this.x = gridX * getSize();
 		this.z = gridZ * getSize();
@@ -257,12 +254,12 @@ public class Terrain implements Serializable {
 		float x = (hole.getX() / (SIZE/2)) * (VERTEX_COUNT/2);
 		float z = (hole.getY() / (SIZE/2)) * (VERTEX_COUNT/2);
 		System.out.println("Hole at x: " + x + " z: " + z);
-		for(float i = -holeRad; i <= holeRad; i++) {
+		for (float i = -holeRad; i <= holeRad; i++) {
 			for (float k = -holeRad; k  <= holeRad; k++) {
 				if (x + i >= 0 && x + i < VERTEX_COUNT && z + k >= 0 && z + k < VERTEX_COUNT) {
 					float distance = (float) Math.sqrt((i*i)+(k*k));
 					if (distance <= holeRad) {
-						float height = (float) ((newHeight/2) * -(Math.cos(Math.PI - (Math.PI * (distance/holeRad))))+(newHeight/2));
+						float height = (float) ((newHeight/2) * -(Math.cos(Math.PI - (Math.PI * (distance/holeRad)))) + (newHeight/2));
 						heights[(int)(x + i)][(int)(z + k)] =  height;		
 					}
 				}
