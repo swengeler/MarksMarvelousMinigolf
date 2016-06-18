@@ -28,7 +28,7 @@ public class DisplayManager {
 		try {
 			Display.setDisplayMode(new DisplayMode(WIDTH,HEIGHT));
 			Display.create(new PixelFormat(),attribs);
-			Display.setTitle("MiniCrazyGolf");
+			Display.setTitle("Mark's Marvellous Minigolf");
 			Display.setFullscreen(true);
 		} catch (LWJGLException e) {
 			e.printStackTrace();

@@ -108,7 +108,7 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public void checkInputs() {
-		if (Keyboard.isKeyDown(Keyboard.KEY_Y)){
+		if (Keyboard.isKeyDown(Keyboard.KEY_C)){
 			//System.out.println("Here swapping from the ball at position " + this.getPosition().x );
 			GameState.getInstance().swap();
 		}

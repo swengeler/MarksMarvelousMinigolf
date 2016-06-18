@@ -15,6 +15,7 @@ import entities.playable.Ball;
 import entities.playable.RealBall;
 import guis.GuiButton;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
@@ -221,6 +222,16 @@ public class GameState implements State {
 	@Override
 	public void checkInputs() {
 		balls.get(currBall).checkInputs();
+
+		if (Mouse.isButtonDown(0)){
+			//System.out.println("X=" + Mouse.getX() + ", Y=" + Mouse.getY());
+			for (GuiButton button : guis){
+				if (button.isInside(new Vector2f(Mouse.getX(), Mouse.getY()))){
+					button.click();
+				}
+			}
+		}
+
 		if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
 			bob.shoot();
 		} else if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_I)) {
@@ -365,6 +376,7 @@ public class GameState implements State {
 	private void loadGuis() {
 		guiRenderer = new GuiRenderer(loader);
 		guis = new ArrayList<>();
+		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", null));
 		guis.add(new GuiButton("controls", new Vector2f(1540, 675), new Vector2f(0.65f, 0.4f), loader, "overlay", null));
 	}
 	

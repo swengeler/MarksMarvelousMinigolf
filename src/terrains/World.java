@@ -48,6 +48,11 @@ public class World implements Serializable{
 	public void add(Entity entity){
 		entities.add(entity);
 	}
+
+	public void removeLastEntity() {
+		if (entities.size() > 0)
+			entities.remove(entities.size() - 1);
+	}
 	
 	public void removeTerrain() {
 		terrains.clear();

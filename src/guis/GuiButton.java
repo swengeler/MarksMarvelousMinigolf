@@ -14,8 +14,7 @@ import renderEngine.utils.DisplayManager;
 import renderEngine.utils.Loader;
 
 public class GuiButton {
-	
-	
+
 	private GuiTexture texture;
 	private float width;
 	private float height;
@@ -58,14 +57,12 @@ public class GuiButton {
 
 	public void click() {
 		//System.out.println("My size is: width=" + width +", height=" + height);
-		if(type.equals("main_menu")) {
-			
+		if (type.equals("main_menu")) {
+			MainGameLoop.loadMenu();
 		} else if (type.equals("play")) {
 			MainGameLoop.loadGame(2);
 		} else if (type.equals("designer")) {
 			MainGameLoop.loadDesigner();
-		} else if (type.equals("main_options")) {
-			menu.loadOptions();
 		}
 	}
 	

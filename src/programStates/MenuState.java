@@ -49,10 +49,10 @@ public class MenuState implements State {
 
 	@Override
 	public void checkInputs() {
-		if(Mouse.isButtonDown(0)){
-			System.out.println("X=" + Mouse.getX() + ", Y=" + Mouse.getY());
-			for(GuiButton button:guis){
-				if(button.isInside(new Vector2f(Mouse.getX(), Mouse.getY()))){
+		if (Mouse.isButtonDown(0)){
+			//System.out.println("X=" + Mouse.getX() + ", Y=" + Mouse.getY());
+			for (GuiButton button : guis){
+				if (button.isInside(new Vector2f(Mouse.getX(), Mouse.getY()))){
 					button.click();
 				}
 			}
