@@ -51,7 +51,7 @@ public class PhysicsEngine {
     private static PhysicsEngine instance;
 
     public PhysicsEngine(List<Ball> balls, World world, NoiseHandler noiseHandler) {
-        this.balls = new ArrayList<RealBall>();
+        this.balls = new ArrayList<>();
         for (Ball b : balls)
             if (b instanceof RealBall)
                 this.balls.add((RealBall) b);
@@ -81,6 +81,10 @@ public class PhysicsEngine {
 
     public void addBall(RealBall ball) {
         this.balls.add(ball);
+    }
+
+    public void removeBall(int index) {
+        this.balls.remove(index);
     }
 
     public void tick() {

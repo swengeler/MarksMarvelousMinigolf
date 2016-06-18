@@ -184,31 +184,31 @@ public class GameState implements State {
 			float distance = 2 * (camera.getPosition().y - waterTiles.get(0).getHeight());
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			for(Ball b:balls)
-				if(b instanceof RealBall)
-				renderer.processEntity((RealBall)b);
+			for (Ball b:balls)
+				if (b instanceof RealBall)
+					renderer.processEntity((RealBall)b);
 			renderer.processWorld(world, new Vector4f(0, 1, 0, - waterTiles.get(0).getHeight()), normalMap);
-			if(particle)
+			if (particle)
 				ParticleMaster.renderParticles(camera);
 			camera.getPosition().y += distance;
 			camera.invertPitch();
 			
 			//Rendering on refraction buffer
 			fbos.bindRefractionFrameBuffer();
-			for(Ball b:balls)
-				if(b instanceof RealBall)
-				renderer.processEntity((RealBall)b);
+			for (Ball b:balls)
+				if (b instanceof RealBall)
+					renderer.processEntity((RealBall)b);
 			renderer.processWorld(world, new Vector4f(0, -1, 0, waterTiles.get(0).getHeight()), normalMap);
-			if(particle)
+			if (particle)
 				ParticleMaster.renderParticles(camera);
 			fbos.unbindCurrentFrameBuffer();
 		}
 		
-		for(Ball b:balls)
-			if(b instanceof RealBall)
-			renderer.processEntity((RealBall)b);
+		for (Ball b : balls)
+			if (b instanceof RealBall)
+				renderer.processEntity((RealBall)b);
 		renderer.processWorld(world, new Vector4f(0, -1, 0, 10000), true);
-		if(water)
+		if (water)
 			waterRenderer.render(waterTiles, camera);
 		ParticleMaster.renderParticles(camera);
 		ParticleMaster.update(camera);
@@ -253,13 +253,14 @@ public class GameState implements State {
 			if (timeBallStill >= 1) {
 				printScore();
 				int bio = checkBallsInHole();
-				if(bio >= 0){
+				if (bio >= 0){
 					System.out.print("Ball " + bio + " in hole!");
-					if(numberOfPlayers == 1)
+					if (numberOfPlayers == 1)
 						MainGameLoop.gameOver();
 					balls.remove(bio);
+					mainEngine.removeBall(bio);
 					numberOfPlayers--;
-					if(currBall >= bio)
+					if (currBall >= bio)
 						currBall--;
 				}
 				swap();
@@ -272,10 +273,10 @@ public class GameState implements State {
 	private int checkBallsInHole() {
 		float hx = world.getEnd().x;
 		float hz = world.getEnd().z;
-		for(Ball b:balls){
+		for (Ball b : balls){
 			float bx = b.getPosition().x;
 			float bz = b.getPosition().z;
-			if(Math.abs(bx-hx) < 4 && Math.abs(bz-hz) < 4){
+			if (Math.abs(bx-hx) < 4 && Math.abs(bz-hz) < 4){
 				return balls.indexOf(b);
 			}
 		}
@@ -508,7 +509,7 @@ public class GameState implements State {
 		Ball b;
 		if (real){
 			b = new RealBall(tModels.get("ball"), position, 0f, 0f, 0f, 1f);
-			if(mainEngine != null)
+			if (mainEngine != null)
 				mainEngine.addBall((RealBall)b);
 		} else {
 			b = new Empty(tModels.get("ball"), position, 0f, 0f, 0f, 1f);
