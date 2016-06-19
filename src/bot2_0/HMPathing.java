@@ -19,7 +19,7 @@ public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 1.5f; // That is the maximum height difference between two adjacent cell for them to be connected
 	private static final float MAX_SHOT_POWER = 5;
-	private static final float DELTA_ANGLE = 360; // In degrees
+	private static final float DELTA_ANGLE = 5; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 10;
 	
 	private Node[][] grid;
@@ -39,7 +39,7 @@ public class HMPathing extends Algorithm {
 		int zBallGrid = (int)(b.getPosition().z/CELL_SIZE);
 		Node ballNode = grid[xBallGrid][zBallGrid];
 		float ballD = ballNode.getD();
-		
+		System.out.println("Distance of the ball from the hole is: " + ballD);
 		AIShot bestShot = null;
 		ArrayList<AIShot> shots = new ArrayList<>();
 		int shotsTaken = 0;
@@ -78,7 +78,7 @@ public class HMPathing extends Algorithm {
 			counter++;
 			
 		}
-		
+		System.out.println("The best shot ends up at a distance " + pShot.getClosestNode().getD() + " from the hole");
 		b.setVelocity(pShot.getShot());
 		b.setMoving(true);
 		System.out.println("Ball shooted by the bot with velocity: " + pShot.getShot());
