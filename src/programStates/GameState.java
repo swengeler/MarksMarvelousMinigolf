@@ -100,6 +100,7 @@ public class GameState implements State {
 	}
 	
 	public GameState(Loader loader, World world, int numberOfPlayers) {
+		// testcommit
 		instance = this;
 		this.numberOfPlayers = numberOfPlayers;
 		buildWithWorld(loader, world);
