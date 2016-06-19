@@ -70,7 +70,7 @@ public class Entity implements Serializable {
 		this.rotation = new Vector3f(rotX, rotY, rotZ);
 		this.scale = scale;
         this.type = "not declared";
-		createCollisionData(data);
+		createCollisionData(data, LinearAlgebra.createTransformationMatrix(this.position, this.rotation.x, this.rotation.y, this.rotation.z, this.scale));
 	}
 
 	public Entity(TexturedModel model, int index, ModelData data, Vector3f position, float rotX, float rotY, float rotZ, float scale, String type) {
@@ -80,18 +80,17 @@ public class Entity implements Serializable {
 		this.rotation = new Vector3f(rotX, rotY, rotZ);
 		this.scale = scale;
         this.type = type;
-		createCollisionData(data);
+		createCollisionData(data, LinearAlgebra.createTransformationMatrix(this.position, this.rotation.x, this.rotation.y, this.rotation.z, this.scale));
 	}
 
 	public boolean isCollidable(){
 		return isCollidable;
 	}
 
-	protected void createCollisionData(ModelData data) {
+	protected void createCollisionData(ModelData data, Matrix4f transformationMatrix) {
 		long before = System.currentTimeMillis();
 		cdata = new CollisionData();
-		Matrix4f transformationMatrix = LinearAlgebra.createTransformationMatrix(this.position, this.rotation.x, this.rotation.y, this.rotation.z, this.scale);
-		Vector4f tfVector = new Vector4f(0,0,0,1f);
+		Vector4f tfVector = new Vector4f(0, 0, 0, 1);
 		Vector3f p1 = new Vector3f(), p2 = new Vector3f(), p3 = new Vector3f(), n1 = new Vector3f(), n2 = new Vector3f(), n3 = new Vector3f();
 		Vector3f normal = new Vector3f(), v1 = new Vector3f(), v2 = new Vector3f();
 

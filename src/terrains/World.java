@@ -15,10 +15,10 @@ import entities.playable.Ball;
 import entities.camera.Camera;
 
 public class World implements Serializable{
-	private List<Terrain> terrains = new ArrayList<Terrain>();
-	private List<Entity> entities = new ArrayList<Entity>();
-	private List<Entity> normalEntities = new ArrayList<Entity>();
-	private List<Light> lights = new ArrayList<Light>();
+	private List<Terrain> terrains = new ArrayList<>();
+	private List<Entity> entities = new ArrayList<>();
+	private List<Entity> normalEntities = new ArrayList<>();
+	private List<Light> lights = new ArrayList<>();
 	private Camera camera;
 	private Vector2f Start = new Vector2f(Terrain.getSize()/2f, Terrain.getSize()/2f);
 	private Vector2f End = new Vector2f(20, Terrain.getSize() - 10);

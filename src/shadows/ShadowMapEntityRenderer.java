@@ -3,6 +3,7 @@ package shadows;
 import java.util.List;
 import java.util.Map;
 
+import entities.obstacles.Wall;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -87,7 +88,12 @@ public class ShadowMapEntityRenderer {
 	 *            - the entity to be prepared for rendering.
 	 */
 	private void prepareInstance(Entity entity) {
-		Matrix4f modelMatrix = LinearAlgebra.createTransformationMatrix(entity.getPosition(),
+		Matrix4f modelMatrix;
+		if (entity instanceof Wall)
+			modelMatrix = LinearAlgebra.createTransformationMatrixWall(entity.getPosition(),
+					entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
+		else
+			modelMatrix = LinearAlgebra.createTransformationMatrix(entity.getPosition(),
 				entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
 		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
 		shader.loadMvpMatrix(mvpMatrix);

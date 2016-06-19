@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entities.obstacles.Wall;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
@@ -58,12 +59,14 @@ public class DesignerState implements State{
 	private GuiRenderer guiRenderer;
 	private MousePicker picker;
 
-	private ArrayList<Ball> balls = new ArrayList<Ball>();
-	private int currBall;
+	private ArrayList<Ball> balls = new ArrayList<>();
 
-	private ArrayList<ParticleSystem> particles = new ArrayList<ParticleSystem>();
+	private ArrayList<ParticleSystem> particles = new ArrayList<>();
 
 	private WaterFrameBuffers fbos;
+
+	private Vector2f firstPoint = new Vector2f(), secondPoint = new Vector2f();
+	private boolean firstPointSelected;
 
 	private boolean water = false;
 	private boolean particle = true;
@@ -158,8 +161,7 @@ public class DesignerState implements State{
 	public void checkInputs() {
 		balls.get(0).checkInputs();
 
-		if (Mouse.isButtonDown(0)){
-			//System.out.println("X=" + Mouse.getX() + ", Y=" + Mouse.getY());
+		if (Mouse.isButtonDown(0)) {
 			for (GuiButton button : guis){
 				if (button.isInside(new Vector2f(Mouse.getX(), Mouse.getY()))){
 					button.click();
@@ -172,6 +174,17 @@ public class DesignerState implements State{
 			lastInput = System.currentTimeMillis();
 		}
 
+		if ((System.currentTimeMillis() - lastInput > 200) && Keyboard.isKeyDown(Keyboard.KEY_B) && loader.getVBOs() <= 350 && picker.getCurrentTerrainPoint() != null) {
+			if (firstPointSelected) {
+				secondPoint.set(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z);
+				createWall(firstPoint, secondPoint);
+				firstPointSelected = false;
+			} else {
+				firstPoint.set(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z);
+				firstPointSelected = true;
+			}
+			lastInput = System.currentTimeMillis();
+		}
 		if ((System.currentTimeMillis() - lastInput > 200) && Keyboard.isKeyDown(Keyboard.KEY_Q) && loader.getVBOs() <= 350 && picker.getCurrentTerrainPoint() != null) {
 			world.getTerrains().get(0).updateTerrain(loader, ((picker.getCurrentTerrainPoint().x / (Terrain.getSize()/2)) * (world.getTerrains().get(0).getVertexCount()/2)), ((picker.getCurrentTerrainPoint().z / (Terrain.getSize()/2)) * (world.getTerrains().get(0).getVertexCount()/2)));
 			for (Entity e:world.getEntities()) {
@@ -328,6 +341,7 @@ public class DesignerState implements State{
 		ModelData wall = OBJFileLoader.loadOBJ("wall");
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("hole");
+		ModelData wall_seg = OBJFileLoader.loadOBJ("wall_seg");
 
 		mData.put("human", human);
 	    mData.put("ball", ball);
@@ -342,6 +356,7 @@ public class DesignerState implements State{
 	    mData.put("dragon_low", dragon_low);
 	    mData.put("flag", flag);
 	    mData.put("hole", hole);
+	    mData.put("wall_seg", wall_seg);
 
 		RawModel humanModel = loader.loadToVAO(human.getVertices(), human.getTextureCoords(), human.getNormals(), human.getIndices());
 		RawModel ballModel = loader.loadToVAO(ball.getVertices(), ball.getTextureCoords(), ball.getNormals(), ball.getIndices());
@@ -358,6 +373,7 @@ public class DesignerState implements State{
 		RawModel holeModel = loader.loadToVAO(hole.getVertices(), hole.getTextureCoords(), hole.getNormals(), hole.getIndices());
 		RawModel wallModel = loader.loadToVAO(wall.getVertices(), wall.getTextureCoords(), wall.getNormals(), wall.getIndices());
 		RawModel dragonLowModel = loader.loadToVAO(dragon_low.getVertices(), dragon_low.getTextureCoords(), dragon_low.getNormals(), dragon_low.getIndices());
+		RawModel wallSegModel = loader.loadToVAO(wall_seg.getVertices(), wall_seg.getTextureCoords(), wall_seg.getNormals(), wall_seg.getIndices());
 
 
 		tModels.put("human", new TexturedModel(humanModel,new ModelTexture(loader.loadTexture("playerTexture"))));
@@ -378,6 +394,7 @@ public class DesignerState implements State{
 		tModels.put("wall", new TexturedModel(wallModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
+		tModels.put("wall_seg", new TexturedModel(wallSegModel, new ModelTexture(loader.loadTexture("white"))));
 
 
 		tModels.get("barrel").getTexture().setShineDamper(10);
@@ -401,6 +418,13 @@ public class DesignerState implements State{
 		List<Light> lights = new ArrayList<>();
 		lights.add(new Light(new Vector3f(1000000, 1500000, -1000000), new Vector3f(1f, 1f, 1f)));
 		world.addLights(lights);
+	}
+
+	public Entity createWall(Vector2f p1, Vector2f p2) {
+		System.out.println("Create wall between " + p1 + " and " + p2);
+		Entity e = new Wall(p1, p2, tModels.get("wall_seg"), 0, mData.get("wall_seg"));
+		world.add(e);
+		return e;
 	}
 
 	public Entity createEntity(String eName, Vector3f position, float rotX, float rotY, float rotZ, float scale){

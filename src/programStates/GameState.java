@@ -11,6 +11,7 @@ import entities.camera.Empty;
 import entities.obstacles.Entity;
 import entities.obstacles.RotatingEntity;
 import entities.lights.Light;
+import entities.obstacles.Wall;
 import entities.playable.Ball;
 import entities.playable.RealBall;
 import guis.GuiButton;
@@ -101,7 +102,7 @@ public class GameState implements State {
 	public GameState(Loader loader, World world, int numberOfPlayers) {
 		instance = this;
 		this.numberOfPlayers = numberOfPlayers;
-		buildWithWorld(loader, world); 
+		buildWithWorld(loader, world);
 		DisplayManager.reset();
 	}
 	
@@ -134,6 +135,8 @@ public class GameState implements State {
 		two = createEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), 0, 180, 0, 5);
 		//wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 76, world.getStart().z + 150 - 26f), new Vector3f(), 10, new Vector3f());
 		//two = createRotatingEntity("sphere_offcenter", new Vector3f(world.getStart().x, 50, world.getStart().z - 300), new Vector3f(), 10, new Vector3f());
+
+		createWall(new Vector2f(0, 100), new Vector2f(100, 0));
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
@@ -179,16 +182,16 @@ public class GameState implements State {
 	
 	@Override
 	public void renderScreen() {
-		if(shadow){
+		if (shadow){
 			renderer.renderShadowMap(world.getEntities(), world.getLights().get(0));
 		}
-		if(water){
+		if (water){
 			//Rendering on reflection buffer
 			fbos.bindReflectionFrameBuffer();
 			float distance = 2 * (camera.getPosition().y - waterTiles.get(0).getHeight());
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			for (Ball b:balls)
+			for (Ball b: balls)
 				if (b instanceof RealBall)
 					renderer.processEntity((RealBall)b);
 			renderer.processWorld(world, new Vector4f(0, 1, 0, - waterTiles.get(0).getHeight()), normalMap);
@@ -199,7 +202,7 @@ public class GameState implements State {
 			
 			//Rendering on refraction buffer
 			fbos.bindRefractionFrameBuffer();
-			for (Ball b:balls)
+			for (Ball b: balls)
 				if (b instanceof RealBall)
 					renderer.processEntity((RealBall)b);
 			renderer.processWorld(world, new Vector4f(0, -1, 0, waterTiles.get(0).getHeight()), normalMap);
@@ -402,6 +405,7 @@ public class GameState implements State {
         ModelData windmill_rot = OBJFileLoader.loadOBJ("windmill_wings");
         ModelData sphere_offcenter = OBJFileLoader.loadOBJ("test");
 		ModelData ad_column = OBJFileLoader.loadOBJ("ad_column");
+		ModelData wall_seg = OBJFileLoader.loadOBJ("wall_seg");
 
 	    mData.put("human", human);
 	    mData.put("ball", ball);
@@ -421,6 +425,7 @@ public class GameState implements State {
         mData.put("windmill_rot", windmill_rot);
         mData.put("sphere_offcenter", sphere_offcenter);
 		mData.put("ad_column", ad_column);
+		mData.put("wall_seg", wall_seg);
 		
 		RawModel humanModel = loader.loadToVAO(human.getVertices(), human.getTextureCoords(), human.getNormals(), human.getIndices());
 		RawModel ballModel = loader.loadToVAO(ball.getVertices(), ball.getTextureCoords(), ball.getNormals(), ball.getIndices());
@@ -442,6 +447,7 @@ public class GameState implements State {
         RawModel windmillRotModel = loader.loadToVAO(windmill_rot.getVertices(), windmill_rot.getTextureCoords(), windmill_rot.getNormals(), windmill_rot.getIndices());
         RawModel sphereModel = loader.loadToVAO(sphere_offcenter.getVertices(), sphere_offcenter.getTextureCoords(), sphere_offcenter.getNormals(), sphere_offcenter.getIndices());
 		RawModel columnModel = loader.loadToVAO(ad_column.getVertices(), ad_column.getTextureCoords(), ad_column.getNormals(), ad_column.getIndices());
+		RawModel wallSegModel = loader.loadToVAO(wall_seg.getVertices(), wall_seg.getTextureCoords(), wall_seg.getNormals(), wall_seg.getIndices());
 
 		tModels.put("human", new TexturedModel(humanModel, new ModelTexture(loader.loadTexture("playerTexture"))));
 		tModels.put("ball", new TexturedModel(ballModel, new ModelTexture(loader.loadTexture("white"))));
@@ -465,7 +471,8 @@ public class GameState implements State {
         tModels.put("windmill_rot", new TexturedModel(windmillRotModel, new ModelTexture(loader.loadTexture("windmill_wings_alt"))));
         tModels.put("sphere_offcenter", new TexturedModel(sphereModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("ad_column", new TexturedModel(columnModel, new ModelTexture(loader.loadTexture("Yep"))));
+		tModels.put("ad_column", new TexturedModel(columnModel, new ModelTexture(loader.loadTexture("ad column default"))));
+		tModels.put("wall_seg", new TexturedModel(wallSegModel, new ModelTexture(loader.loadTexture("white"))));
 
 		tModels.get("barrel").getTexture().setShineDamper(10);
 		tModels.get("barrel").getTexture().setReflectivity(0.3f);
@@ -492,6 +499,13 @@ public class GameState implements State {
 		lights.add(new Light(new Vector3f(1000000,1500000,-1000000),new Vector3f(1f,1f,1f)));
 		world.addLights(lights);
 		//System.out.println("Loading lights: " + (System.currentTimeMillis() - before) + "ms");
+	}
+
+	public Entity createWall(Vector2f p1, Vector2f p2) {
+		System.out.println("Create wall between " + p1 + " and " + p2);
+		Entity e = new Wall(p1, p2, tModels.get("wall_seg"), 0, mData.get("wall_seg"));
+		world.add(e);
+		return e;
 	}
 	
 	public Entity createEntity(String eName, Vector3f position, float rotX, float rotY, float rotZ, float scale){

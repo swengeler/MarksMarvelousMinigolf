@@ -29,9 +29,8 @@ public class RotatingEntity extends Entity {
     }
 
     @Override
-    protected void createCollisionData(ModelData data) {
+    protected void createCollisionData(ModelData data, Matrix4f transformationMatrix) {
         long before = System.currentTimeMillis();
-        Matrix4f transformationMatrix = LinearAlgebra.createTransformationMatrix(this.position, this.rotation.x, this.rotation.y, this.rotation.z, this.scale);
         System.out.println(transformationMatrix);
         mt = transformationMatrix;
         inv = Matrix4f.invert(mt, null);

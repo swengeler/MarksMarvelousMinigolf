@@ -3,6 +3,7 @@ package normalMapping.renderer;
 import java.util.List;
 import java.util.Map;
 
+import entities.obstacles.Wall;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -79,7 +80,12 @@ public class NormalMappingRenderer {
 	}
 
 	private void prepareInstance(Entity entity) {
-		Matrix4f transformationMatrix = LinearAlgebra.createTransformationMatrix(entity.getPosition(), entity.getRotX(),
+		Matrix4f transformationMatrix;
+		if (entity instanceof Wall)
+			transformationMatrix = LinearAlgebra.createTransformationMatrixWall(entity.getPosition(), entity.getRotX(),
+					entity.getRotY(), entity.getRotZ(), entity.getScale());
+		else
+			transformationMatrix = LinearAlgebra.createTransformationMatrix(entity.getPosition(), entity.getRotX(),
 				entity.getRotY(), entity.getRotZ(), entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());

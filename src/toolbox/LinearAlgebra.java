@@ -237,10 +237,22 @@ public class LinearAlgebra {
 		matrix.setIdentity();
 		if (translation != null)
 			Matrix4f.translate(translation, matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rx), new Vector3f(1,0,0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(ry), new Vector3f(0,1,0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rz), new Vector3f(0,0,1), matrix, matrix);
-		Matrix4f.scale(new Vector3f(scale,scale,scale), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rx), new Vector3f(1, 0, 0), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(ry), new Vector3f(0, 1, 0), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rz), new Vector3f(0, 0, 1), matrix, matrix);
+		Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
+		return matrix;
+	}
+
+	public static Matrix4f createTransformationMatrixWall(Vector3f translation, float rx, float ry, float rz, float scaleZ) {
+		Matrix4f matrix = new Matrix4f();
+		matrix.setIdentity();
+		if (translation != null)
+			Matrix4f.translate(translation, matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rx), new Vector3f(1, 0, 0), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(ry), new Vector3f(0, 1, 0), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rz), new Vector3f(0, 0, 1), matrix, matrix);
+		Matrix4f.scale(new Vector3f(1, 1, scaleZ), matrix, matrix);
 		return matrix;
 	}
 	

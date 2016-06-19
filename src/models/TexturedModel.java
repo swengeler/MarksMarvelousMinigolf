@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import textures.ModelTexture;
 
-public class TexturedModel implements Serializable{
+public class TexturedModel implements Serializable {
 
 	private RawModel rawModel;
 	private ModelTexture texture;

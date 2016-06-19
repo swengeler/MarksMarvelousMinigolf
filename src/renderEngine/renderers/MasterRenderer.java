@@ -95,10 +95,10 @@ public class MasterRenderer {
 	public void processEntity(Entity entity){
 		TexturedModel entityModel = entity.getModel();
 		List<Entity> batch = entities.get(entityModel);
-		if(batch != null){
+		if (batch != null){
 			batch.add(entity);
-		}else{
-			List<Entity> newBatch = new ArrayList<Entity>();
+		} else {
+			List<Entity> newBatch = new ArrayList<>();
 			newBatch.add(entity);
 			entities.put(entityModel, newBatch);
 		}
@@ -166,17 +166,18 @@ public class MasterRenderer {
 	}
 
 	public void processWorld(World world, Vector4f clipPlane, boolean normalMap) {
-		for(Terrain t:world.getTerrains()) {
+		for (Terrain t : world.getTerrains()) {
 			terrains.add(t);
 		}
-			
-		for(Entity e:world.getEntities())
+
+		for(Entity e : world.getEntities())
 			processEntity(e);
-		if(normalMap)
+
+		if (normalMap)
 			for(Entity e:world.getNormalEntities())
 				processNormalMapEntity(e);
+
 		render(world.getLights(), world.getCamera(), clipPlane);
-		
 	}
 	
 	public void processWorld(World world, boolean normalMap) {

@@ -3,6 +3,7 @@ package renderEngine.renderers;
 import java.util.List;
 import java.util.Map;
 
+import entities.obstacles.Wall;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -20,14 +21,14 @@ public class EntityRenderer {
 	
 	private StaticShader shader;
 
-	public EntityRenderer(StaticShader shader, Matrix4f projectionMatrix){
+	public EntityRenderer(StaticShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.stop();
 	}
 	
-	public void render(Map<TexturedModel,List<Entity>> entities){
+	public void render(Map<TexturedModel,List<Entity>> entities) {
 		for(TexturedModel model:entities.keySet()){
 			prepareTexturedModel(model);
 			List<Entity> batch = entities.get(model);
@@ -40,7 +41,7 @@ public class EntityRenderer {
 		}
 	}
 	
-	private void prepareTexturedModel(TexturedModel model){
+	private void prepareTexturedModel(TexturedModel model) {
 		RawModel rawModel = model.getRawModel();
 		GL30.glBindVertexArray(rawModel.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
@@ -57,7 +58,7 @@ public class EntityRenderer {
 		
 	}
 	
-	private void unbindTexturedModel(){
+	private void unbindTexturedModel() {
 		MasterRenderer.enableCulling();
 		GL20.glDisableVertexAttribArray(0);
 		GL20.glDisableVertexAttribArray(1);
@@ -65,8 +66,13 @@ public class EntityRenderer {
 		GL30.glBindVertexArray(0);
 	}
 	
-	private void prepareInstance(Entity entity){
-		Matrix4f transformationMatrix = LinearAlgebra.createTransformationMatrix(entity.getPosition(), entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
+	private void prepareInstance(Entity entity) {
+		Matrix4f transformationMatrix;
+		if (entity instanceof Wall) {
+			transformationMatrix = LinearAlgebra.createTransformationMatrixWall(entity.getPosition(), entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
+		} else {
+			transformationMatrix = LinearAlgebra.createTransformationMatrix(entity.getPosition(), entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
+		}
 		shader.loadTransformationMatrix(transformationMatrix);
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
