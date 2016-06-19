@@ -162,10 +162,21 @@ public class GameState implements State {
 		loadGuis();
 		this.world = world;
 		createTerrain(0, 0, "grass", world.getTerrains().get(0).getHeights());
+
+		// this solution is really ugly, if possible change
+		List<Wall> list = new ArrayList<>();
 		for (Entity e : world.getEntities()) {
+			if (e instanceof Wall) {
+				list.add((Wall) e);
+			}
 			System.out.println(e);
 			System.out.println("cdata: " + e.getCollisionData());
 		}
+		for (Wall e : list) {
+			world.getEntities().remove(e);
+			createWall(e.getP1(), e.getP2());
+		}
+
 		createBall(new Vector3f(world.getStart().x, world.getStart().y + Ball.RADIUS, world.getStart().z), true);
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
@@ -175,7 +186,7 @@ public class GameState implements State {
 		loadParticleSystem();
 		setCameraToBall(currBall);
 		System.out.println("done game with world");
-		createTerrain(0, 1, "grass", false);
+		//createTerrain(0, 1, "grass", false);
 		//bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 	}

@@ -46,13 +46,17 @@ import water.WaterTile;
 
 public class DesignerState implements State{
 
-	private Map<String,TexturedModel> tModels = new HashMap<String,TexturedModel>();
-	private Map<String,ModelData> mData = new HashMap<String,ModelData>();
+	private Map<String, TexturedModel> tModels = new HashMap<>();
+	private Map<String, ModelData> mData = new HashMap<>();
 	private World world;
 	private ArrayList<WaterTile> waterTiles;
 	private ArrayList<GuiButton> guis;
-	private Camera camera;
 	private Loader loader;
+
+	private Camera camera;
+	private Vector3f previousPosition = new Vector3f();
+	private float previousPitch, previousYaw, previousDistance;
+	private boolean birdsEyeView;
 
 	private MasterRenderer renderer;
 	private WaterRenderer waterRenderer;
@@ -65,8 +69,10 @@ public class DesignerState implements State{
 
 	private WaterFrameBuffers fbos;
 
+	private ArrayList<Wall> tempWalls = new ArrayList<>();
 	private Vector2f firstPoint = new Vector2f(), secondPoint = new Vector2f();
 	private boolean firstPointSelected;
+	private final float SNAP_RADIUS = 5f;
 
 	private boolean water = false;
 	private boolean particle = true;
@@ -95,6 +101,7 @@ public class DesignerState implements State{
 		//System.out.println("After loading particle system for the first time in designerstate");
 
 		createTerrain(0, 0, "grass", false);
+		createBoundingWall();
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
 		picker = new MousePicker(camera, renderer.getProjectionMatrix(), world);
 		//createEntity("dragon", new Vector3f(100, getWorld().getHeightOfTerrain(100, 60), 60), -10f, 170f, 0f, 3 );
@@ -124,28 +131,28 @@ public class DesignerState implements State{
 			float distance = 2 * (camera.getPosition().y - waterTiles.get(0).getHeight());
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			for(Ball b:balls)
-				if(b instanceof RealBall)
-				renderer.processEntity((RealBall)b);
+			for(Ball b : balls)
+				if (b instanceof RealBall)
+					renderer.processEntity((RealBall)b);
 			renderer.processWorld(world, new Vector4f(0, 1, 0, - waterTiles.get(0).getHeight()), normalMap);
-			if(particle)
+			if (particle)
 				ParticleMaster.renderParticles(camera);
 			camera.getPosition().y += distance;
 			camera.invertPitch();
 
 			//Rendering on refraction buffer
 			fbos.bindRefractionFrameBuffer();
-			for(Ball b:balls)
-				if(b instanceof RealBall)
-				renderer.processEntity((RealBall)b);
+			for (Ball b : balls)
+				if (b instanceof RealBall)
+					renderer.processEntity((RealBall)b);
 			renderer.processWorld(world, new Vector4f(0, -1, 0, waterTiles.get(0).getHeight()), normalMap);
 			if(particle)
 				ParticleMaster.renderParticles(camera);
 			fbos.unbindCurrentFrameBuffer();
 		}
 
-		for(Ball b:balls){
-			if(b instanceof RealBall)
+		for (Ball b : balls){
+			if (b instanceof RealBall)
 				renderer.processEntity((RealBall)b);
 		}
 		renderer.processWorld(world, new Vector4f(0, -1, 0, 10000), false);
@@ -161,6 +168,23 @@ public class DesignerState implements State{
 	public void checkInputs() {
 		balls.get(0).checkInputs();
 
+		// commands for the camera
+		if ((System.currentTimeMillis() - lastInput > 200) && Keyboard.isKeyDown(Keyboard.KEY_M)) {
+			if (!birdsEyeView) {
+				previousPosition.set(camera.getPosition());
+				previousPitch = camera.getPitch();
+				previousYaw = camera.getYaw();
+				previousDistance = camera.getDistanceFromBall();
+				camera.setBirdsEyeView();
+				birdsEyeView = true;
+			} else {
+				camera.set(previousPosition, previousPitch, previousYaw, previousDistance);
+				birdsEyeView = false;
+			}
+			lastInput = System.currentTimeMillis();
+		}
+
+		// gui interactions (only back to main menu button right now)
 		if (Mouse.isButtonDown(0)) {
 			for (GuiButton button : guis){
 				if (button.isInside(new Vector2f(Mouse.getX(), Mouse.getY()))){
@@ -169,18 +193,36 @@ public class DesignerState implements State{
 			}
 		}
 
+		// special undo command
 		if ((System.currentTimeMillis() - lastInput > 200) && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && Keyboard.isKeyDown(Keyboard.KEY_Z)) {
 			world.removeLastEntity();
 			lastInput = System.currentTimeMillis();
 		}
 
+		// commands for building the course
 		if ((System.currentTimeMillis() - lastInput > 200) && Keyboard.isKeyDown(Keyboard.KEY_B) && loader.getVBOs() <= 350 && picker.getCurrentTerrainPoint() != null) {
+			// determine whether a different wall's endpoint is in the vicinity, if so snap to it to connect the walls
+			float x = picker.getCurrentTerrainPoint().x;
+			float y = picker.getCurrentTerrainPoint().z;
+			System.out.println("Picker x = " + x + ", y = " + y);
+			for (Wall w : tempWalls) {
+				if (Math.pow(w.getP1().x - x, 2) + Math.pow(w.getP1().y - y, 2) < SNAP_RADIUS * SNAP_RADIUS) {
+					x = w.getP1().x;
+					y = w.getP1().y;
+					break;
+				} else if (Math.pow(w.getP2().x - x, 2) + Math.pow(w.getP2().y - y, 2) < SNAP_RADIUS * SNAP_RADIUS) {
+					x = w.getP2().x;
+					y = w.getP2().y;
+					break;
+				}
+			}
+			// set a starting or end point based on the current coordinates of the mouse pointer
 			if (firstPointSelected) {
-				secondPoint.set(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z);
+				secondPoint.set(x, y);
 				createWall(firstPoint, secondPoint);
 				firstPointSelected = false;
 			} else {
-				firstPoint.set(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z);
+				firstPoint.set(x, y);
 				firstPointSelected = true;
 			}
 			lastInput = System.currentTimeMillis();
@@ -224,6 +266,8 @@ public class DesignerState implements State{
 			createEntity("wall", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 90f, 0f, 3);
 			lastInput = System.currentTimeMillis();
 		}
+
+		// commands for saving and loading courses
 		if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
 			SaveableWorld tmpWorld = new SaveableWorld(world);
 			FileFrame tmpFrame = new FileFrame("save", tmpWorld);
@@ -424,7 +468,19 @@ public class DesignerState implements State{
 		System.out.println("Create wall between " + p1 + " and " + p2);
 		Entity e = new Wall(p1, p2, tModels.get("wall_seg"), 0, mData.get("wall_seg"));
 		world.add(e);
+		tempWalls.add((Wall) e);
 		return e;
+	}
+
+	public void createBoundingWall() {
+		Vector2f p1 = new Vector2f(), p2 = new Vector2f(0, Terrain.getSize());
+		createWall(p1, p2);
+		p1.set(Terrain.getSize(), Terrain.getSize());
+		createWall(p1, p2);
+		p2.set(Terrain.getSize(), 0);
+		createWall(p1, p2);
+		p1.set(0, 0);
+		createWall(p1, p2);
 	}
 
 	public Entity createEntity(String eName, Vector3f position, float rotX, float rotY, float rotZ, float scale){

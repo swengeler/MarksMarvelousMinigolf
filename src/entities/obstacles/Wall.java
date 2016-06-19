@@ -27,8 +27,12 @@ public class Wall extends Entity {
         // the angle of rotation around the y-axis is determined by the angle between the difference-vector and the z-axis, since the wall model goes along that axis
         Vector2f zAxis = new Vector2f(0, 1);
         float angle = Vector2f.angle(zAxis, difference);
-        if (p1.x > p2.x)
+        if (p1.x > p2.x) {
             angle = (float) Math.min(angle, Math.PI - angle);
+            if (p1.y < p2.y) {
+                angle = -angle;
+            }
+        }
         this.rotation.y = (float) Math.toDegrees(angle);
         System.out.println("Angle to z-axis: " + this.rotation.y);
         // the position of the wall can also be determined by the two endpoints

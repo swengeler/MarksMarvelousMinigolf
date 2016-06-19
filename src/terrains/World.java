@@ -49,6 +49,10 @@ public class World implements Serializable{
 		entities.add(entity);
 	}
 
+	public void clearEntities() {
+		entities.clear();
+	}
+
 	public void removeLastEntity() {
 		if (entities.size() > 0)
 			entities.remove(entities.size() - 1);
@@ -122,16 +126,6 @@ public class World implements Serializable{
 			if(gX == t.getGridX() && gZ == t.getGridZ())
 				return t;
 		return null;
-	}
-	
-	public ArrayList<PhysicalFace> getCollidingFacesTerrains(Ball b) {
-		//System.out.println("getCollidingFaces in World is called (there are " + terrains.size() + " terrains)");
-		ArrayList<PhysicalFace> collidingFaces = new ArrayList<PhysicalFace>();
-		for (Terrain t : terrains) {
-			if (t.ballInTerrain(b))
-				collidingFaces.addAll(t.getCollidingFaces(b));
-		}
-		return collidingFaces;
 	}
 	
 	public float getHeightOfTerrain(float x, float z){
