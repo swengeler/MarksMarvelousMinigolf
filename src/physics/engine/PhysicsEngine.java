@@ -502,7 +502,7 @@ public class PhysicsEngine {
             }
             counter++;
 
-            if (ball.specialMovedLastStep() /* Math.abs(ball.getPosition().y - GameState.getInstance().getWorld().getHeightOfTerrain(ball.getPosition().x, ball.getPosition().z)) < 1*/ /*&& Math.abs(ball.getPosition().x - hx) < 2 && Math.abs(ball.getPosition().z - hz) < 2*/) {
+            if (!ball.specialMovedLastStep() /* Math.abs(ball.getPosition().y - GameState.getInstance().getWorld().getHeightOfTerrain(ball.getPosition().x, ball.getPosition().z)) < 1*/ /*&& Math.abs(ball.getPosition().x - hx) < 2 && Math.abs(ball.getPosition().z - hz) < 2*/) {
                 ball.setVelocity(0, 0, 0);
                 ball.setMoving(false);
             }

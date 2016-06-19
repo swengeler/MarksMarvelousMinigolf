@@ -307,6 +307,7 @@ public class Terrain implements Serializable {
 	}
 	
 	public void updateTerrain(Loader loader, float x, float z) {
+		float maxHillHeight = 5;
 		int count = VERTEX_COUNT * VERTEX_COUNT;
 		float[] vertices = new float[count * 3];
 		float[] normals = new float[count * 3];
@@ -314,16 +315,16 @@ public class Terrain implements Serializable {
 		int[] indices = new int[6*(VERTEX_COUNT-1)*(VERTEX_COUNT-1)];
 		int vertexPointer = 0;
 		float newHeight = 10;
-		for(float i = -RADIUS; i <= RADIUS; i++) {
+		for (float i = -RADIUS; i <= RADIUS; i++) {
 			for (float k = -RADIUS; k  <= RADIUS; k++) {
 				if (x + i >= 0 && x + i < VERTEX_COUNT && z + k >= 0 && z + k < VERTEX_COUNT) {
 					float distance = (float) Math.sqrt((i*i)+(k*k));
 					if (distance <= RADIUS) {
 						float height = (float) ((newHeight/2) * -(Math.cos(Math.PI - (Math.PI * (distance/RADIUS))))+(newHeight/2));
-						if (height >= MAX_HEIGHT) {
-							heights[(int)(x + i)][(int)(z + k)] =  MAX_HEIGHT;
-						} else if (height <= -MAX_HEIGHT) {
-							heights[(int)(x + i)][(int)(z + k)] =  -MAX_HEIGHT;
+						if (height >= maxHillHeight) {
+							heights[(int)(x + i)][(int)(z + k)] =  maxHillHeight;
+						} else if (height <= -maxHillHeight) {
+							heights[(int)(x + i)][(int)(z + k)] =  -maxHillHeight;
 						} else {
 							if (x + i >= 0 && x + i <= VERTEX_COUNT && z + k >= 0 && z + k <= VERTEX_COUNT) {
 								if (height > heights[(int)(x + i)][(int)(z + k)]) {
@@ -333,7 +334,6 @@ public class Terrain implements Serializable {
 						}
 					}
 				}
-				
 			}
 		}
 		for(int i=0;i<VERTEX_COUNT;i++){

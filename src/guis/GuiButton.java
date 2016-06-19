@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.util.vector.Vector2f;
 
 import gameEngine.MainGameLoop;
+import programStates.DesignerState;
 import programStates.MenuState;
 import renderEngine.utils.DisplayManager;
 import renderEngine.utils.Loader;
@@ -63,6 +64,10 @@ public class GuiButton {
 			MainGameLoop.loadGame(2);
 		} else if (type.equals("designer")) {
 			MainGameLoop.loadDesigner();
+		} else if (type.equals("save")) {
+			DesignerState.getInstance().saveWorld();
+		} else if (type.equals("load")) {
+			DesignerState.getInstance().loadWorld();
 		}
 	}
 	

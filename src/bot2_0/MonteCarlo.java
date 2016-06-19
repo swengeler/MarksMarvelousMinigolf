@@ -12,7 +12,7 @@ import terrains.World;
 
 public class MonteCarlo {
 
-    private static final int NR_SHOTS = 1;
+    private static final int NR_SHOTS = 20;
     private static final float MAX_VELOCITY = 50;
 
     public Vector3f calculateShot(Ball b, World w) {
@@ -20,8 +20,10 @@ public class MonteCarlo {
         Vector3f initVelocity = new Vector3f(), bestVelocity = new Vector3f();
         float curDistanceSq, lowestDistanceSq = Float.MAX_VALUE;
         for (int i = 0; i < NR_SHOTS; i++) {
-            straightShotNonRandom(initVelocity, w.getEnd(), b.getPosition());
+            //straightShotNonRandom(initVelocity, w.getEnd(), b.getPosition());
             //randomMagnitude(initVelocity, i);
+            onlyRandom(initVelocity);
+            onlyRandom(initVelocity);
             curShotData = PhysicsEngine.getInstance().performVirtualShot((RealBall) b, initVelocity);
             curDistanceSq = (Vector3f.sub(w.getEnd(), curShotData.getEndPosition(), null)).lengthSquared();
             if (curDistanceSq < lowestDistanceSq) {
