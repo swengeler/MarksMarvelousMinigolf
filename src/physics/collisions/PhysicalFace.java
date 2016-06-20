@@ -1,6 +1,5 @@
 package physics.collisions;
 
-
 import java.io.Serializable;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -38,7 +37,7 @@ public class PhysicalFace implements Serializable{
 		return false;
 	}
 	
-	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
+	/*public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
         Vector3f dir = Vector3f.sub(p1, p2, null);
         float d, t, v, w;
         
@@ -71,6 +70,50 @@ public class PhysicalFace implements Serializable{
             return false;
             
         // Segment intersects triangle
+        return true;
+	}*/
+	
+	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
+        Vector3f u, v; // triangle vectors
+        Vector3f dir, w0, w; // segment vectors
+        Vector3f ip, temp; // intersection point
+        float r, a, b;
+        
+        u = Vector3f.sub(point2, point1, null);
+        v = Vector3f.sub(point3, point1, null);
+        
+        dir = Vector3f.sub(p2, p1, null);
+        w0 = Vector3f.sub(p1, point1, null);
+        a = -Vector3f.dot(normal, w0);
+        b = Vector3f.dot(normal, dir);
+        if (Math.abs(b) < PhysicsEngine.NORMAL_TH) {
+            return false;
+        }
+        
+        r = a / b;
+        if (r < 0 || r > 1)
+            return false;
+            
+        temp = new Vector3f(dir.x, dir.y, dir.z);
+        ip = Vector3f.add(p1, temp.scale(r));
+            
+        float uu, uv, vv, wu, wv, D;
+        uu = Vector3f.dot(u, u);
+        uv = Vector3f.dot(u, v);
+        vv = Vector3f.dot(v, v);
+        w = Vector3f.sub(ip, point1, null);
+        wu = Vector3f.dot(w, u);
+        wv = Vector3f.dot(w, v);
+        D = uv * uv - uu * vv;
+        
+        float s, t; // parametric coefficients
+        s = (uv * wv - vv * wu) / D;
+        if (s < 0 || s > 1)
+            return false;
+        t = (uv * wu - uu * wv) / D;
+        if (t < 0 || (s + t) > 1)
+            return false;
+            
         return true;
 	}
 	
