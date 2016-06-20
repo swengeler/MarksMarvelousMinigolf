@@ -23,7 +23,7 @@ import javax.swing.*;
 public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 3.0f; // That is the maximum height difference between two adjacent cell for them to be connected
-	private static final float MAX_SHOT_POWER = 1000;
+	private static final float MAX_SHOT_POWER = 500;
 	private static final float DELTA_ANGLE = 5f; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 100;
 	private static final float DELTA_CHECK = 0.5f;
@@ -382,13 +382,13 @@ public class HMPathing extends Algorithm {
 	private Vector3f getThePowah(AIShot shot){
 		float total = 0;
 		ArrayList<Vector3f> positions = shot.reduceBallPositions();
-		for(int i = positions.size() - 1; i > 0; i--){
+		for (int i = positions.size() - 1; i > 0; i--) {
 			Vector3f pos1 = positions.get(i);
 			Vector3f pos2 = positions.get(i-1);
 			
 			Vector3f straightShot = straightShotNonRandom(total, pos1, pos2);
 			total = straightShot.length();
-			if(i != 1){
+			if (i != 1) {
 				total /= Restitution.COEFFICIENT;
 			}
 		}

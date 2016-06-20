@@ -405,7 +405,7 @@ public class GameState implements State {
 	private void loadGuis() {
 		guiRenderer = new GuiRenderer(loader);
 		guis = new ArrayList<>();
-		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", null));
+		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", world));
 		guis.add(new GuiButton("controls", new Vector2f(1540, 675), new Vector2f(0.65f, 0.4f), loader, "overlay", null));
 		guis.add(new GuiButton("save", new Vector2f(59, 810), new Vector2f(0.2f, 0.2f), loader, "save", null));
 	}

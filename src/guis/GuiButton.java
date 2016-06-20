@@ -13,6 +13,7 @@ import programStates.DesignerState;
 import programStates.MenuState;
 import renderEngine.utils.DisplayManager;
 import renderEngine.utils.Loader;
+import terrains.World;
 
 public class GuiButton {
 
@@ -22,10 +23,14 @@ public class GuiButton {
 	private Vector2f position;
 	private String type;
 	private MenuState menu;
+	private World world;
 	
-	public GuiButton(String guiTex, Vector2f position, Vector2f scale, Loader loader, String type, MenuState menu) {
+	public GuiButton(String guiTex, Vector2f position, Vector2f scale, Loader loader, String type, Object thing) {
 		this.type = type;
-		this.menu = menu;
+		if (menu instanceof MenuState)
+			this.menu = (MenuState) thing;
+		else if (thing instanceof World)
+			this.world = (World) thing;
 		BufferedImage image = null;
 		try {
 			image = ImageIO.read(new File("res/" + guiTex + ".png"));
@@ -59,6 +64,7 @@ public class GuiButton {
 	public void click() {
 		//System.out.println("My size is: width=" + width +", height=" + height);
 		if (type.equals("main_menu")) {
+			world = null;
 			MainGameLoop.loadMenu();
 		} else if (type.equals("play")) {
 			MainGameLoop.loadGame(2);

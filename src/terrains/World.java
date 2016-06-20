@@ -126,7 +126,7 @@ public class World implements Serializable {
 				}
 			}
 		}
-		System.out.println("Getting intersection point in world took " + (System.currentTimeMillis() - before) + " ms");
+		//System.out.println("Getting intersection point in world took " + (System.currentTimeMillis() - before) + " ms");
 		return closest;
 	}
 	
