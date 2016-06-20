@@ -181,7 +181,7 @@ public class Entity implements Serializable {
 	}
 	
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
-	    return cdata.isIntersectedBySegment(p1, p2);
+	    
 	}
 
 	public boolean inBounds(Ball b) {

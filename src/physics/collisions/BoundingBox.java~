@@ -104,9 +104,6 @@ public class BoundingBox implements Serializable{
 	    
 	    if (Math.abs(m.x * d.y - m.y * d.x) > e.x * ady + e.y * adx)
 	        return false;
-	        
-	    // No separating axis found; segment must be overlapping bounding box
-	    return true;
 	}
 
 	public void print() {

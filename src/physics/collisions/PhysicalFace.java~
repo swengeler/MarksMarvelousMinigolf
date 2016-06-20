@@ -41,7 +41,6 @@ public class PhysicalFace implements Serializable{
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
         Vector dir = Vector3f.sub(p1, p2, null);
         float d, t, v, w;
-        
         Vector3f ac = Vector3f.sub(point3, point1, null);
         Vector3f ab = Vector3f.sub(point2, point1, null);
         
