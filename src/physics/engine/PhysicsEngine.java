@@ -19,6 +19,7 @@ import entities.obstacles.Entity;
 import physics.noise.NoiseHandler;
 import physics.utils.ShotData;
 import physics.collisions.PhysicalFace;
+import renderEngine.utils.DisplayManager;
 import terrains.Terrain;
 import terrains.World;
 import toolbox.LinearAlgebra;
@@ -355,9 +356,15 @@ public class PhysicsEngine {
         }
 
         resolvePlaneCollision(b, forResolution);
-        //System.out.println("COLLISION WITH OBSTACLE RESOLVED");
-        //MainGameLoop.currState.cleanUp();
-        //DisplayManager.closeDisplay();
+        /*System.out.println("COLLISION WITH OBSTACLE RESOLVED");
+        System.out.println("COLLISION WITH " + forResolution);
+        Vector3f we = Vector3f.sub(b.getPosition(), b.getLastPosition(), null);
+        double angle = Math.min(Vector3f.angle(forResolution.getNormal(), we), Math.PI - Vector3f.angle(forResolution.getNormal(), we));
+        System.out.println(we + " with angle " + Math.toDegrees(angle));
+        if (angle < Math.toRadians(20)) {
+            MainGameLoop.currState.cleanUp();
+            DisplayManager.closeDisplay();
+        }*/
         return true;
     }
 

@@ -23,7 +23,7 @@ import javax.swing.*;
 public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 3.0f; // That is the maximum height difference between two adjacent cell for them to be connected
-	private static final float MAX_SHOT_POWER = 300;
+	private static final float MAX_SHOT_POWER = 1000;
 	private static final float DELTA_ANGLE = 5f; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 100;
 	private static final float DELTA_CHECK = 0.5f;
@@ -162,7 +162,8 @@ public class HMPathing extends Algorithm {
 	private Vector3f straightShotNonRandom(float finalVelocity, Vector3f holePosition, Vector3f ballPosition) {
         Vector3f temp = Vector3f.sub(holePosition, ballPosition, null);
         float finalMagnitude = (float) Math.sqrt(Math.pow(finalVelocity, 2) + 2 * Friction.COEFFICIENT * 230 * temp.length());
-        temp.normalise();
+		if (temp.lengthSquared() != 0)
+        	temp.normalise();
         temp.scale(finalMagnitude);
         return temp;
     }
