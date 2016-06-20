@@ -39,7 +39,7 @@ public class PhysicalFace implements Serializable{
 	}
 	
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
-        Vector dir = Vector3f.sub(p1, p2, null);
+        Vector3f dir = Vector3f.sub(p1, p2, null);
         float d, t, v, w;
         
         Vector3f ac = Vector3f.sub(point3, point1, null);
@@ -51,7 +51,7 @@ public class PhysicalFace implements Serializable{
             return false;
             
         // Compute intersection t value of dir with plane of triangle. A segment intersects iff 0 <= t <= 1.
-        Vector3f ap1 = Vector3f.sub(p1, a, null);
+        Vector3f ap = Vector3f.sub(p1, point1, null);
         t = Vector3f.dot(ap, normal);
         if (t < 0)
             return false;
@@ -59,7 +59,7 @@ public class PhysicalFace implements Serializable{
             return false;
             
         // Compute barycentric coordinate components and test if within bounds
-        Vector3f e = Vector3f.cross(dir, ap);
+        Vector3f e = Vector3f.cross(dir, ap, null);
         v = Vector3f.dot(ac, e);
         if (v < 0 || v > d) 
             return false;

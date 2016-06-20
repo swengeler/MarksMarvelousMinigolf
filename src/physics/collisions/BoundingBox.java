@@ -71,8 +71,8 @@ public class BoundingBox implements Serializable{
 	
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
 	    Vector3f e = Vector3f.sub(getMaxVector(), getMinVector(), null);
-	    Vector3f d = Vector3f.sub(p1, p0, null);
-	    Vector3f m = Vector3f.add(p0, p1, null);
+	    Vector3f d = Vector3f.sub(p1, p2, null);
+	    Vector3f m = Vector3f.add(p2, p1, null);
 	    Vector3f.sub(m, getMaxVector(), m);
 	    Vector3f.sub(m, getMinVector(), m);
 	    
