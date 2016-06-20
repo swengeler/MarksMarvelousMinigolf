@@ -21,9 +21,10 @@ public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 3.0f; // That is the maximum height difference between two adjacent cell for them to be connected
 	private static final float MAX_SHOT_POWER = 200;
-	private static final float DELTA_ANGLE = 3; // In degrees
+	private static final float DELTA_ANGLE = 22.5f; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 100;
 	private static final float DELTA_CHECK = 0.5f;
+	private static final int ITER_IN_BETWEEN = 4;
 	
 	private Node[][] grid;
 	private Ball b;
@@ -50,7 +51,7 @@ public class HMPathing extends Algorithm {
 		if(isStraightShotPossible(b,w.getEnd())){
 			bestShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, straightVec, grid);
 		} else {
-			ArrayList<AIShot> shots = new ArrayList<>();
+			MinHeap<AIShot> shots = new MinHeap<AIShot>();
 			int shotsTaken = 0;
 			for (int i = 0; i < 360; i += DELTA_ANGLE){
 				shotsTaken++;
@@ -60,6 +61,7 @@ public class HMPathing extends Algorithm {
 				//System.out.println("The length of the array of nodes is " + shot.getNodes().size());
 				//System.out.println("The nodes traversed by this shot are " + shot.getNodes());
 				//System.out.println("The closest node of this shot is at a distance " + shot.getClosestNode().getD());
+				/*
 				if (bestShot == null || (shot.getClosestNode().getD() < bestShot.getClosestNode().getD())){
 					bestShot = shot;
 					//System.out.println("This shot was set as the best shot");
@@ -67,9 +69,37 @@ public class HMPathing extends Algorithm {
 					//System.out.println("The best shot is still the one that passes throught node with distance " + bestShot.getClosestNode().getD());
 				}
 				if(bestShot.getClosestNode().getD() < 2)
-					break;
+					break; */
+				shot.setAngle(i);
+				shots.insert(shot);
+			}
+			int numberOfShots = shots.size();
+			bestShot = shots.pop();
+			
+			if(bestShot.getClosestNode().getD() > 3){
+				ArrayList<AIShot> bestShots = new ArrayList<AIShot>();
+				for(int i=0; i<numberOfShots/2; i++){
+					bestShots.add(shots.pop());
+				}
+				for(int i=0; i<bestShots.size(); i++){
+					AIShot s1 = bestShots.get(i);
+					AIShot s2 = bestShots.get((i+1) % bestShots.size());
+					float ang = (float) Math.toDegrees(Vector3f.angle(s1.getShot(), s2.getShot()));
+					if(Math.abs(ang) <= DELTA_ANGLE + 1 ){
+						
+						float dAngle =  (DELTA_ANGLE / (float)ITER_IN_BETWEEN);
+						
+						for(int j = 1; j < ITER_IN_BETWEEN; j++){
+							Vector3f direction = generateShot(s1.getAngle() + j * dAngle, MAX_SHOT_POWER);
+							AIShot newShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, direction, grid);
+							shots.insert(newShot);
+						}
+					}
+					shots.insert(s1);
+				}
 			}
 			
+			bestShot = shots.pop();
 			float p = MAX_SHOT_POWER;
 			float q = 0;
 			Vector3f shotDir = new Vector3f(bestShot.getShot().x, 0, bestShot.getShot().z);
@@ -80,7 +110,7 @@ public class HMPathing extends Algorithm {
 			AIShot qShot = PhysicsEngine.getInstance().aiTestShot((RealBall)b, new Vector3f(), grid);
 			int counter = 0;
 			
-			/*
+			
 			while(!bestShot.getClosestNode().equals(pShot.getNodes().get(pShot.getNodes().size() - 1)) && counter < MIDPOINT_ITERATIONS){
 				counter++;
 				float newPow = (p + q)/2;
@@ -96,7 +126,7 @@ public class HMPathing extends Algorithm {
 				}
 				
 			}
-			bestShot = pShot;*/
+			bestShot = pShot;
 		} 
 		System.out.println("The best shot ends up at a distance " + bestShot.getClosestNode().getD() + " from the hole");
 		b.setVelocity(bestShot.getShot());

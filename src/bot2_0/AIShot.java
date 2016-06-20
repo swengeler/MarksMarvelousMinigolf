@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
-public class AIShot {
+public class AIShot{
 	
 	private Vector3f shot;
 	private ArrayList<Node> nodes;
 	private Node closestNode;
+	private float angDeg;
 	
 	public AIShot(Vector3f shot){
 		this.shot = shot;
@@ -37,5 +38,15 @@ public class AIShot {
 	public Vector3f getShot() {
 		return shot;
 	}
+
+	public float getAngle() {
+		return angDeg;
+	}
+
+	public void setAngle(float angDeg) {
+		this.angDeg = angDeg;
+	}
+	
+	
 	
 }

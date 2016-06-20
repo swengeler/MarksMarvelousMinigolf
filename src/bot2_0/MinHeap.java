@@ -185,12 +185,19 @@ public class MinHeap<T> implements Comparator{
 
 @Override
 	public int compare(Object node1, Object node2) {
-		Node n1 = (Node) node1;
-		Node n2 = (Node) node2;
-		if(n1.getD() < n2.getD())
-			return -1;
-		else if(n1.getD() > n2.getD())
-			return 1;
+		if(node1 instanceof Node){
+			Node n1 = (Node) node1;
+			Node n2 = (Node) node2;
+			if(n1.getD() < n2.getD())
+				return -1;
+			else if(n1.getD() > n2.getD())
+				return 1;
+			return 0;
+		} else if (node1 instanceof AIShot){
+			AIShot s1 = (AIShot) node1;
+			AIShot s2 = (AIShot) node2;
+			return compare(s1.getClosestNode(), s2.getClosestNode());
+		}
 		return 0;
 	}
 
