@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
-public class AIShot {
+public class AIShot{
 	
 	private Vector3f shot;
 	private ArrayList<Node> nodes;
@@ -36,6 +36,11 @@ public class AIShot {
 
 	public Vector3f getShot() {
 		return shot;
+	}
+
+	@Override
+	public float getMeasure() {
+		return closestNode.getD();
 	}
 	
 }

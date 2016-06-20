@@ -8,7 +8,7 @@ import org.lwjgl.util.vector.Vector3f;
 import physics.utils.ShotData;
 import terrains.Terrain;
 
-public class Node {
+public class Node{
 	
 	private Node parent;
 	
