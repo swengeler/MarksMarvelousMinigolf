@@ -152,7 +152,7 @@ public class HMPathing extends Algorithm {
 	}*/
 	
 	private boolean isStraightShotPossible(Ball b, Vector3f end) {
-		return w.obstaclesIntersectedBySegment(b.getPosition(), end);
+		return !w.obstaclesIntersectedBySegment(b.getPosition(), end);
 	}
 	
 
