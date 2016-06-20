@@ -160,9 +160,15 @@ public class PhysicsEngine {
     }
 
     public boolean resolveObstacleCollision(Ball b) {
+        // test whether the ball moved through an obstacle because it was too fast
+        Vector3f intersectionPoint = world.getLastIntersectionPointSegment(b.getLastPosition(), b.getPosition());
+
+        if (intersectionPoint != null)
+            b.setPosition(intersectionPoint);
+
+        // get all colliding faces in any of the entities in the world
         ArrayList<PhysicalFace> collidingFaces = new ArrayList<>();
         collidingFaces.addAll(world.getCollidingFacesEntities(b));
-        //System.out.println("NUMBER OF COLLIDING FACES: " + collidingFaces.size());
 
         if (collidingFaces.size() == 0)
              return false;

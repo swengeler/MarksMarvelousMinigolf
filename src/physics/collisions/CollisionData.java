@@ -93,6 +93,17 @@ public class CollisionData implements Serializable{
 	    }
 	    return false;
 	}
+
+	public ArrayList<Vector3f> getIntersectionPointsSegment(Vector3f p1, Vector3f p2) {
+		ArrayList<Vector3f> intersectionPoints = new ArrayList<>();
+		Vector3f temp;
+		for (PhysicalFace f : faces) {
+			temp = f.getIntersectionPointSegment(p1, p2);
+			if (temp != null)
+				intersectionPoints.add(new Vector3f(temp));
+		}
+		return intersectionPoints;
+	}
 	
 	public boolean collides(Ball b) {
 		for (PhysicalFace f : faces) {

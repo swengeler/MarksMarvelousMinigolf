@@ -1,7 +1,6 @@
 package entities.playable;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import entities.obstacles.Entity;
 import entities.camera.Camera;
@@ -30,7 +29,8 @@ public class RealBall extends Entity implements Ball {
 
 	private Vector3f currentVel;
 	private Vector3f currentAcc;
-    private Vector3f lastPosition;
+    private Vector3f lastPositionMovementCheck;
+	private Vector3f lastPositionActual;
 	private boolean gameover=false;
 	private float currentTurnSpeed;
 	private float lastTimeElapsed;
@@ -49,14 +49,16 @@ public class RealBall extends Entity implements Ball {
 		super(model, position, rotX, rotY, rotZ, scale, "ball");
         this.currentVel = new Vector3f();
         this.currentAcc = new Vector3f();
-        this.lastPosition  = new Vector3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
+        this.lastPositionMovementCheck = new Vector3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
+		this.lastPositionActual = new Vector3f(position.x, position.y, position.z);
 		this.moving = false;
 		this.spin = new Vector3f();
 	}
 
 	public void updateAndMove() {
 		super.increaseRotation(0, currentTurnSpeed * getTimeElapsed(), 0);
-		lastPosition.set(super.getPosition().x, super.getPosition().y, super.getPosition().z);
+		lastPositionMovementCheck.set(position);
+		lastPositionActual.set(position);
 		lastTimeElapsed = getTimeElapsed();
 
 		// based on the newly updated velocity, move the ball
@@ -87,7 +89,7 @@ public class RealBall extends Entity implements Ball {
     }
 
 	public void resetLastPos() {
-		lastPosition.set(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
+		lastPositionMovementCheck.set(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
 	}
 
 	public void setMoving(boolean moving) {
@@ -187,7 +189,7 @@ public class RealBall extends Entity implements Ball {
 
 	public void setVelocity(Vector3f v) {
         //System.out.printf("Velocity of ball %s set to: (%f|%f|%f)\n", this.toString(), v.x, v.y, v.z);
-		currentVel.set(v.x, v.y, v.z);
+		currentVel.set(v);
 	}
 
 	public void scaleVelocity(float s) {
@@ -212,10 +214,10 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public boolean movedLastStep() {
-		System.out.printf("Difference in positions: (%f|%f|%f)\n", super.getPosition().x - lastPosition.x, super.getPosition().y - lastPosition.y, super.getPosition().z - lastPosition.z);
-		boolean moved = (Math.pow(super.getPosition().x - lastPosition.x, 2) +
-						Math.pow(super.getPosition().y - lastPosition.y, 2) +
-						Math.pow(super.getPosition().z - lastPosition.z, 2) >
+		System.out.printf("Difference in positions: (%f|%f|%f)\n", super.getPosition().x - lastPositionMovementCheck.x, super.getPosition().y - lastPositionMovementCheck.y, super.getPosition().z - lastPositionMovementCheck.z);
+		boolean moved = (Math.pow(super.getPosition().x - lastPositionMovementCheck.x, 2) +
+						Math.pow(super.getPosition().y - lastPositionMovementCheck.y, 2) +
+						Math.pow(super.getPosition().z - lastPositionMovementCheck.z, 2) >
 						Math.pow(PhysicsEngine.MIN_MOV_REQ, 2));
 		//System.out.println("Therefore moved is " + moved);
 		return moved;
@@ -230,6 +232,10 @@ public class RealBall extends Entity implements Ball {
 
 	public float getLastTimeElapsed() {
 		return lastTimeElapsed;
+	}
+
+	public Vector3f getLastPosition() {
+		return lastPositionActual;
 	}
 
 	public String toString() {

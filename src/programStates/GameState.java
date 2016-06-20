@@ -151,9 +151,13 @@ public class GameState implements State {
 		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 
-		System.out.println("\nHEIGHT TEST");
-		System.out.println("Height at (" + (world.getEntities().get(0).getPosition().x + 0.001) + "|" + world.getEntities().get(0).getPosition().z + "): " + mainEngine.getHeightAt(world.getEntities().get(0).getPosition().x + 0.001f, world.getEntities().get(0).getPosition().z));
-		System.out.println("HEIGHT TEST\n");
+		System.out.println("\nINTERSECTION TEST");
+		Vector3f p1 = new Vector3f(0, 1, 0);
+		Vector3f p2 = new Vector3f(200, 1, 120);
+		for (Entity e : world.getEntities()) {
+			e.isIntersectedBySegment(p1, p2);
+		}
+		System.out.println("INTERSECTION TEST\n");
 	}
 	
 	private void buildWithWorld(Loader loader, World world) {
@@ -247,9 +251,10 @@ public class GameState implements State {
 			}
 		}
 
-		if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
+		if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
 			bob.shoot();
-		} else if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_I)) {
+			lastInput = System.currentTimeMillis();
+		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_I)) {
 			if (virtualShotTest == -1) {
 				System.out.println("\n\n\nVIRTUALBALL TEST STARTING\n");
 				mainEngine.performVirtualShot((RealBall) balls.get(0), new Vector3f(150, 0, 150));
@@ -258,7 +263,8 @@ public class GameState implements State {
 				System.out.println("\nVIRTUALBALL TEST ENDING\n\n\n");
 				virtualShotTest = 0;
 			}
-		} else if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_N)) {
+			lastInput = System.currentTimeMillis();
+		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_N)) {
 			MonteCarlo mc = new MonteCarlo();
 			System.out.println("Calculating shot test for ball " + currBall);
 			long one = System.currentTimeMillis();
@@ -267,6 +273,12 @@ public class GameState implements State {
 			balls.get(currBall).setMoving(true);
 			balls.get(currBall).setVelocity(vel);
 			((RealBall) balls.get(currBall)).setPlayed(true);
+			lastInput = System.currentTimeMillis();
+		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_O)) {
+			System.out.println("Ball's velocity set to something by key press");
+			balls.get(currBall).setVelocity(9001, 0, 0);
+			balls.get(currBall).setMoving(true);
+			lastInput = System.currentTimeMillis();
 		}
 	}
 	

@@ -181,15 +181,18 @@ public class Entity implements Serializable {
 	}
 	
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
-	    return cdata.isIntersectedBySegment(p1, p2);
+		//long before = System.nanoTime();
+		boolean answer = cdata.isIntersectedBySegment(p1, p2);
+		//System.out.println("Intersection test took " + (System.nanoTime() - before) + " ns for " + this + " (" + answer + ")");
+	    return answer;
+	}
+
+	public ArrayList<Vector3f> getIntersectionPointsSegment(Vector3f p1, Vector3f p2) {
+		return this.cdata.getIntersectionPointsSegment(p1, p2);
 	}
 
 	public boolean inBounds(Ball b) {
 		return this.cdata.inBounds(b);
-	}
-
-	public boolean inHorizontalBounds(Ball b) {
-		return this.cdata.inHorizontalBounds(b);
 	}
 
 	public boolean inHorizontalBounds(float x, float z) {
@@ -242,7 +245,7 @@ public class Entity implements Serializable {
 	}
 
 	public void setPosition(Vector3f position) {
-		this.position = position;
+		this.position.set(position);
 	}
 
 	public float getRotX() {
