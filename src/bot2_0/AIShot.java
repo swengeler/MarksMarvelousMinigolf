@@ -9,6 +9,7 @@ public class AIShot{
 	private Vector3f shot;
 	private ArrayList<Node> nodes;
 	private Node closestNode;
+	private float angDeg;
 	
 	public AIShot(Vector3f shot){
 		this.shot = shot;
@@ -38,9 +39,14 @@ public class AIShot{
 		return shot;
 	}
 
-	@Override
-	public float getMeasure() {
-		return closestNode.getD();
+	public float getAngle() {
+		return angDeg;
 	}
+
+	public void setAngle(float angDeg) {
+		this.angDeg = angDeg;
+	}
+	
+	
 	
 }

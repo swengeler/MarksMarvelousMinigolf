@@ -70,6 +70,7 @@ public class HMPathing extends Algorithm {
 				}
 				if(bestShot.getClosestNode().getD() < 2)
 					break; */
+				shot.setAngle(i);
 				shots.insert(shot);
 			}
 			int numberOfShots = shots.size();
@@ -88,16 +89,17 @@ public class HMPathing extends Algorithm {
 						
 						float dAngle =  (DELTA_ANGLE / (float)ITER_IN_BETWEEN);
 						
-						for(int j = 1; i < ITER_IN_BETWEEN; i++){
-							Vector3f direction = generateShot();
-							AIShot newShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, straightVec, grid);
-							
+						for(int j = 1; j < ITER_IN_BETWEEN; j++){
+							Vector3f direction = generateShot(s1.getAngle() + j * dAngle, MAX_SHOT_POWER);
+							AIShot newShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, direction, grid);
+							shots.insert(newShot);
 						}
 					}
+					shots.insert(s1);
 				}
 			}
 			
-			
+			bestShot = shots.pop();
 			float p = MAX_SHOT_POWER;
 			float q = 0;
 			Vector3f shotDir = new Vector3f(bestShot.getShot().x, 0, bestShot.getShot().z);
