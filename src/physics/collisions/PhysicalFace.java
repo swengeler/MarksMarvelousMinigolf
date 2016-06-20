@@ -60,7 +60,8 @@ public class PhysicalFace implements Serializable{
             return false;
             
         temp = new Vector3f(dir.x, dir.y, dir.z);
-        ip = Vector3f.add(p1, temp.scale(r));
+        temp.scale(r);
+        ip = Vector3f.add(p1, temp, null);
             
         float uu, uv, vv, wu, wv, D;
         uu = Vector3f.dot(u, u);
@@ -80,9 +81,6 @@ public class PhysicalFace implements Serializable{
             return false;
             
         return true;
-=======
-        */
->>>>>>> bkhsdn
 	}
 	
 	public float distanceToFace(Ball b) {

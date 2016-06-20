@@ -229,7 +229,7 @@ public class World implements Serializable{
 	}
 	
 	public Vector3f getEnd() {
-		return new Vector3f(End.x, getHeightOfTerrain(End.x, End.y), End.y);
+		return new Vector3f(End.x, Ball.RADIUS, End.y);
 	}
 	
 	public boolean hasStart() {

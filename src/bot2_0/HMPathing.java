@@ -21,7 +21,7 @@ public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 3.0f; // That is the maximum height difference between two adjacent cell for them to be connected
 	private static final float MAX_SHOT_POWER = 200;
-	private static final float DELTA_ANGLE = 22.5f; // In degrees
+	private static final float DELTA_ANGLE = 5f; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 100;
 	private static final float DELTA_CHECK = 0.5f;
 	private static final int ITER_IN_BETWEEN = 4;
@@ -63,7 +63,7 @@ public class HMPathing extends Algorithm {
 				//System.out.println("The length of the array of nodes is " + shot.getNodes().size());
 				//System.out.println("The nodes traversed by this shot are " + shot.getNodes());
 				//System.out.println("The closest node of this shot is at a distance " + shot.getClosestNode().getD());
-				/*
+				
 				if (bestShot == null || (shot.getClosestNode().getD() < bestShot.getClosestNode().getD())){
 					bestShot = shot;
 					//System.out.println("This shot was set as the best shot");
@@ -71,13 +71,13 @@ public class HMPathing extends Algorithm {
 					//System.out.println("The best shot is still the one that passes throught node with distance " + bestShot.getClosestNode().getD());
 				}
 				if(bestShot.getClosestNode().getD() < 2)
-					break; */
+					break; 
 				shot.setAngle(i);
 				shots.insert(shot);
 			}
 			int numberOfShots = shots.size();
 			bestShot = shots.pop();
-			
+			/*
 			if(bestShot.getClosestNode().getD() > 3){
 				ArrayList<AIShot> bestShots = new ArrayList<AIShot>();
 				for(int i=0; i<numberOfShots/2; i++){
@@ -100,8 +100,9 @@ public class HMPathing extends Algorithm {
 					shots.insert(s1);
 				}
 			}
-			
 			bestShot = shots.pop();
+			
+			*/
 			float p = MAX_SHOT_POWER;
 			float q = 0;
 			Vector3f shotDir = new Vector3f(bestShot.getShot().x, 0, bestShot.getShot().z);
@@ -157,10 +158,6 @@ public class HMPathing extends Algorithm {
 	private boolean isStraightShotPossible(Ball b, Vector3f end) {
 		return !w.obstaclesIntersectedBySegment(b.getPosition(), end);
 	}
-	
-	/*private boolean isStraightShotPossible(Ball b, Vector3f end) {
-		return !w.obstaclesIntersectedBySegment(b.getPosition(), end);
-	}*/
 	
 
 	private Vector3f straightShotNonRandom(Vector3f velocity, Vector3f holePosition, Vector3f ballPosition) {
