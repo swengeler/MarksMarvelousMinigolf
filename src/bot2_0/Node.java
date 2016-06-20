@@ -6,6 +6,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import physics.utils.ShotData;
+import terrains.Terrain;
 
 public class Node {
 	
@@ -25,7 +26,7 @@ public class Node {
 	
 	private Vector3f position;
 	
-	private float d = Integer.MAX_VALUE;
+	private float d = Terrain.getSize()*10f;
 	private float height;
 	
 	private boolean walkable = false;
@@ -91,36 +92,36 @@ public class Node {
 		return north;
 	}
 
-	public void setNorth(Node node, float nDist) {
+	public void setNorth(Node node, Edge nEdge) {
 		this.north = node;
-		this.nEdge = new Edge(nDist);
+		this.nEdge = nEdge;
 	}
 
 	public Node getSouth() {
 		return south;
 	}
 
-	public void setSouth(Node node, float sDist) {
+	public void setSouth(Node node, Edge sEdge) {
 		this.south = node;
-		this.sEdge = new Edge(sDist);
+		this.sEdge = sEdge;
 	}
 
 	public Node getEast() {
 		return east;
 	}
 
-	public void setEast(Node node, float eDist) {
+	public void setEast(Node node, Edge eEdge) {
 		this.east = node;
-		this.eEdge = new Edge(eDist);
+		this.eEdge = eEdge;
 	}
 
 	public Node getWest() {
 		return west;
 	}
 
-	public void setWest(Node node, float wDist) {
+	public void setWest(Node node, Edge wEdge) {
 		this.west = node;
-		this.wEdge = new Edge(wDist);
+		this.wEdge = wEdge;
 			
 	}
 
@@ -175,7 +176,7 @@ public class Node {
 	}
 	
 	
-	public Node getNode(int i){
+	public Node getNeighbourNode(int i){
 		if(i == 0)
 			return north;
 		else if(i == 1)
@@ -186,15 +187,20 @@ public class Node {
 			return west;
 	}
 	
-	public void setNode(int i, Node node){
-		if(i == 0)
+	public void setNeighbourNode(int i, Node node, Edge edge){
+		if(i == 0){
 			north = node;
-		else if(i == 1)
+			nEdge = edge;
+		} else if(i == 1){
 			east = node;
-		else if(i == 2)
+			eEdge = edge;
+		} else if(i == 2){
 			south = node;
-		else
+			sEdge = edge;
+		} else {
 			west = node;
+			wEdge = edge;
+		}
 	}
 	
 	public Edge getEdge(int i){

@@ -10,21 +10,26 @@ import entities.obstacles.Entity;
 import entities.playable.Ball;
 import entities.playable.RealBall;
 import entities.playable.VirtualBall;
+import physics.collisions.PhysicalFace;
 import physics.engine.PhysicsEngine;
+import physics.noise.Friction;
 import physics.utils.ShotData;
 import terrains.Terrain;
 import terrains.World;
 
 public class HMPathing extends Algorithm {
 
-	private static final float MAX_SLOPE = 1.5f; // That is the maximum height difference between two adjacent cell for them to be connected
-	private static final float MAX_SHOT_POWER = 5;
-	private static final float DELTA_ANGLE = 5; // In degrees
-	private static final int MIDPOINT_ITERATIONS = 10;
+	private static final float MAX_SLOPE = 3.0f; // That is the maximum height difference between two adjacent cell for them to be connected
+	private static final float MAX_SHOT_POWER = 200;
+	private static final float DELTA_ANGLE = 3; // In degrees
+	private static final int MIDPOINT_ITERATIONS = 100;
+	private static final float DELTA_CHECK = 0.5f;
 	
 	private Node[][] grid;
 	private Ball b;
 	private World w;
+	private Node holeNode;
+	private int xHole,zHole;
 	
 	public HMPathing(Ball b, World w) {
 		this.b = b;
@@ -41,49 +46,89 @@ public class HMPathing extends Algorithm {
 		float ballD = ballNode.getD();
 		System.out.println("Distance of the ball from the hole is: " + ballD);
 		AIShot bestShot = null;
-		ArrayList<AIShot> shots = new ArrayList<>();
-		int shotsTaken = 0;
-		for (int i = 0; i < 360; i += DELTA_ANGLE){
-			shotsTaken++;
-			System.out.println("Shots taken: " + shotsTaken);
-			Vector3f vec = generateShot(i, MAX_SHOT_POWER);
-			AIShot shot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, vec, grid);
-			if (bestShot == null || (shot.getClosestNode().getD() < bestShot.getClosestNode().getD())){
-				bestShot = shot;
+		Vector3f straightVec = straightShotNonRandom(new Vector3f(), w.getEnd(), b.getPosition());
+		if(isStraightShotPossible(b,w.getEnd())){
+			bestShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, straightVec, grid);
+		} else {
+			ArrayList<AIShot> shots = new ArrayList<>();
+			int shotsTaken = 0;
+			for (int i = 0; i < 360; i += DELTA_ANGLE){
+				shotsTaken++;
+				Vector3f vec = generateShot(i, MAX_SHOT_POWER);
+				//System.out.println("Testing shot number: " + shotsTaken + " with vector " + vec);
+				AIShot shot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, vec, grid);
+				//System.out.println("The length of the array of nodes is " + shot.getNodes().size());
+				//System.out.println("The nodes traversed by this shot are " + shot.getNodes());
+				//System.out.println("The closest node of this shot is at a distance " + shot.getClosestNode().getD());
+				if (bestShot == null || (shot.getClosestNode().getD() < bestShot.getClosestNode().getD())){
+					bestShot = shot;
+					//System.out.println("This shot was set as the best shot");
+				} else {
+					//System.out.println("The best shot is still the one that passes throught node with distance " + bestShot.getClosestNode().getD());
+				}
+				if(bestShot.getClosestNode().getD() < 2)
+					break;
 			}
-		}
-		
-		float p = MAX_SHOT_POWER;
-		float q = 0;
-		Vector3f shotDir = new Vector3f(bestShot.getShot().x, 0, bestShot.getShot().z);
-		shotDir.normalise();
-		float xBestShot = shotDir.x;
-		float zBestShot = shotDir.z;
-		AIShot pShot = bestShot;
-		AIShot qShot = PhysicsEngine.getInstance().aiTestShot((RealBall)b, new Vector3f(), grid);
-		int counter = 0;
-		while(!bestShot.getClosestNode().equals(pShot.getNodes().get(pShot.getNodes().size() - 1)) || counter > MIDPOINT_ITERATIONS){
 			
-			float newPow = (p + q)/2;
-			Vector3f vec = new Vector3f(xBestShot*  newPow, 0, zBestShot * newPow);
-			AIShot newShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, vec, grid);
+			float p = MAX_SHOT_POWER;
+			float q = 0;
+			Vector3f shotDir = new Vector3f(bestShot.getShot().x, 0, bestShot.getShot().z);
+			shotDir.normalise();
+			float xBestShot = shotDir.x;
+			float zBestShot = shotDir.z;
+			AIShot pShot = bestShot;
+			AIShot qShot = PhysicsEngine.getInstance().aiTestShot((RealBall)b, new Vector3f(), grid);
+			int counter = 0;
 			
-			if(qShot.getClosestNode().equals(bestShot.getClosestNode())){
-				pShot = newShot;
-				p = newPow;
-			} else {
-				qShot = newShot;
-				q = newPow;
+			/*
+			while(!bestShot.getClosestNode().equals(pShot.getNodes().get(pShot.getNodes().size() - 1)) && counter < MIDPOINT_ITERATIONS){
+				counter++;
+				float newPow = (p + q)/2;
+				Vector3f vec = new Vector3f(xBestShot * newPow, 0, zBestShot * newPow);
+				AIShot newShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, vec, grid);
+				
+				if(newShot.getClosestNode().equals(bestShot.getClosestNode())){
+					pShot = newShot;
+					p = newPow;
+				} else {
+					qShot = newShot;
+					q = newPow;
+				}
+				
 			}
-			counter++;
-			
-		}
-		System.out.println("The best shot ends up at a distance " + pShot.getClosestNode().getD() + " from the hole");
-		b.setVelocity(pShot.getShot());
+			bestShot = pShot;*/
+		} 
+		System.out.println("The best shot ends up at a distance " + bestShot.getClosestNode().getD() + " from the hole");
+		b.setVelocity(bestShot.getShot());
 		b.setMoving(true);
-		System.out.println("Ball shooted by the bot with velocity: " + pShot.getShot());
+		System.out.println("Ball shooted by the bot with velocity: " + bestShot.getShot());
 		
 	}
+	
+	private boolean isStraightShotPossible(Ball b, Vector3f end) {
+		VirtualBall vb = new VirtualBall((RealBall) b, new Vector3f());
+		Vector3f dirVec = Vector3f.sub(end, b.getPosition(), null);
+		dirVec.normalise();
+		dirVec.scale(DELTA_CHECK);
+		while(Vector3f.sub(vb.getPosition(), end, null).length() > DELTA_CHECK){
+			vb.increasePosition(dirVec);
+			//ArrayList<Entity> arr = w.getCollidingEntities(vb);
+			ArrayList<PhysicalFace> arr = w.getCollidingFacesEntities(vb);
+			System.out.println("The length of the array is " + arr.size());
+			if(arr.size() != 0)
+				return false;
+		}
+		return true;
+	}
+
+	private Vector3f straightShotNonRandom(Vector3f velocity, Vector3f holePosition, Vector3f ballPosition) {
+        Vector3f temp = Vector3f.sub(holePosition, ballPosition, null);
+        float finalMagnitude = (float) Math.sqrt(2 * Friction.COEFFICIENT * 230 * temp.length());
+        temp.normalise();
+        temp.scale(finalMagnitude);
+        velocity.set(temp);
+        return velocity;
+    }
 	
 	private static Vector3f generateShot(float angDeg, float power){
 		float angle = (float) Math.toRadians(angDeg);
@@ -96,7 +141,7 @@ public class HMPathing extends Algorithm {
 	}
 	
 	@Override
-	public Node createGraph() {
+	public Node createGraph(){
 		float xBall = b.getPosition().x;
 		float zBall = b.getPosition().z;
 		int arraySize = (int) Math.ceil(Terrain.getSize()/CELL_SIZE);
@@ -108,15 +153,17 @@ public class HMPathing extends Algorithm {
 				float yCell = w.getHeightOfTerrain(xCell, zCell);//PhysicsEngine.getInstance().getHeightAt(xCell, zCell);
 				Node node = new Node(new Vector3f(xCell,yCell,zCell));
 				grid[x][z] = node;
+				Edge edge = new Edge(0);
+				Edge edge1 = new Edge(0);
 				if(x > 0){
 					Node west = grid[x-1][z];
-					node.setWest(west, 0);
-					west.setEast(node, 0);
+					node.setWest(west, edge);
+					west.setEast(node, edge);
 				}
 				if(z > 0){
 					Node north = grid[x][z-1];
-					node.setNorth(north, 0);
-					north.setSouth(node, 0);
+					node.setNorth(north, edge1);
+					north.setSouth(node, edge1);
 				}
 			}
 		int xBallGrid = (int)(xBall / CELL_SIZE);
@@ -127,15 +174,41 @@ public class HMPathing extends Algorithm {
 		
 		testWalkable(ballNode,w);
 		
-		int xHoleGrid = (int)(w.getEnd().x / CELL_SIZE);
-		int zHoleGrid = (int)(w.getEnd().z / CELL_SIZE);
-		Node holeNode = grid[xHoleGrid][zHoleGrid];
+		xHole = (int)(w.getEnd().x / CELL_SIZE);
+		zHole = (int)(w.getEnd().z / CELL_SIZE);
+		holeNode = grid[xHole][zHole];
+		int newxHole = xHole;
+		int newzHole = zHole;
+		for(int i=0; i<5; i++)
+			for(int j=0; j<5; j++){
+				int x = xHole - 2 + i;
+				int z = zHole - 2 + j;
+				if(x>=0 && x<grid.length && z>=0 && z<grid[0].length && grid[x][z].getPosition().y < holeNode.getPosition().y){
+					holeNode = grid[x][z];
+					newxHole = x;
+					newzHole = z;
+				}
+					
+			}
+		xHole = newxHole;
+		zHole = newzHole;
+		for(int i=0; i<4; i++)
+			for(int j=0; j<4; j++){
+				int x = xHole - 2 + i;
+				int z = zHole + 2 + j;
+				if(x>=0 && x<grid.length && z>=0 && z<grid[0].length){
+					for(int k=0; k<2; k++)
+						if(grid[x][z].getEdge(k) != null)
+							grid[x][z].getEdge(k).setLength(1);
+				}
+			}
 		holeNode.setD(0);
 		
 		for(int i = 0; i < grid.length; i++){
 			for(int j = 0; j < grid.length; j++){
 				grid[i][j].setTested(false);
 				grid[i][j].setTesting(false);
+				grid[i][j].setVisited(false);
 				for(int k = 0; k < 4; k++){
 					Edge e = grid[i][j].getEdge(k);
 					if(e != null)
@@ -146,9 +219,28 @@ public class HMPathing extends Algorithm {
 		
 		labelDistance(holeNode);
 		
+		printGrid(holeNode);
+		
 		return ballNode;
 	}
 	
+	private void printGrid(Node holeNode) {
+		
+		for(int i = 0; i < grid.length; i++){
+			for (int j = 0; j < grid[0].length; j++){
+				Node node = grid[i][j];
+				if(node.equals(holeNode))
+					System.out.print("H");
+				else
+					System.out.print(((double)((int)(node.getD()*10)))/10);
+				System.out.print("\t");
+			}
+			System.out.println();
+			System.out.println();
+		}
+		
+	}
+
 	private void testWalkable(Node n, World world) {
 		MinHeap<Node> open = new MinHeap<Node>();
 		open.insert(n);
@@ -156,7 +248,7 @@ public class HMPathing extends Algorithm {
 		while(open.size() != 0){
 			Node node = open.pop();
 			for(int i=0; i<4; i++){
-				Node neighbour = node.getNode(i);
+				Node neighbour = node.getNeighbourNode(i);
 				if(neighbour != null && !neighbour.isTested()){
 					
 					if(!neighbour.isVisited() ){
@@ -178,19 +270,20 @@ public class HMPathing extends Algorithm {
 						}
 						neighbour.setVisited(true);
 					}
+					
 					if(!node.getEdge(i).isVisited()){
 						float heightDiff = neighbour.getPosition().y - node.getPosition().y;
 						if(Math.abs(heightDiff) > MAX_SLOPE){
-							neighbour.setNode(((i + 2)%4), null);
-							node.setNode(i, null);
+							neighbour.setNeighbourNode(((i + 2)%4), null, null);
+							node.setNeighbourNode(i, null, null);
 						} else {
-							float dist = node.getDistance(neighbour);
+							float dist = 1; //node.getDistance(neighbour);
 							node.getEdge(i).setLength(dist);
-							neighbour.getEdge((i+2)%4).setLength(dist);
 							if(!neighbour.isTesting()){
 								open.insert(neighbour);
 								neighbour.setTesting(true);
 							}
+							node.getEdge(i).setVisited(true);
 						}
 					}
 				}
@@ -213,8 +306,7 @@ public class HMPathing extends Algorithm {
 			Node node = open.pop();
 			
 			for(int i = 0; i < 4; i++){
-				
-				Node neighbour = node.getNode(i);
+				Node neighbour = node.getNeighbourNode(i);
 				Edge edge = node.getEdge(i);
 				if(neighbour != null && !edge.isVisited()){
 					float newD = node.getD() + edge.getLength();
@@ -226,6 +318,7 @@ public class HMPathing extends Algorithm {
 						}
 					}
 					edge.setVisited(true);
+					neighbour.setVisited(true);
 				}
 				
 			}

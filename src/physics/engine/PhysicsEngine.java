@@ -517,6 +517,10 @@ public class PhysicsEngine {
     	AIShot shot = new AIShot(shotVel);
         VirtualBall ball = new VirtualBall(b, shotVel);
         System.out.printf("Initial position of the virtual ball: (%f|%f|%f)\n", ball.getPosition().x, ball.getPosition().y, ball.getPosition().z);
+        int gridX = (int) (ball.getPosition().x / Algorithm.CELL_SIZE);
+        int gridZ = (int) (ball.getPosition().z / Algorithm.CELL_SIZE);
+        Node n = grid[gridX][gridZ];
+        System.out.println("Distance of the virtual ball from the hole " + n.getD());
         int counter = 0;
         long one = System.currentTimeMillis();
         while (ball.isMoving() || counter < 10) {
@@ -532,12 +536,18 @@ public class PhysicsEngine {
             }
             counter++;
 
-            int gridX = (int) (ball.getPosition().x / Algorithm.CELL_SIZE);
-            int gridZ = (int) (ball.getPosition().z / Algorithm.CELL_SIZE);
+            gridX = (int) (ball.getPosition().x / Algorithm.CELL_SIZE);
+            gridZ = (int) (ball.getPosition().z / Algorithm.CELL_SIZE);
             if (gridX >= 0 && gridZ >= 0 && gridX < grid.length && gridZ < grid.length){
-                Node n = grid[gridX][gridZ];
+                n = grid[gridX][gridZ];
+                //System.out.println("Adding node at position: [" + gridX + ", " + gridZ + "]");
                 shot.addNode(n);
             }
+            if(!ball.specialMovedLastStep()){
+            	ball.setVelocity(0, 0, 0);
+                ball.setMoving(false);
+            }
+            	
         }
         long two = System.currentTimeMillis();
         System.out.println("Virtual shot took " + (two - one) + "ms");

@@ -18,6 +18,7 @@ public class AIShot {
 	public void addNode(Node node){
 		if(nodes.size() == 0 || !nodes.get(nodes.size() - 1).equals(node)){
 			nodes.add(node);
+			//System.out.println("Added node with distance " + node.getD());
 			if(closestNode == null)
 				closestNode = node;
 			else if(node.getD() < closestNode.getD())

@@ -148,7 +148,7 @@ public class GameState implements State {
 		system.setSpeedError(0.25f);
 		system.randomizeRotation();
 		system.setDirection(new Vector3f(1,0,0), 0.1f);
-		//bob = new BobTheBot(0, balls.get(0), world);
+		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 
 		System.out.println("\nHEIGHT TEST");
@@ -188,7 +188,7 @@ public class GameState implements State {
 		setCameraToBall(currBall);
 		System.out.println("done game with world");
 		//createTerrain(0, 1, "grass", false);
-		//bob = new BobTheBot(0, balls.get(0), world);
+		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 	}
 	

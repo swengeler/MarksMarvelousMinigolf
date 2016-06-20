@@ -51,7 +51,6 @@ public class Camera {
 		float verticalDistance = calculateVerticalDistance();
 		calculateCameraPosition(horizontalDistance, verticalDistance);
 		this.yaw = 180 - (((RealBall)ball).getRotY() + angleAroundBall);
-		System.out.println("Camera:\nPosition: " + position + "\nPitch: " + pitch + ", yaw: " + yaw + ", roll: " + roll);
 	}
 
 	public void set(Vector3f position, float pitch, float yaw, float distanceFromBall) {
