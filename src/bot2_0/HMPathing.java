@@ -13,6 +13,7 @@ import entities.playable.VirtualBall;
 import physics.collisions.PhysicalFace;
 import physics.engine.PhysicsEngine;
 import physics.noise.Friction;
+import physics.noise.Restitution;
 import physics.utils.ShotData;
 import terrains.Terrain;
 import terrains.World;
@@ -47,10 +48,12 @@ public class HMPathing extends Algorithm {
 		float ballD = ballNode.getD();
 		System.out.println("Distance of the ball from the hole is: " + ballD);
 		AIShot bestShot = null;
-		Vector3f straightVec = straightShotNonRandom(new Vector3f(), w.getEnd(), b.getPosition());
+		Vector3f straightVec = straightShotNonRandom(0f, w.getEnd(), b.getPosition());
+		Vector3f finalPowah = null;
 		if (isStraightShotPossible(b, w.getEnd())) {
 			System.out.println("Straight shot is possible");
 			bestShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, straightVec, grid);
+			finalPowah = bestShot.getShot();
 		} else {
 			System.out.println("Straight shot is not possible");
 			MinHeap<AIShot> shots = new MinHeap<AIShot>();
@@ -63,17 +66,9 @@ public class HMPathing extends Algorithm {
 				//System.out.println("The length of the array of nodes is " + shot.getNodes().size());
 				//System.out.println("The nodes traversed by this shot are " + shot.getNodes());
 				//System.out.println("The closest node of this shot is at a distance " + shot.getClosestNode().getD());
-				
-				if (bestShot == null || (shot.getClosestNode().getD() < bestShot.getClosestNode().getD())){
-					bestShot = shot;
-					//System.out.println("This shot was set as the best shot");
-				} else {
-					//System.out.println("The best shot is still the one that passes throught node with distance " + bestShot.getClosestNode().getD());
-				}
-				if(bestShot.getClosestNode().getD() < 2)
-					break; 
-				//shot.setAngle(i);
 				shots.insert(shot);
+				if(shot.getClosestNode().getD() < 2)
+					break; 
 			}
 			int numberOfShots = shots.size();
 			bestShot = shots.pop();
@@ -102,7 +97,7 @@ public class HMPathing extends Algorithm {
 			}
 			bestShot = shots.pop();
 			
-			*/
+			
 			float p = MAX_SHOT_POWER;
 			float q = 0;
 			Vector3f shotDir = new Vector3f(bestShot.getShot().x, 0, bestShot.getShot().z);
@@ -129,7 +124,8 @@ public class HMPathing extends Algorithm {
 				}
 				
 			}
-			bestShot = pShot;
+			bestShot = pShot;*/
+			finalPowah = getThePowah(bestShot);
 		} 
 		System.out.println("The best shot ends up at a distance " + bestShot.getClosestNode().getD() + " from the hole");
 		b.setVelocity(bestShot.getShot());
@@ -160,13 +156,12 @@ public class HMPathing extends Algorithm {
 	}
 	
 
-	private Vector3f straightShotNonRandom(Vector3f velocity, Vector3f holePosition, Vector3f ballPosition) {
+	private Vector3f straightShotNonRandom(float finalVelocity, Vector3f holePosition, Vector3f ballPosition) {
         Vector3f temp = Vector3f.sub(holePosition, ballPosition, null);
-        float finalMagnitude = (float) Math.sqrt(2 * Friction.COEFFICIENT * 230 * temp.length());
+        float finalMagnitude = (float) Math.sqrt(Math.pow(finalVelocity, 2) + 2 * Friction.COEFFICIENT * 230 * temp.length());
         temp.normalise();
         temp.scale(finalMagnitude);
-        velocity.set(temp);
-        return velocity;
+        return temp;
     }
 	
 	private static Vector3f generateShot(float angDeg, float power){
@@ -367,6 +362,25 @@ public class HMPathing extends Algorithm {
 			//System.out.println("Open set size: " + open.size());
 		}
 		
+	}
+	
+	private Vector3f getThePowah(AIShot shot){
+		float total = 0;
+		ArrayList<Vector3f> positions = shot.reduceBallPositions();
+		for(int i = positions.size() - 1; i > 0; i--){
+			Vector3f pos1 = positions.get(i);
+			Vector3f pos2 = positions.get(i-1);
+			
+			Vector3f straightShot = straightShotNonRandom(total, pos1, pos2);
+			total = straightShot.length();
+			if(i != 1){
+				total /= Restitution.COEFFICIENT;
+			}
+		}
+		Vector3f finalPowah = shot.getShot();
+		finalPowah.normalise();
+		finalPowah.scale(total);
+		return finalPowah;
 	}
 	
 }
