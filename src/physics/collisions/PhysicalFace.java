@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.playable.Ball;
+import physics.engine.PhysicsEngine;
 import toolbox.LinearAlgebra;
 
 public class PhysicalFace implements Serializable{

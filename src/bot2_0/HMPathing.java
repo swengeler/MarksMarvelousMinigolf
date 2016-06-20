@@ -72,7 +72,7 @@ public class HMPathing extends Algorithm {
 				}
 				if(bestShot.getClosestNode().getD() < 2)
 					break; 
-				shot.setAngle(i);
+				//shot.setAngle(i);
 				shots.insert(shot);
 			}
 			int numberOfShots = shots.size();
