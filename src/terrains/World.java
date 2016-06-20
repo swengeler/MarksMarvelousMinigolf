@@ -100,7 +100,7 @@ public class World implements Serializable{
 	
 	public boolean obstaclesIntersectedBySegment(Vector3f p1, Vector3f p2) {
 	    for (Entity e : entities) {
-	        if (e.isIntersectedBySegment(p1, p2) {
+	        if (e.isCollidable() && e.isIntersectedBySegment(p1, p2)) {
 	            return true;
 	        }
 	    }

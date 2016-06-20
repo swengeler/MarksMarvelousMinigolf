@@ -86,7 +86,7 @@ public class CollisionData implements Serializable{
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
 	    if (bbox.isIntersectedBySegment(p1, p2)) {
 	        for (PhysicalFace f : faces) {
-	            if (f.isIntersectedBySegment(p1, p2) {
+	            if (f.isIntersectedBySegment(p1, p2)) {
 	                return true;
 	            }
 	        }
