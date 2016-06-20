@@ -14,7 +14,8 @@ import toolbox.LinearAlgebra;
 import entities.playable.Ball;
 import entities.camera.Camera;
 
-public class World implements Serializable{
+public class World implements Serializable {
+
 	private List<Terrain> terrains = new ArrayList<>();
 	private List<Entity> entities = new ArrayList<>();
 	private List<Entity> normalEntities = new ArrayList<>();
@@ -130,7 +131,7 @@ public class World implements Serializable{
 	}
 	
 	public ArrayList<Entity> getCollidingEntities(Ball b) {
-		ArrayList<Entity> obstaclesHit = new ArrayList<Entity>();
+		ArrayList<Entity> obstaclesHit = new ArrayList<>();
 		for (Entity e : entities) {
 			if (e.isCollidable() && e.inBounds(b))
 				//System.out.println("VirtualBall with position " + b.getPosition() + " for test may collide with " + e);
@@ -143,7 +144,7 @@ public class World implements Serializable{
 	}
 	
 	public ArrayList<PhysicalFace> getCollidingFacesEntities(Ball b) {
-		ArrayList<PhysicalFace> collidingFaces = new ArrayList<PhysicalFace>();
+		ArrayList<PhysicalFace> collidingFaces = new ArrayList<>();
 		for (Entity e : entities) {
 			if (e.isCollidable() && e.inBounds(b)) {
 				collidingFaces.addAll(e.getCollidingFaces(b));

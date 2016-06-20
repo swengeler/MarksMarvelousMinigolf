@@ -276,7 +276,7 @@ public class GameState implements State {
 			lastInput = System.currentTimeMillis();
 		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_O)) {
 			System.out.println("Ball's velocity set to something by key press");
-			balls.get(currBall).setVelocity(9001, 0, 0);
+			balls.get(currBall).setVelocity(2000, 0, 0);
 			balls.get(currBall).setMoving(true);
 			lastInput = System.currentTimeMillis();
 		}

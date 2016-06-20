@@ -12,6 +12,7 @@ import entities.camera.Camera;
 import guis.GuiTexture;
 import models.TexturedModel;
 import objConverter.ModelData;
+import physics.noise.Friction;
 import renderEngine.utils.Loader;
 import terrains.World;
 import water.WaterTile;
@@ -40,7 +41,7 @@ public class bot {
 		Vector3f abc= Vector3f.sub( world.getEnd(),ball.getPosition(), null);
 		abc.normalise();
 		float distance= (float) Math.sqrt(Math.pow((world.getEnd().z-ball.getPosition().z),2)+Math.pow((world.getEnd().x-ball.getPosition().x),2));
-		float u= (float) Math.sqrt(Math.abs((2*distance*PhysicsEngine.COEFF_FRICTION*PhysicsEngine.GRAVITY.y)));
+		float u= (float) Math.sqrt(Math.abs((2*distance* Friction.COEFFICIENT*PhysicsEngine.GRAVITY.y)));
 		abc.scale((float) (u*1.4));
 		//a= (float)(u* Math.sin(Math.toRadians(abc)));
 	//	b=(float) (u* Math.cos(Math.toRadians()));

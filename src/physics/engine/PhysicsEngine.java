@@ -25,7 +25,7 @@ import toolbox.LinearAlgebra;
 
 
 public class PhysicsEngine {
-    float count=0;
+
     public static final float NORMAL_TH = 0.001f;
     private static final float ANGLE_TH = 5f;
     private static final float C = 0.001f;
@@ -34,18 +34,11 @@ public class PhysicsEngine {
     public static final float REAL_GRAVITY = 9.813f;
 
     public static final Vector3f GRAVITY = new Vector3f(0, -(REAL_GRAVITY / Ball.REAL_RADIUS), 0);
-    public static final float COEFF_RESTITUTION = 0.75f;
-    public static final float COEFF_FRICTION = 0.15f;
-
-    private static final double FRICTION_STD = 0.5;
 
     private List<RealBall> balls;
     private World world;
     private NoiseHandler noiseHandler;
 
-    private boolean enabled;
-    private final float minenergy = 1;
-    
     private static PhysicsEngine instance;
 
     public PhysicsEngine(List<Ball> balls, World world, NoiseHandler noiseHandler) {
@@ -58,7 +51,6 @@ public class PhysicsEngine {
             this.noiseHandler = new NoiseHandler(NoiseHandler.HARD, NoiseHandler.OFF);
         else
             this.noiseHandler = noiseHandler;
-        this.enabled = true;
         instance = this;
     }
     
@@ -71,10 +63,6 @@ public class PhysicsEngine {
 
     public static PhysicsEngine getInstance() {
         return instance;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public void addBall(RealBall ball) {
@@ -119,7 +107,6 @@ public class PhysicsEngine {
             // calculate the closest face/plane after the ball was pushed out, which is then used for collision resolution
             Terrain t = world.getTerrain(b.getPosition().x, b.getPosition().z);
             if (t == null) {
-                setEnabled(false);
                 return;
             }
             float terrainX = b.getPosition().x - t.getX();
@@ -375,6 +362,13 @@ public class PhysicsEngine {
     }
 
     public void resolveBallCollision(Ball b1) {
+        // test whether the ball (moving on the segment defined by its current and last position)
+        // came close enough to hit a different ball and reset the position if so
+        Vector3f closestIntersectionPoint = getIntersectionPointBalls(b1.getLastPosition(), b1.getPosition());
+
+        if (closestIntersectionPoint != null)
+            b1.setPosition(closestIntersectionPoint);
+
         for (RealBall b2 : this.balls) {
             if (!b1.equals(b2)) {
                 // the normal is chosen from b1 to b2 so that it will not only be parallel to the new vector of movement of b2 but will also point in the right direction
@@ -423,6 +417,20 @@ public class PhysicsEngine {
                 }
             }
         }
+    }
+
+    private Vector3f getIntersectionPointBalls(Vector3f p1, Vector3f p2) {
+        Vector3f closest = new Vector3f();
+        float lowestDistSq = -Float.MAX_VALUE, curDistSq;
+        for (RealBall b : balls) {
+            if (!(b.getPosition().x != world.getStart().x && b.getPosition().z != world.getStart().z) && (curDistSq = LinearAlgebra.distancePtLineSegSq(b.getPosition(), p1, p2)) < Math.pow(2 * Ball.RADIUS, 2) && curDistSq < lowestDistSq) {
+                closest.set(LinearAlgebra.closestPtPointSegment(b.getPosition(), p1, p2));
+                lowestDistSq = curDistSq;
+            }
+        }
+        if (closest.x == 0 && closest.y == 0 && closest.z == 0)
+            return null;
+        return closest;
     }
 
     private void resolvePlaneCollision(Ball b, PhysicalFace forResolution) {
@@ -613,31 +621,6 @@ public class PhysicsEngine {
         result[1] = Vector3f.sub(secondNextClosest, position, null);
         return result;
     }
-
-    /*public float getHeightAt(float x, float z) {
-        Ball b = new VirtualBall(new Vector3f(x, 20, z));
-        Entity belowBall = null;
-        for (Entity e : world.getEntities()) {
-            if (e.inHorizontalBounds(b)) {
-                belowBall = e;
-            }
-        }
-
-        if (belowBall == null) {
-            return world.getHeightOfTerrain(x, z);
-        } else {
-            while (!belowBall.collides(b)) {
-                b.increasePosition(0, -1f, 0);
-            }
-            
-            ArrayList<PhysicalFace> collidingFaces = belowBall.getCollidingFaces(b);
-            while(b.collidesWith(collidingFaces)){
-            	b.increasePosition(0, 0.01f, 0);
-            }
-            System.out.println("Difference in value " + Math.abs(world.getHeightOfTerrain(x, z) - b.getPosition().y));
-            return b.getPosition().y - Ball.RADIUS;
-        }
-    }*/
 
     public float getHeightAt(float x, float z) {
         ArrayList<Entity> belowBall = null;
