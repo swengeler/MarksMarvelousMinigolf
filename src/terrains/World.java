@@ -110,7 +110,10 @@ public class World implements Serializable{
 	public ArrayList<Entity> getCollidingEntities(Ball b) {
 		ArrayList<Entity> obstaclesHit = new ArrayList<Entity>();
 		for (Entity e : entities) {
+			if (e.isCollidable() && e.inBounds(b))
+				//System.out.println("VirtualBall with position " + b.getPosition() + " for test may collide with " + e);
 			if (e.isCollidable() && e.inBounds(b) && e.collides(b)) {
+				//System.out.println("VirtualBall with position " + b.getPosition() + " for test collides with " + e);
 				obstaclesHit.add(e);
 			}
 		}

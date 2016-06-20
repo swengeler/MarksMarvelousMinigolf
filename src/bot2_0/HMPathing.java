@@ -48,9 +48,11 @@ public class HMPathing extends Algorithm {
 		System.out.println("Distance of the ball from the hole is: " + ballD);
 		AIShot bestShot = null;
 		Vector3f straightVec = straightShotNonRandom(new Vector3f(), w.getEnd(), b.getPosition());
-		if(isStraightShotPossible(b,w.getEnd())){
+		if (isStraightShotPossible(b, w.getEnd())) {
+			System.out.println("Straight shot is possible");
 			bestShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, straightVec, grid);
 		} else {
+			System.out.println("Straight shot is not possible");
 			MinHeap<AIShot> shots = new MinHeap<AIShot>();
 			int shotsTaken = 0;
 			for (int i = 0; i < 360; i += DELTA_ANGLE){
@@ -135,15 +137,16 @@ public class HMPathing extends Algorithm {
 		
 	}
 	
-	/*private boolean isStraightShotPossible(Ball b, Vector3f end) {
+/*	private boolean isStraightShotPossible(Ball b, Vector3f end) {
 		VirtualBall vb = new VirtualBall((RealBall) b, new Vector3f());
 		Vector3f dirVec = Vector3f.sub(end, b.getPosition(), null);
+		dirVec.y = 0;
 		dirVec.normalise();
 		dirVec.scale(DELTA_CHECK);
 		while(Vector3f.sub(vb.getPosition(), end, null).length() > DELTA_CHECK){
 			vb.increasePosition(dirVec);
-			//ArrayList<Entity> arr = w.getCollidingEntities(vb);
-			ArrayList<PhysicalFace> arr = w.getCollidingFacesEntities(vb);
+			ArrayList<Entity> arr = w.getCollidingEntities(vb);
+			//ArrayList<PhysicalFace> arr = w.getCollidingFacesEntities(vb);
 			System.out.println("The length of the array is " + arr.size());
 			if(arr.size() != 0)
 				return false;
@@ -154,6 +157,10 @@ public class HMPathing extends Algorithm {
 	private boolean isStraightShotPossible(Ball b, Vector3f end) {
 		return !w.obstaclesIntersectedBySegment(b.getPosition(), end);
 	}
+	
+	/*private boolean isStraightShotPossible(Ball b, Vector3f end) {
+		return !w.obstaclesIntersectedBySegment(b.getPosition(), end);
+	}*/
 	
 
 	private Vector3f straightShotNonRandom(Vector3f velocity, Vector3f holePosition, Vector3f ballPosition) {

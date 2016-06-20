@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.playable.Ball;
+import physics.engine.PhysicsEngine;
 import toolbox.LinearAlgebra;
 
 public class PhysicalFace implements Serializable{
@@ -36,39 +37,6 @@ public class PhysicalFace implements Serializable{
 			return true;
 		return false;
 	}
-	
-	/*public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
-        Vector3f dir = Vector3f.sub(p1, p2, null);
-        float d, t, v, w;
-        
-        Vector3f ac = Vector3f.sub(point3, point1, null);
-        Vector3f ab = Vector3f.sub(point2, point1, null);
-        
-        // Compute denominator d. If d <= 0, segment is parallel to or points away from triangle, so exit early
-        d = Vector3f.dot(dir, normal);
-        if (d <= 0) 
-            return false;
-            
-        // Compute intersection t value of dir with plane of triangle. A segment intersects iff 0 <= t <= 1.
-        Vector3f ap = Vector3f.sub(p1, point1, null);
-        t = Vector3f.dot(ap, normal);
-        if (t < 0)
-            return false;
-        if (t > d)
-            return false;
-            
-        // Compute barycentric coordinate components and test if within bounds
-        Vector3f e = Vector3f.cross(dir, ap, null);
-        v = Vector3f.dot(ac, e);
-        if (v < 0 || v > d) 
-            return false;
-        w = -Vector3f.dot(ab, e);
-        if (w < 0 || v + w > d)
-            return false;
-            
-        // Segment intersects triangle
-        return true;
-	}*/
 	
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
         Vector3f u, v; // triangle vectors
@@ -112,6 +80,9 @@ public class PhysicalFace implements Serializable{
             return false;
             
         return true;
+=======
+        */
+>>>>>>> bkhsdn
 	}
 	
 	public float distanceToFace(Ball b) {
