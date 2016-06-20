@@ -517,6 +517,7 @@ public class PhysicsEngine {
     	AIShot shot = new AIShot(shotVel);
         VirtualBall ball = new VirtualBall(b, shotVel);
         System.out.printf("Initial position of the virtual ball: (%f|%f|%f)\n", ball.getPosition().x, ball.getPosition().y, ball.getPosition().z);
+        shot.addCollidingBallPosition(ball.getPosition());
         int gridX = (int) (ball.getPosition().x / Algorithm.CELL_SIZE);
         int gridZ = (int) (ball.getPosition().z / Algorithm.CELL_SIZE);
         Node n = grid[gridX][gridZ];
@@ -530,6 +531,8 @@ public class PhysicsEngine {
                 resolveBallCollision(ball);
                 if (!resolveObstacleCollision(ball))
                     resolveTerrainCollision(ball);
+                else
+                	shot.addCollidingBallPosition(ball.getPosition());
             } else if (ball.isMoving()) {
                 ball.setVelocity(0, 0, 0);
                 ball.setMoving(false);
@@ -541,7 +544,7 @@ public class PhysicsEngine {
             if (gridX >= 0 && gridZ >= 0 && gridX < grid.length && gridZ < grid.length){
                 n = grid[gridX][gridZ];
                 //System.out.println("Adding node at position: [" + gridX + ", " + gridZ + "]");
-                shot.addNode(n);
+                shot.addNode(n, ball);
             }
             if(!ball.specialMovedLastStep()){
             	ball.setVelocity(0, 0, 0);
