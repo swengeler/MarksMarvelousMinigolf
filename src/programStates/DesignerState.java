@@ -400,7 +400,7 @@ public class DesignerState implements State{
 		ModelData flag = OBJFileLoader.loadOBJ("flag");
 		ModelData wall = OBJFileLoader.loadOBJ("wall");
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
-	    ModelData hole = OBJFileLoader.loadOBJ("hole");
+	    ModelData hole = OBJFileLoader.loadOBJ("holeObstacle");
 		ModelData wall_seg = OBJFileLoader.loadOBJ("wall_seg");
 
 		mData.put("human", human);

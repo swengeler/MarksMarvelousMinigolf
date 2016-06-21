@@ -75,30 +75,36 @@ public class PhysicalFace implements Serializable{
 	}*/
 	
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
+        if (getIntersectionPointSegment(p1, p2) == null)
+            return false;
+        return true;
+	}
+
+    public Vector3f getIntersectionPointSegment(Vector3f p1, Vector3f p2) {
         Vector3f u, v; // triangle vectors
         Vector3f dir, w0, w; // segment vectors
         Vector3f ip, temp; // intersection point
         float r, a, b;
-        
+
         u = Vector3f.sub(point2, point1, null);
         v = Vector3f.sub(point3, point1, null);
-        
+
         dir = Vector3f.sub(p2, p1, null);
         w0 = Vector3f.sub(p1, point1, null);
         a = -Vector3f.dot(normal, w0);
         b = Vector3f.dot(normal, dir);
         if (Math.abs(b) < PhysicsEngine.NORMAL_TH) {
-            return false;
+            return null;
         }
-        
+
         r = a / b;
         if (r < 0 || r > 1)
-            return false;
-            
+            return null;
+
         temp = new Vector3f(dir.x, dir.y, dir.z);
         temp.scale(r);
         ip = Vector3f.add(p1, temp, null);
-            
+
         float uu, uv, vv, wu, wv, D;
         uu = Vector3f.dot(u, u);
         uv = Vector3f.dot(u, v);
@@ -107,17 +113,17 @@ public class PhysicalFace implements Serializable{
         wu = Vector3f.dot(w, u);
         wv = Vector3f.dot(w, v);
         D = uv * uv - uu * vv;
-        
+
         float s, t; // parametric coefficients
         s = (uv * wv - vv * wu) / D;
         if (s < 0 || s > 1)
-            return false;
+            return null;
         t = (uv * wu - uu * wv) / D;
         if (t < 0 || (s + t) > 1)
-            return false;
-            
-        return true;
-	}
+            return null;
+
+        return ip;
+    }
 	
 	public float distanceToFace(Ball b) {
 		Vector3f closest = LinearAlgebra.closestPtPointTriangle(b.getPosition(), point1, point2, point3);

@@ -33,6 +33,18 @@ public class LinearAlgebra {
 		return distancePtPtSq(p, sb);
 	}
 
+	public static Vector3f closestPtPointSegment(Vector3f p, Vector3f s1, Vector3f s2) {
+		Vector3f seg = Vector3f.sub(s2, s1, null), answer;
+
+		float t = Vector3f.dot(Vector3f.sub(p, s1, null), seg) / seg.lengthSquared();
+		t = t < 0 ? 0 : t;
+		t = t > 1 ? 1 : t;
+
+		seg.scale(t);
+		answer = Vector3f.add(s1, seg, null);
+		return answer;
+	}
+
 	public static Vector3f closestPtPointTriangle(Vector3f pOr, Vector3f aOr, Vector3f bOr, Vector3f cOr) {
 		// to make sure that the actual points aren't changed by the operations below
 		Vector3f p = new Vector3f(pOr.x, pOr.y, pOr.z);

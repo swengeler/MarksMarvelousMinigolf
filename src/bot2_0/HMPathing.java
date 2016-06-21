@@ -18,10 +18,12 @@ import physics.utils.ShotData;
 import terrains.Terrain;
 import terrains.World;
 
+import javax.swing.*;
+
 public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 3.0f; // That is the maximum height difference between two adjacent cell for them to be connected
-	private static final float MAX_SHOT_POWER = 200;
+	private static final float MAX_SHOT_POWER = 500;
 	private static final float DELTA_ANGLE = 5f; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 100;
 	private static final float DELTA_CHECK = 0.5f;
@@ -31,7 +33,8 @@ public class HMPathing extends Algorithm {
 	private Ball b;
 	private World w;
 	private Node holeNode;
-	private int xHole,zHole;
+	private int xHole, zHole;
+	public static float maxDistance;
 	
 	public HMPathing(Ball b, World w) {
 		this.b = b;
@@ -159,7 +162,8 @@ public class HMPathing extends Algorithm {
 	private Vector3f straightShotNonRandom(float finalVelocity, Vector3f holePosition, Vector3f ballPosition) {
         Vector3f temp = Vector3f.sub(holePosition, ballPosition, null);
         float finalMagnitude = (float) Math.sqrt(Math.pow(finalVelocity, 2) + 2 * Friction.COEFFICIENT * 230 * temp.length());
-        temp.normalise();
+		if (temp.lengthSquared() != 0)
+        	temp.normalise();
         temp.scale(finalMagnitude);
         return temp;
     }
@@ -253,17 +257,18 @@ public class HMPathing extends Algorithm {
 		
 		labelDistance(holeNode);
 		
-		printGrid(holeNode);
+		//printGrid(holeNode);
+		showGraphInFrame(holeNode);
 		
 		return ballNode;
 	}
 	
 	private void printGrid(Node holeNode) {
-		
-		for(int i = 0; i < grid.length; i++){
+		Node node;
+		for (int i = 0; i < grid.length; i++){
 			for (int j = 0; j < grid[0].length; j++){
-				Node node = grid[i][j];
-				if(node.equals(holeNode))
+				node = grid[i][j];
+				if (node.equals(holeNode))
 					System.out.print("H");
 				else
 					System.out.print(((double)((int)(node.getD()*10)))/10);
@@ -272,7 +277,10 @@ public class HMPathing extends Algorithm {
 			System.out.println();
 			System.out.println();
 		}
-		
+	}
+
+	private void showGraphInFrame(Node holeNode) {
+		GraphFrame frame = new GraphFrame(holeNode, grid);
 	}
 
 	private void testWalkable(Node n, World world) {
@@ -333,9 +341,10 @@ public class HMPathing extends Algorithm {
 	}
 
 	public static void labelDistance(Node n){
-		MinHeap<Node> open = new MinHeap<Node>();
+		MinHeap<Node> open = new MinHeap<>();
 		open.insert(n);
 		int counter = 0;
+		float curDistance = -Float.MAX_VALUE;
 		while(open.size() != 0){
 			Node node = open.pop();
 			
@@ -353,9 +362,15 @@ public class HMPathing extends Algorithm {
 					}
 					edge.setVisited(true);
 					neighbour.setVisited(true);
+
+					if ((curDistance = neighbour.getD()) > maxDistance)
+						maxDistance = curDistance;
 				}
 				
 			}
+
+			if ((curDistance = node.getD()) > maxDistance)
+				maxDistance = curDistance;
 			
 			counter++;
 			//System.out.println("Edges Tested: " + counter);
@@ -367,13 +382,13 @@ public class HMPathing extends Algorithm {
 	private Vector3f getThePowah(AIShot shot){
 		float total = 0;
 		ArrayList<Vector3f> positions = shot.reduceBallPositions();
-		for(int i = positions.size() - 1; i > 0; i--){
+		for (int i = positions.size() - 1; i > 0; i--) {
 			Vector3f pos1 = positions.get(i);
 			Vector3f pos2 = positions.get(i-1);
 			
 			Vector3f straightShot = straightShotNonRandom(total, pos1, pos2);
 			total = straightShot.length();
-			if(i != 1){
+			if (i != 1) {
 				total /= Restitution.COEFFICIENT;
 			}
 		}

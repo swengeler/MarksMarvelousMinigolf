@@ -11,15 +11,17 @@ import programStates.GameState;
 public class VirtualBall implements Ball {
 	
 	private RealBall cloneOf;
-	private Vector3f position, lastPosition, velocity, acceleration;
+	private Vector3f position, lastPositionMovementCheck, lastPositionActual, velocity, acceleration;
 	private boolean moving;
 	private Vector3f spin;
+	private int ignoreCounter;
 	
 	public VirtualBall(RealBall cloneOf, Vector3f initVelocity) {
 		this.cloneOf = cloneOf;
-		this.position = new Vector3f(cloneOf.getPosition().x, cloneOf.getPosition().y, cloneOf.getPosition().z);
-		this.lastPosition  = new Vector3f(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
-		this.velocity = new Vector3f(initVelocity.x, initVelocity.y, initVelocity.z);
+		this.position = new Vector3f(cloneOf.getPosition());
+		this.lastPositionMovementCheck = new Vector3f(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
+		this.lastPositionActual = new Vector3f(cloneOf.getPosition());
+		this.velocity = new Vector3f(initVelocity);
 		this.acceleration = new Vector3f();
 		this.moving = true;
 		this.spin= new Vector3f();
@@ -30,7 +32,8 @@ public class VirtualBall implements Ball {
 	}
 
 	public void updateAndMove() {
-		lastPosition.set(position.x, position.y, position.z);
+		lastPositionMovementCheck.set(position);
+		lastPositionActual.set(position);
 
 		// based on the newly updated velocity, move the ball
 		Vector3f delta = new Vector3f(velocity.x, velocity.y, velocity.z);
@@ -109,27 +112,31 @@ public class VirtualBall implements Ball {
 	}
 
 	public boolean movedLastStep() {
-		boolean moved = (Math.pow(position.x - lastPosition.x, 2) +
-						Math.pow(position.y - lastPosition.y, 2) +
-						Math.pow(position.z - lastPosition.z, 2) >
+		boolean moved = (Math.pow(position.x - lastPositionMovementCheck.x, 2) +
+						Math.pow(position.y - lastPositionMovementCheck.y, 2) +
+						Math.pow(position.z - lastPositionMovementCheck.z, 2) >
 						Math.pow(PhysicsEngine.MIN_MOV_REQ, 2));
 		return moved;
 	}
 
 	public boolean specialMovedLastStep() {
-		boolean moved = (Math.pow(position.x - lastPosition.x, 2) +
-				Math.pow(position.y - lastPosition.y, 2) +
-				Math.pow(position.z - lastPosition.z, 2) >
+		boolean moved = (Math.pow(position.x - lastPositionMovementCheck.x, 2) +
+				Math.pow(position.y - lastPositionMovementCheck.y, 2) +
+				Math.pow(position.z - lastPositionMovementCheck.z, 2) >
 				Math.pow(0.5, 2));
 		return moved;
 	}
 	
 	public void resetLastPos() {
-		lastPosition.set(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
+		lastPositionMovementCheck.set(-Float.MIN_VALUE, -Float.MIN_VALUE, -Float.MIN_VALUE);
 	}
 
 	public Vector3f getPosition() {
 		return position;
+	}
+
+	public Vector3f getLastPosition() {
+		return lastPositionActual;
 	}
 	
 	public void increasePosition(float x, float y, float z) {
@@ -149,6 +156,14 @@ public class VirtualBall implements Ball {
 		position.y = p.y;
 		position.z = p.z;
 	}
+
+	public void ignoreCollisions(int counter) {
+		this.ignoreCounter = counter;
+	}
+
+	public boolean ignoresCollisions() {
+		return (ignoreCounter-- > 0);
+	}
 	
 	public boolean equals(Object o) {
 		if (o instanceof RealBall)
@@ -166,7 +181,7 @@ public class VirtualBall implements Ball {
 		return 0;
 	}
 	public void setRotation(Vector3f v){
-	this.lastPosition=v;
+	this.lastPositionMovementCheck =v;
 	}
 	public Vector3f getRotation(){
 		return spin;

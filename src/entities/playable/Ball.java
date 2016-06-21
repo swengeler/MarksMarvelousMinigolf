@@ -18,6 +18,7 @@ public interface Ball {
 	void move();
 	float getTimeElapsed();
 	Vector3f getPosition();
+	Vector3f getLastPosition();
 	Vector3f getVelocity();
 	void setPosition(Vector3f p);
 	void increasePosition(float x, float y, float z);
@@ -31,6 +32,8 @@ public interface Ball {
 	void setMoving(boolean moving);
 	boolean isMoving();
 	boolean movedLastStep();
+	void ignoreCollisions(int counter);
+	boolean ignoresCollisions();
 	boolean collidesWith(ArrayList<PhysicalFace> faces);
 	void checkInputs();
 	float getRotY();

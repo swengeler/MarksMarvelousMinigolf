@@ -14,7 +14,8 @@ import toolbox.LinearAlgebra;
 import entities.playable.Ball;
 import entities.camera.Camera;
 
-public class World implements Serializable{
+public class World implements Serializable {
+
 	private List<Terrain> terrains = new ArrayList<>();
 	private List<Entity> entities = new ArrayList<>();
 	private List<Entity> normalEntities = new ArrayList<>();
@@ -106,9 +107,31 @@ public class World implements Serializable{
 	    }
 	    return false;
 	}
+
+	public Vector3f getLastIntersectionPointSegment(Vector3f p1, Vector3f p2) {
+		long before = System.currentTimeMillis();
+		ArrayList<Vector3f> curList;
+		Vector3f closest = null;
+		double curDistanceSq, minDistanceSq = Double.MAX_VALUE;
+		for (Entity e : entities) {
+			if (e.isCollidable()) {
+				curList = e.getIntersectionPointsSegment(p1, p2);
+				for (Vector3f v : curList) {
+					// this is the distance because the segment goes from p1 to p2 (p1 = curBallPosition, p2 = nextBallPosition)
+					curDistanceSq = Math.pow(p1.x - v.x, 2) + Math.pow(p1.y - v.y, 2) + Math.pow(p1.z - v.z, 2);
+					if (curDistanceSq < minDistanceSq) {
+						closest = v;
+						minDistanceSq = curDistanceSq;
+					}
+				}
+			}
+		}
+		//System.out.println("Getting intersection point in world took " + (System.currentTimeMillis() - before) + " ms");
+		return closest;
+	}
 	
 	public ArrayList<Entity> getCollidingEntities(Ball b) {
-		ArrayList<Entity> obstaclesHit = new ArrayList<Entity>();
+		ArrayList<Entity> obstaclesHit = new ArrayList<>();
 		for (Entity e : entities) {
 			if (e.isCollidable() && e.inBounds(b))
 				//System.out.println("VirtualBall with position " + b.getPosition() + " for test may collide with " + e);
@@ -121,7 +144,7 @@ public class World implements Serializable{
 	}
 	
 	public ArrayList<PhysicalFace> getCollidingFacesEntities(Ball b) {
-		ArrayList<PhysicalFace> collidingFaces = new ArrayList<PhysicalFace>();
+		ArrayList<PhysicalFace> collidingFaces = new ArrayList<>();
 		for (Entity e : entities) {
 			if (e.isCollidable() && e.inBounds(b)) {
 				collidingFaces.addAll(e.getCollidingFaces(b));

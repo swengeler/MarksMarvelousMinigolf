@@ -126,18 +126,19 @@ public class GameState implements State {
 		System.out.println("After loading particle system for the first time");
 
 		//createEntity("box", new Vector3f(world.getStart().x + 70, -60f/*-60f*/, world.getStart().z - 120), 0, 0, 0, 20);
-		createEntity("box", new Vector3f(world.getStart().x + 70, 0, world.getStart().z - 120), 0, 0, 0, 1);
+		createEntity("box", new Vector3f(world.getStart().x + 70, -100, world.getStart().z - 120), 0, 0, 0, 30);
 		//world.setEnd(new Vector2f(world.getStart().x + 50, world.getStart().z + 50));
         //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
-		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
+		//createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
 		createEntity("wall", new Vector3f(100, 0, 100), 0, 0, 0, 5);
 		//createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
 		//two = createRotatingEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), new Vector3f(0, 180, 0), 5, new Vector3f());
 		two = createEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), 0, 180, 0, 5);
 		//wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 76, world.getStart().z + 150 - 26f), new Vector3f(), 10, new Vector3f());
 		//two = createRotatingEntity("sphere_offcenter", new Vector3f(world.getStart().x, 50, world.getStart().z - 300), new Vector3f(), 10, new Vector3f());
+		createEntity("ramp", new Vector3f(50, 0, 200), 0, 0, 0, 5);
 
-		createWall(new Vector2f(0, 100), new Vector2f(100, 0));
+		//createWall(new Vector2f(0, 100), new Vector2f(100, 0));
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
@@ -151,9 +152,13 @@ public class GameState implements State {
 		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 
-		System.out.println("\nHEIGHT TEST");
-		System.out.println("Height at (" + (world.getEntities().get(0).getPosition().x + 0.001) + "|" + world.getEntities().get(0).getPosition().z + "): " + mainEngine.getHeightAt(world.getEntities().get(0).getPosition().x + 0.001f, world.getEntities().get(0).getPosition().z));
-		System.out.println("HEIGHT TEST\n");
+		System.out.println("\nINTERSECTION TEST");
+		Vector3f p1 = new Vector3f(0, 1, 0);
+		Vector3f p2 = new Vector3f(200, 1, 120);
+		for (Entity e : world.getEntities()) {
+			e.isIntersectedBySegment(p1, p2);
+		}
+		System.out.println("INTERSECTION TEST\n");
 	}
 	
 	private void buildWithWorld(Loader loader, World world) {
@@ -187,6 +192,8 @@ public class GameState implements State {
 		loadParticleSystem();
 		setCameraToBall(currBall);
 		System.out.println("done game with world");
+		createEntity("flag", new Vector3f(0, 0, 300), 0, 0, 0, 20);
+		createEntity("hole", new Vector3f(world.getEnd().x, 0, world.getEnd().z), 0, 0, 0, 1.2f);
 		//createTerrain(0, 1, "grass", false);
 		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
@@ -247,9 +254,10 @@ public class GameState implements State {
 			}
 		}
 
-		if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
+		if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
 			bob.shoot();
-		} else if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_I)) {
+			lastInput = System.currentTimeMillis();
+		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_I)) {
 			if (virtualShotTest == -1) {
 				System.out.println("\n\n\nVIRTUALBALL TEST STARTING\n");
 				mainEngine.performVirtualShot((RealBall) balls.get(0), new Vector3f(150, 0, 150));
@@ -258,7 +266,8 @@ public class GameState implements State {
 				System.out.println("\nVIRTUALBALL TEST ENDING\n\n\n");
 				virtualShotTest = 0;
 			}
-		} else if ((System.currentTimeMillis() - lastInput) > 500 && Keyboard.isKeyDown(Keyboard.KEY_N)) {
+			lastInput = System.currentTimeMillis();
+		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_N)) {
 			MonteCarlo mc = new MonteCarlo();
 			System.out.println("Calculating shot test for ball " + currBall);
 			long one = System.currentTimeMillis();
@@ -267,6 +276,12 @@ public class GameState implements State {
 			balls.get(currBall).setMoving(true);
 			balls.get(currBall).setVelocity(vel);
 			((RealBall) balls.get(currBall)).setPlayed(true);
+			lastInput = System.currentTimeMillis();
+		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_O)) {
+			System.out.println("Ball's velocity set to something by key press");
+			balls.get(currBall).setVelocity(2000, 0, 0);
+			balls.get(currBall).setMoving(true);
+			lastInput = System.currentTimeMillis();
 		}
 	}
 	
@@ -391,8 +406,9 @@ public class GameState implements State {
 	private void loadGuis() {
 		guiRenderer = new GuiRenderer(loader);
 		guis = new ArrayList<>();
-		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", null));
+		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", world));
 		guis.add(new GuiButton("controls", new Vector2f(1540, 675), new Vector2f(0.65f, 0.4f), loader, "overlay", null));
+		guis.add(new GuiButton("save", new Vector2f(59, 810), new Vector2f(0.2f, 0.2f), loader, "save", null));
 	}
 	
 	private void loadModels() {
@@ -411,7 +427,7 @@ public class GameState implements State {
 		ModelData flag = OBJFileLoader.loadOBJ("flag");
 		ModelData wall = OBJFileLoader.loadOBJ("wall");
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
-	    ModelData hole = OBJFileLoader.loadOBJ("hole");
+	    ModelData hole = OBJFileLoader.loadOBJ("holeObstacle");
         ModelData ramp = OBJFileLoader.loadOBJ("ramp_hole");
         ModelData windmill = OBJFileLoader.loadOBJ("windmill_tower2");
         ModelData windmill_rot = OBJFileLoader.loadOBJ("windmill_wings");
@@ -522,7 +538,7 @@ public class GameState implements State {
 	
 	public Entity createEntity(String eName, Vector3f position, float rotX, float rotY, float rotZ, float scale){
 		long before = System.currentTimeMillis();
-		Entity e = new Entity(tModels.get(eName), 0,mData.get(eName), position, rotX, rotY, rotZ, scale);
+		Entity e = new Entity(tModels.get(eName), 0,mData.get(eName), position, rotX, rotY, rotZ, scale, eName);
 		world.add(e);
 		//System.out.println("Loading entity: " + (System.currentTimeMillis() - before) + "ms");
 		return e;
@@ -587,7 +603,7 @@ public class GameState implements State {
 		((RealBall) balls.get(currBall)).setPlayed(false);
 		setCameraToBall(currBall);
 	}
-	
+
 	public void printScore(){
 		((RealBall) balls.get(currBall)).addScore();
 		System.out.println("Score for player " + currBall + " is: " + ((RealBall) balls.get(currBall)).getScore());
