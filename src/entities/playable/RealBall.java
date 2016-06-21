@@ -71,7 +71,6 @@ public class RealBall extends Entity implements Ball {
 		System.out.printf("Ball's position after moving: (%f|%f|%f)\n", getPosition().x, getPosition().y, getPosition().z);
 		System.out.printf("Ball's velocity after moving (with gravity applied): (%f|%f|%f)\n", currentVel.x, currentVel.y, currentVel.z);
 		if (getVelocity().length() < Ball.MIN_VEL && Math.abs(getPosition().y - GameState.getInstance().getWorld().getHeightOfTerrain(getPosition().x, getPosition().z)) < 1) {
-			System.out.println("Moving set to false because velocity too low");
 			setMoving(false);
 		}
 	}
@@ -103,7 +102,7 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public void setMoving(boolean moving) {
-		System.out.println("Moving set to " + moving);
+		//System.out.println("Moving set to " + moving);
 		this.moving = moving;
 		if (moving)
 			resetLastPos();

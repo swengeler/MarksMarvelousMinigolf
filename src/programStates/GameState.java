@@ -129,7 +129,7 @@ public class GameState implements State {
 		createEntity("box", new Vector3f(world.getStart().x + 70, -100, world.getStart().z - 120), 0, 0, 0, 30);
 		//world.setEnd(new Vector2f(world.getStart().x + 50, world.getStart().z + 50));
         //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
-		//createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
+		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
 		createEntity("wall", new Vector3f(100, 0, 100), 0, 0, 0, 5);
 		//createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
 		//two = createRotatingEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), new Vector3f(0, 180, 0), 5, new Vector3f());
@@ -538,7 +538,7 @@ public class GameState implements State {
 	
 	public Entity createEntity(String eName, Vector3f position, float rotX, float rotY, float rotZ, float scale){
 		long before = System.currentTimeMillis();
-		Entity e = new Entity(tModels.get(eName), 0,mData.get(eName), position, rotX, rotY, rotZ, scale, eName);
+		Entity e = new Entity(tModels.get(eName), 0,mData.get(eName), position, rotX, rotY, rotZ, scale);
 		world.add(e);
 		//System.out.println("Loading entity: " + (System.currentTimeMillis() - before) + "ms");
 		return e;
