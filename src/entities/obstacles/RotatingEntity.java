@@ -1,7 +1,7 @@
 package entities.obstacles;
 
 import entities.playable.Ball;
-import physics.collisions.PhysicalFace;
+import physics.collisions.Face;
 import physics.collisions.RotatingCollisionData;
 import physics.collisions.RotatingFace;
 import models.TexturedModel;
@@ -55,7 +55,7 @@ public class RotatingEntity extends Entity {
         float overallMin = Float.MAX_VALUE;
         float overallMax = -Float.MIN_VALUE;
 
-        PhysicalFace face;
+        Face face;
         int[] curInd = new int[3];
         for (int i = 0; i < ind.length; i += 3) {
             curInd[0] = ind[i] * 3;
@@ -110,7 +110,7 @@ public class RotatingEntity extends Entity {
     }
 
     @Override
-    public ArrayList<PhysicalFace> getCollidingFaces(Ball b) {
+    public ArrayList<Face> getCollidingFaces(Ball b) {
         //System.out.printf("TFMatrix updated with position: (%f|%f|%f) and rotation (%f|%f|%f) and scale %f\n", position.x, position.y, position.z, rotation.x, rotation.y, rotation.z, scale);
 
         /*Matrix4f matrix = new Matrix4f();

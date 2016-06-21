@@ -5,7 +5,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import physics.collisions.PhysicalFace;
+import physics.collisions.Face;
 import entities.camera.Camera;
 
 public class LinearAlgebra {
@@ -128,7 +128,7 @@ public class LinearAlgebra {
         return temp2;
 	}
 	
-	public static boolean checkPointInFace(Vector3f p, PhysicalFace f) {
+	public static boolean checkPointInFace(Vector3f p, Face f) {
 		Vector3f a = new Vector3f(), b = new Vector3f(), c = new Vector3f();
 		
 		// translate point and triangle so that point lies at origin

@@ -1,10 +1,6 @@
-package bot2_0;
+package artificialIntelligence.algorithms;
 
-import java.util.ArrayList;
-
-import entities.playable.Ball;
-import physics.utils.ShotData;
-import terrains.World;
+import artificialIntelligence.utils.Node;
 
 public abstract class Algorithm {
 	

@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
 import models.TexturedModel;
 import programStates.GameState;
 import renderEngine.utils.DisplayManager;
-import physics.collisions.PhysicalFace;
+import physics.collisions.Face;
 import physics.engine.PhysicsEngine;
 
 public class RealBall extends Entity implements Ball {
@@ -185,8 +185,8 @@ public class RealBall extends Entity implements Ball {
 		}
 	}
 
-	public boolean collidesWith(ArrayList<PhysicalFace> faces) {
-		for (PhysicalFace f : faces) {
+	public boolean collidesWith(ArrayList<Face> faces) {
+		for (Face f : faces) {
 			if (f.collidesWithFace(this))
 				return true;
 		}

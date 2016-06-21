@@ -8,11 +8,11 @@ import entities.playable.Ball;
 import physics.engine.PhysicsEngine;
 import toolbox.LinearAlgebra;
 
-public class PhysicalFace implements Serializable{
+public class Face implements Serializable{
 
 	protected Vector3f normal, point1, point2, point3, dist;
 
-	public PhysicalFace(Vector3f normal, Vector3f point1, Vector3f point2, Vector3f point3) {
+	public Face(Vector3f normal, Vector3f point1, Vector3f point2, Vector3f point3) {
 		this.normal = new Vector3f(normal.x, normal.y, normal.z);
 		this.normal.normalise();
 		this.point1 = new Vector3f(point1.x, point1.y, point1.z);
@@ -163,7 +163,7 @@ public class PhysicalFace implements Serializable{
 		return point3;
 	}
 
-	public Vector3f getCommonEdge(PhysicalFace f) { // all of this equality stuff needs to be changed
+	public Vector3f getCommonEdge(Face f) { // all of this equality stuff needs to be changed
         Vector3f c1, c2, edge = new Vector3f();
 
         if (LinearAlgebra.pointsAreEqual(point1, f.getP1()) || LinearAlgebra.pointsAreEqual(point1, f.getP2()) || LinearAlgebra.pointsAreEqual(point1, f.getP3())) {
@@ -191,7 +191,7 @@ public class PhysicalFace implements Serializable{
     }
 	
 	public String toString() {
-		return "PhysicalFace with normal (" + normal.x + "|" + normal.y + "|" + normal.z + ") with points (" + point1.x + "|" + point1.y + "|" + point1.z + "), (" + point2.x + "|" + point2.y + "|" + point2.z + ") and (" + point3.x + "|" + point3.y + "|" + point3.z + ")";
+		return "Face with normal (" + normal.x + "|" + normal.y + "|" + normal.z + ") with points (" + point1.x + "|" + point1.y + "|" + point1.z + "), (" + point2.x + "|" + point2.y + "|" + point2.z + ") and (" + point3.x + "|" + point3.y + "|" + point3.z + ")";
 	}
 
 }

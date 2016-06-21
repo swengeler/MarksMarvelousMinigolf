@@ -259,7 +259,7 @@ public class DesignerState implements State{
 			lastInput = System.currentTimeMillis();
 		}
 		if ((System.currentTimeMillis() - lastInput > 200) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_G) && picker.getCurrentTerrainPoint() != null) {
-			createEntity("box", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 3);
+			createEntity("box", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 7);
 			lastInput = System.currentTimeMillis();
 		}
 		if (world.hasStart() && world.hasEnd() && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
@@ -393,7 +393,7 @@ public class DesignerState implements State{
 		ModelData grass = OBJFileLoader.loadOBJ("grassModel");
 		ModelData pine = OBJFileLoader.loadOBJ("pine");
 		ModelData flower = OBJFileLoader.loadOBJ("grassModel");
-		ModelData box = OBJFileLoader.loadOBJ("wall_segment");
+		ModelData box = OBJFileLoader.loadOBJ("box");
 		ModelData dragon = OBJFileLoader.loadOBJ("dragon");
 		ModelData empty = OBJFileLoader.loadOBJ("empty");
 		ModelData disk = OBJFileLoader.loadOBJ("disk");
@@ -489,28 +489,28 @@ public class DesignerState implements State{
 	}
 
 	public void createBoundingWall() {
-		Vector2f p1 = new Vector2f(0, 3), p2 = new Vector2f(0, Terrain.getSize() - 3);
+		Vector2f p1 = new Vector2f(0, 0), p2 = new Vector2f(0, Terrain.getSize() - 0);
 		Vector2f p3 = new Vector2f(0, 3), p4 = new Vector2f(3, 0);
 		createWall(p1, p2);
-		createWall(p3, p4);
-		p1.set(Terrain.getSize() - 3, Terrain.getSize());
-		p2.set(3, Terrain.getSize());
+		//createWall(p3, p4);
+		p1.set(Terrain.getSize() - 0, Terrain.getSize());
+		p2.set(0, Terrain.getSize());
 		p3.set(0, Terrain.getSize() - 3);
 		p4.set(3, Terrain.getSize());
 		createWall(p1, p2);
-		createWall(p3, p4);
-		p1.set(Terrain.getSize(), Terrain.getSize() - 3);
-		p2.set(Terrain.getSize(), 3);
+		//createWall(p3, p4);
+		p1.set(Terrain.getSize(), Terrain.getSize() - 0);
+		p2.set(Terrain.getSize(), 0);
 		p3.set(Terrain.getSize() - 3, Terrain.getSize());
 		p4.set(Terrain.getSize(), Terrain.getSize() - 3);
 		createWall(p1, p2);
-		createWall(p3, p4);
-		p1.set(3, 0);
-		p2.set(Terrain.getSize() - 3, 0);
+		//createWall(p3, p4);
+		p1.set(0, 0);
+		p2.set(Terrain.getSize() - 0, 0);
 		p3.set(Terrain.getSize(), 3);
 		p4.set(Terrain.getSize() - 3, 0);
 		createWall(p1, p2);
-		createWall(p3, p4);
+		//createWall(p3, p4);
 	}
 
 	public Entity createEntity(String eName, Vector3f position, float rotX, float rotY, float rotZ, float scale){

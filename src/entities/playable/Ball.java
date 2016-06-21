@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import bot2_0.AIShot;
-import physics.collisions.PhysicalFace;
+import physics.collisions.Face;
 
 public interface Ball {
 	
@@ -34,7 +33,7 @@ public interface Ball {
 	boolean movedLastStep();
 	void ignoreCollisions(int counter);
 	boolean ignoresCollisions();
-	boolean collidesWith(ArrayList<PhysicalFace> faces);
+	boolean collidesWith(ArrayList<Face> faces);
 	void checkInputs();
 	float getRotY();
 	Vector3f getRotation();

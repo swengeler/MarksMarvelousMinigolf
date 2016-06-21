@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import bot2_0.MonteCarlo;
+import artificialIntelligence.algorithms.MonteCarlo;
 import entities.camera.Camera;
 import entities.camera.Empty;
 import entities.obstacles.Entity;
@@ -22,11 +22,9 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import physics.engine.PhysicsEngine;
-import bot.bot;
-import bot2_0.BobTheBot;
+import artificialIntelligence.algorithms.BobTheBot;
 import gameEngine.MainGameLoop;
 import guis.GuiRenderer;
-import guis.GuiTexture;
 import models.RawModel;
 import models.TexturedModel;
 import normalMapping.objConverter.NormalMappedObjLoader;
@@ -420,7 +418,7 @@ public class GameState implements State {
 		ModelData grass = OBJFileLoader.loadOBJ("grassModel");
 		ModelData pine = OBJFileLoader.loadOBJ("pine");
 		ModelData flower = OBJFileLoader.loadOBJ("grassModel");
-		ModelData box = OBJFileLoader.loadOBJ("wall_segment");
+		ModelData box = OBJFileLoader.loadOBJ("box");
 		ModelData dragon = OBJFileLoader.loadOBJ("dragon");
 		ModelData empty = OBJFileLoader.loadOBJ("empty");
 		ModelData disk = OBJFileLoader.loadOBJ("disk");

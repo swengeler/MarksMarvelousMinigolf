@@ -1,4 +1,4 @@
-package bot2_0;
+package artificialIntelligence.algorithms;
 
 import entities.playable.Ball;
 import entities.playable.RealBall;

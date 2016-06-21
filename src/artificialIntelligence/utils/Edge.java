@@ -1,6 +1,4 @@
-package bot2_0;
-
-import physics.utils.ShotData;
+package artificialIntelligence.utils;
 
 public class Edge {
 	

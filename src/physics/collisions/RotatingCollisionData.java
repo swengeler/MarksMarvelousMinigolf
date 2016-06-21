@@ -15,14 +15,14 @@ public class RotatingCollisionData extends CollisionData {
     }
 
     @Override
-    public ArrayList<PhysicalFace> getCollidingFaces(Ball b) {
+    public ArrayList<Face> getCollidingFaces(Ball b) {
         /*System.out.println("\nTRANSFORMATION MATRIX UPDATED IN CDATA:");
         System.out.println(tfMatrix.m00 + " | " + tfMatrix.m01 + " | " + tfMatrix.m02 + " | " + tfMatrix.m03 + "\n" +
                 tfMatrix.m10 + " | " + tfMatrix.m11 + " | " + tfMatrix.m12 + " | " + tfMatrix.m13 + "\n" +
                 tfMatrix.m20 + " | " + tfMatrix.m21 + " | " + tfMatrix.m22 + " | " + tfMatrix.m23 + "\n" +
                 tfMatrix.m30 + " | " + tfMatrix.m31 + " | " + tfMatrix.m32 + " | " + tfMatrix.m33 + "\n");*/
         collisionList.clear();
-        for (PhysicalFace f : faces) {
+        for (Face f : faces) {
             ((RotatingFace) f).updateFace(tfMatrix, invTFMatrix);
             if (f.collidesWithFace(b))
                 collisionList.add(f);
@@ -32,7 +32,7 @@ public class RotatingCollisionData extends CollisionData {
 
     @Override
     public boolean collides(Ball b) {
-        for (PhysicalFace f : faces) {
+        for (Face f : faces) {
             ((RotatingFace) f).updateFace(tfMatrix, invTFMatrix);
             if (f.collidesWithFace(b))
                 return true;

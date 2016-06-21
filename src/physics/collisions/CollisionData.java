@@ -5,20 +5,19 @@ import java.util.ArrayList;
 
 import entities.playable.Ball;
 import org.lwjgl.util.vector.Vector3f;
-import physics.engine.PhysicsEngine;
 
 public class CollisionData implements Serializable{
 
 	private BoundingBox bbox;
-	protected ArrayList<PhysicalFace> faces;
-	protected ArrayList<PhysicalFace> collisionList;
+	protected ArrayList<Face> faces;
+	protected ArrayList<Face> collisionList;
 
 	public CollisionData() {
 		faces = new ArrayList<>();
 		collisionList = new ArrayList<>();
 	}
 
-	public void addFace(PhysicalFace face) {
+	public void addFace(Face face) {
 		faces.add(face);
 	}
 
@@ -30,9 +29,9 @@ public class CollisionData implements Serializable{
 		return bbox;
 	}
 
-	public ArrayList<PhysicalFace> getCollidingFaces(Ball b) {
+	public ArrayList<Face> getCollidingFaces(Ball b) {
 		collisionList.clear();
-		for (PhysicalFace f : faces) {
+		for (Face f : faces) {
 			if (f.collidesWithFace(b))
 				collisionList.add(f);
 		}
@@ -56,7 +55,7 @@ public class CollisionData implements Serializable{
 		Vector3f m = Vector3f.cross(pq, q, null);
 		Vector3f r = new Vector3f(), a = new Vector3f(), b = new Vector3f(), c = new Vector3f(), temp = new Vector3f();
 		float u, v, w, denom, curHeight, maxHeight = - Float.MAX_VALUE;
-		for (PhysicalFace f : faces) {
+		for (Face f : faces) {
 			a.set(f.getP1());
 			b.set(f.getP2());
 			c.set(f.getP3());
@@ -85,7 +84,7 @@ public class CollisionData implements Serializable{
 	
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
 	    if (bbox.isIntersectedBySegment(p1, p2)) {
-	        for (PhysicalFace f : faces) {
+	        for (Face f : faces) {
 	            if (f.isIntersectedBySegment(p1, p2)) {
 	                return true;
 	            }
@@ -97,7 +96,7 @@ public class CollisionData implements Serializable{
 	public ArrayList<Vector3f> getIntersectionPointsSegment(Vector3f p1, Vector3f p2) {
 		ArrayList<Vector3f> intersectionPoints = new ArrayList<>();
 		Vector3f temp;
-		for (PhysicalFace f : faces) {
+		for (Face f : faces) {
 			temp = f.getIntersectionPointSegment(p1, p2);
 			if (temp != null)
 				intersectionPoints.add(new Vector3f(temp));
@@ -106,7 +105,7 @@ public class CollisionData implements Serializable{
 	}
 	
 	public boolean collides(Ball b) {
-		for (PhysicalFace f : faces) {
+		for (Face f : faces) {
 			if (f.collidesWithFace(b))
 				return true;
 		}

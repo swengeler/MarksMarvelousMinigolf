@@ -1,11 +1,9 @@
-package bot2_0;
+package artificialIntelligence.utils;
 
 import java.util.ArrayList;
 
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import physics.utils.ShotData;
 import terrains.Terrain;
 
 public class Node{

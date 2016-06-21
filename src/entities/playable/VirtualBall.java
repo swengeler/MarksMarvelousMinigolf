@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import physics.collisions.PhysicalFace;
+import physics.collisions.Face;
 import physics.engine.PhysicsEngine;
 import programStates.GameState;
 
@@ -75,8 +75,8 @@ public class VirtualBall implements Ball {
 		return moving;
 	}
 	
-	public boolean collidesWith(ArrayList<PhysicalFace> faces) {
-		for (PhysicalFace f : faces) {
+	public boolean collidesWith(ArrayList<Face> faces) {
+		for (Face f : faces) {
 			if (f.collidesWithFace(this))
 				return true;
 		}

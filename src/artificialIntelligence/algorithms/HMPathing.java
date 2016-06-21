@@ -1,29 +1,28 @@
-package bot2_0;
+package artificialIntelligence.algorithms;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
-import org.lwjgl.util.vector.Vector2f;
+import artificialIntelligence.utils.AIShot;
+import artificialIntelligence.utils.Edge;
+import artificialIntelligence.utils.MinHeap;
+import artificialIntelligence.utils.Node;
+import artificialIntelligence.viewer.GraphFrame;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.obstacles.Entity;
 import entities.playable.Ball;
 import entities.playable.RealBall;
 import entities.playable.VirtualBall;
-import physics.collisions.PhysicalFace;
 import physics.engine.PhysicsEngine;
 import physics.noise.Friction;
 import physics.noise.Restitution;
-import physics.utils.ShotData;
 import terrains.Terrain;
 import terrains.World;
-
-import javax.swing.*;
 
 public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 3.0f; // That is the maximum height difference between two adjacent cell for them to be connected
-	private static final float MAX_SHOT_POWER = 500;
+	private static final float MAX_SHOT_POWER = 1000;
 	private static final float DELTA_ANGLE = 5f; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 100;
 	private static final float DELTA_CHECK = 0.5f;
@@ -146,7 +145,7 @@ public class HMPathing extends Algorithm {
 		while(Vector3f.sub(vb.getPosition(), end, null).length() > DELTA_CHECK){
 			vb.increasePosition(dirVec);
 			ArrayList<Entity> arr = w.getCollidingEntities(vb);
-			//ArrayList<PhysicalFace> arr = w.getCollidingFacesEntities(vb);
+			//ArrayList<Face> arr = w.getCollidingFacesEntities(vb);
 			System.out.println("The length of the array is " + arr.size());
 			if(arr.size() != 0)
 				return false;
@@ -344,11 +343,11 @@ public class HMPathing extends Algorithm {
 		MinHeap<Node> open = new MinHeap<>();
 		open.insert(n);
 		int counter = 0;
-		float curDistance = -Float.MAX_VALUE;
+		float curDistance;
 		while(open.size() != 0){
 			Node node = open.pop();
 			
-			for(int i = 0; i < 4; i++){
+			for (int i = 0; i < 4; i++){
 				Node neighbour = node.getNeighbourNode(i);
 				Edge edge = node.getEdge(i);
 				if(neighbour != null && !edge.isVisited()){

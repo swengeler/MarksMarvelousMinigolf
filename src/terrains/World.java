@@ -7,7 +7,7 @@ import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import physics.collisions.PhysicalFace;
+import physics.collisions.Face;
 import entities.obstacles.Entity;
 import entities.lights.Light;
 import toolbox.LinearAlgebra;
@@ -143,8 +143,8 @@ public class World implements Serializable {
 		return obstaclesHit;
 	}
 	
-	public ArrayList<PhysicalFace> getCollidingFacesEntities(Ball b) {
-		ArrayList<PhysicalFace> collidingFaces = new ArrayList<>();
+	public ArrayList<Face> getCollidingFacesEntities(Ball b) {
+		ArrayList<Face> collidingFaces = new ArrayList<>();
 		for (Entity e : entities) {
 			if (e.isCollidable() && e.inBounds(b)) {
 				collidingFaces.addAll(e.getCollidingFaces(b));

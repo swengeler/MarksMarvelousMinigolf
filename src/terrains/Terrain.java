@@ -12,7 +12,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import physics.collisions.CollisionData;
-import physics.collisions.PhysicalFace;
+import physics.collisions.Face;
 import entities.playable.Ball;
 import entities.playable.RealBall;
 import models.RawModel;
@@ -402,14 +402,14 @@ public class Terrain implements Serializable {
 				(ballZ - ballR) < (this.z + Terrain.SIZE) && (ballZ + ballR) > this.z; // other size? e.g. heights.length?
 	}
 
-	public ArrayList<PhysicalFace> getCollidingFaces(Ball b) {
+	public ArrayList<Face> getCollidingFaces(Ball b) {
 		//System.out.println("getCollidingFaces in Terrain is called (Terrain at " + this.x + "|" + this.z + ")");
 		float ballR = Ball.RADIUS;
 		float ballX = b.getPosition().x - this.x;
 		float ballZ = b.getPosition().z - this.z;
 
 		if ((b.getPosition().y - ballR) > this.maxHeight)
-			return new ArrayList<PhysicalFace>(0);
+			return new ArrayList<Face>(0);
 
 		int leftX = (int) Math.floor(ballX - ballR);
 		int rightX = (int) Math.ceil(ballX + ballR);
@@ -447,7 +447,7 @@ public class Terrain implements Serializable {
 
 		Vector3f p1 = new Vector3f(0,0,0), p2 = new Vector3f(0,0,0), p3 = new Vector3f(0,0,0), normal = new Vector3f(0,0,0), v1 = new Vector3f(0,0,0), v2 = new Vector3f(0,0,0);
 
-		ArrayList<PhysicalFace> collidingFaces = new ArrayList<PhysicalFace>();
+		ArrayList<Face> collidingFaces = new ArrayList<Face>();
 		for (int i = leftX; i <= rightX && i < heights.length - 1; i++) {
 			for (int j = upperZ; j <= lowerZ && j < heights[0].length - 1; j++) {
 				//System.out.println("2 faces added at (" + i + "|" + j + ")");
@@ -463,7 +463,7 @@ public class Terrain implements Serializable {
 				Vector3f.sub(p3, p1, v2);
 				Vector3f.cross(v1, v2, normal);
 				normal.normalise();
-				collidingFaces.add(new PhysicalFace(normal, p1, p2, p3));
+				collidingFaces.add(new Face(normal, p1, p2, p3));
 				//System.out.println("Face added: " + collidingFaces.get(collidingFaces.size() - 1) + ".");
 
 				// upper right corner
@@ -477,7 +477,7 @@ public class Terrain implements Serializable {
 				Vector3f.sub(p3, p1, v2);
 				Vector3f.cross(v1, v2, normal);
 				normal.normalise();
-				collidingFaces.add(new PhysicalFace(normal, p1, p2, p3));
+				collidingFaces.add(new Face(normal, p1, p2, p3));
 				//System.out.println("Face added: " + collidingFaces.get(collidingFaces.size() - 1) + ".");
 			}
 		}

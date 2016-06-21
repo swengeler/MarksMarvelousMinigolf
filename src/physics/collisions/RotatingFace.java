@@ -4,7 +4,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-public class RotatingFace extends PhysicalFace {
+public class RotatingFace extends Face {
 
     protected Vector3f orNormal, orP1, orP2, orP3;
     protected Vector4f tfVector;

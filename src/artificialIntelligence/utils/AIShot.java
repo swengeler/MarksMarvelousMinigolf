@@ -1,11 +1,10 @@
-package bot2_0;
+package artificialIntelligence.utils;
 
 import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.playable.Ball;
-import toolbox.LinearAlgebra;
 
 public class AIShot{
 	

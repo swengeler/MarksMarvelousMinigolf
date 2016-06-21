@@ -1,4 +1,7 @@
-package bot2_0;
+package artificialIntelligence.viewer;
+
+import artificialIntelligence.algorithms.HMPathing;
+import artificialIntelligence.utils.Node;
 
 import javax.swing.*;
 import java.awt.*;

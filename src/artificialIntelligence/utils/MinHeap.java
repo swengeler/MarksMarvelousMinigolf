@@ -1,6 +1,4 @@
-package bot2_0;
-
-import org.lwjgl.util.vector.Vector3f;
+package artificialIntelligence.utils;
 
 /**
  * Copyright (c) 2008-2010  Morten Silcowitz.
@@ -11,6 +9,9 @@ import org.lwjgl.util.vector.Vector3f;
  * at http://www.gnu.org/copyleft/gpl.html. 
  */
 //package jinngine.util;
+import artificialIntelligence.utils.AIShot;
+import artificialIntelligence.utils.Node;
+
 import java.util.*;
 
 /**

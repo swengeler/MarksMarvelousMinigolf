@@ -9,7 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import physics.collisions.CollisionData;
-import physics.collisions.PhysicalFace;
+import physics.collisions.Face;
 import models.TexturedModel;
 import objConverter.ModelData;
 import toolbox.LinearAlgebra;
@@ -108,7 +108,7 @@ public class Entity implements Serializable {
 		float overallMin = Float.MAX_VALUE;
 		float overallMax = -Float.MIN_VALUE;
 
-		PhysicalFace face;
+		Face face;
 		int[] curInd = new int[3];
 		for (int i = 0; i < ind.length; i += 3) {
 			curInd[0] = ind[i] * 3;
@@ -151,7 +151,7 @@ public class Entity implements Serializable {
 			if (normal.lengthSquared() == 0) {
 				normal.set(0, 1f, 0);
 			}
-			face = new PhysicalFace(normal, p1, p2, p3);
+			face = new Face(normal, p1, p2, p3);
 
 			cdata.addFace(face);
 		}
@@ -172,7 +172,7 @@ public class Entity implements Serializable {
 		cdata.getBoundingBox().print();
 	}
 
-	public ArrayList<PhysicalFace> getCollidingFaces(Ball b) {
+	public ArrayList<Face> getCollidingFaces(Ball b) {
 		return cdata.getCollidingFaces(b);
 	}
 
