@@ -304,7 +304,11 @@ public class HMPathing extends Algorithm {
 						if(es.size() > 0){
 							
 							stTime = System.currentTimeMillis();
-							float newY = PhysicsEngine.getInstance().getHeightAt(neighbour.getPosition().x, neighbour.getPosition().z);
+							float newY1 = PhysicsEngine.getInstance().getHeightAt(neighbour.getPosition().x, neighbour.getPosition().z);
+							float newY2 = PhysicsEngine.getInstance().getHeightAt(neighbour.getPosition().x + CELL_SIZE/2f, neighbour.getPosition().z);
+							float newY3 = PhysicsEngine.getInstance().getHeightAt(neighbour.getPosition().x, neighbour.getPosition().z - CELL_SIZE/2f);
+							float newY = Math.max(newY1, newY2);
+							newY = Math.max(newY, newY3);
 							endTime = System.currentTimeMillis();
 							//System.out.println("Milliseconds spent on checking height at a point " + (endTime-stTime));
 							
