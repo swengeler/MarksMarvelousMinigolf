@@ -136,8 +136,9 @@ public class GameState implements State {
 		two = createEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), 0, 180, 0, 5);
 		//wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 76, world.getStart().z + 150 - 26f), new Vector3f(), 10, new Vector3f());
 		//two = createRotatingEntity("sphere_offcenter", new Vector3f(world.getStart().x, 50, world.getStart().z - 300), new Vector3f(), 10, new Vector3f());
+		createEntity("ramp", new Vector3f(50, 0, 200), 0, 0, 0, 5);
 
-		createWall(new Vector2f(0, 100), new Vector2f(100, 0));
+		//createWall(new Vector2f(0, 100), new Vector2f(100, 0));
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);

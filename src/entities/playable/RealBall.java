@@ -223,12 +223,12 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public boolean movedLastStep() {
-		System.out.printf("Difference in positions: (%f|%f|%f)\n", super.getPosition().x - lastPositionMovementCheck.x, super.getPosition().y - lastPositionMovementCheck.y, super.getPosition().z - lastPositionMovementCheck.z);
-		boolean moved = (Math.pow(super.getPosition().x - lastPositionMovementCheck.x, 2) +
-						Math.pow(super.getPosition().y - lastPositionMovementCheck.y, 2) +
-						Math.pow(super.getPosition().z - lastPositionMovementCheck.z, 2) >
+		System.out.printf("Difference in positions: (%f|%f|%f)\n", getPosition().x - lastPositionMovementCheck.x, getPosition().y - lastPositionMovementCheck.y, getPosition().z - lastPositionMovementCheck.z);
+		boolean moved = (Math.pow(getPosition().x - lastPositionMovementCheck.x, 2) +
+						Math.pow(getPosition().y - lastPositionMovementCheck.y, 2) +
+						Math.pow(getPosition().z - lastPositionMovementCheck.z, 2) >
 						Math.pow(PhysicsEngine.MIN_MOV_REQ, 2));
-		//System.out.println("Therefore moved is " + moved);
+		System.out.println("Therefore moved is " + moved);
 		return moved;
 	}
 

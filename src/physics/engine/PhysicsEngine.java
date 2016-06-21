@@ -81,9 +81,6 @@ public class PhysicsEngine {
                 //System.out.println("Since the ball moved wind is applied");
                 noiseHandler.applyWind(b.getVelocity());
             }
-            if (Vector3f.sub(b.getPosition(), b.getLastPosition(), null).lengthSquared() < 0.001) {
-                b.ignoreCollisions(10);
-            }
             if ((b.isMoving() && (b.movedLastStep() || b.getLastTimeElapsed() == 0)) || MainGameLoop.getCounter() < 10) {
                 b.updateAndMove();
                 System.out.println("\n---- Collision detection starts ----\n");
