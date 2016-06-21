@@ -157,6 +157,14 @@ public class PhysicsEngine {
         System.out.println("Intersectino point: " + intersectionPoint);
 
         if (intersectionPoint != null) {
+            /*if (intersectionPoint.x < 1)
+                intersectionPoint.x = 1;
+            if (intersectionPoint.z < 1)
+                intersectionPoint.z = 1;
+            if (intersectionPoint.x > Terrain.getSize())
+                intersectionPoint.x = Terrain.getSize() - 1;
+            if (intersectionPoint.z > Terrain.getSize())
+                intersectionPoint.z = Terrain.getSize() - 1;*/
             b.setPosition(intersectionPoint);
         }
         System.out.println("Ball's position after being set (or not): " + b.getPosition());
@@ -202,12 +210,14 @@ public class PhysicsEngine {
         ArrayList<PhysicalFace> stillColliding = new ArrayList<>();
         if (combined.size() == 1) {
             forResolution = combined.get(0);
-            Vector3f normal = new Vector3f(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
+            Vector3f normal = new Vector3f(forResolution.getNormal());
             System.out.printf("Normal of closest: (%f|%f|%f)\n", normal.x, normal.y, normal.z);
             normal.scale(Vector3f.dot(b.getVelocity(), normal) / normal.lengthSquared());
-            normal.scale(-0.001f);
+            //normal.scale(-0.001f);
             System.out.println("Normal scaled: " + normal);
             if (normal.lengthSquared() > 0.00001) {
+                normal.normalise();
+                normal.scale(-0.01f);
                 while (b.collidesWith(collidingFaces))
                     b.increasePosition(normal);
             }
@@ -239,7 +249,7 @@ public class PhysicsEngine {
                 forResolution = stillColliding.get(0);
                 System.out.println("Check 3.1, ball velocity: " + b.getVelocity());
                 //b.move();
-                revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
+                revBM.set(forResolution.getNormal());
                 System.out.println("Check 3.2: " + revBM);
                 revBM.scale(Vector3f.dot(b.getVelocity(), revBM) / revBM.lengthSquared());
                 System.out.println("Check 3.3: " + revBM);

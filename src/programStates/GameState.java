@@ -192,7 +192,7 @@ public class GameState implements State {
 		loadParticleSystem();
 		setCameraToBall(currBall);
 		System.out.println("done game with world");
-		createEntity("flag", new Vector3f(0, 0, 300), 0, 0, 0, 20);
+		//createEntity("flag", new Vector3f(0, 0, 300), 0, 0, 0, 20);
 		//createEntity("hole", new Vector3f(world.getEnd().x, 0, world.getEnd().z), 0, 0, 0, 1.2f);
 		//createTerrain(0, 1, "grass", false);
 		bob = new BobTheBot(0, balls.get(0), world);
