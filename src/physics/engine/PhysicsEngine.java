@@ -230,14 +230,23 @@ public class PhysicsEngine {
             }
 
             if (stillColliding.size() == 1) {
+            	System.out.println("Check 1");
                 b.setPosition(resetPosition);
+                System.out.println("Check 2");
                 forResolution = stillColliding.get(0);
+                System.out.println("Check 3.1, ball velocity: " + b.getVelocity());
                 //b.move();
                 revBM.set(forResolution.getNormal().x, forResolution.getNormal().y, forResolution.getNormal().z);
+                System.out.println("Check 3.2: " + revBM);
                 revBM.scale(Vector3f.dot(b.getVelocity(), revBM) / revBM.lengthSquared());
-                revBM.scale(-0.001f);
-                while (forResolution.collidesWithFace(b))
-                    b.increasePosition(revBM);
+                System.out.println("Check 3.3: " + revBM);
+            	revBM.scale(-0.001f);
+                System.out.println("Check 3.4: " + revBM);
+                if (revBM.lengthSquared() > 0.00001) {
+                	while (forResolution.collidesWithFace(b))
+                        b.increasePosition(revBM);
+                }
+                System.out.println("Check 4");
             }
             else if (stillColliding.size() == 2) {
                 Vector3f closest1 = stillColliding.get(0).getClosestPoint(b);
@@ -245,7 +254,7 @@ public class PhysicsEngine {
                 if (Math.abs(closest1.x - closest2.x) < NORMAL_TH && Math.abs(closest1.y - closest2.y) < NORMAL_TH && Math.abs(closest1.z - closest2.z) < NORMAL_TH) {
                     Vector3f edge = stillColliding.get(0).getCommonEdge(stillColliding.get(1));
                     if (edge == null) {
-                        //System.out.println("EDGE COULD NOT BE RESOLVED -> ONE PLANE CHOSEN RANDOMLY");
+                        System.out.println("EDGE COULD NOT BE RESOLVED -> ONE PLANE CHOSEN RANDOMLY");
                         forResolution = stillColliding.get(0);
                     } else {
                         System.out.println("Stuff for edge collision: " + Vector3f.dot(b.getVelocity(), closest1) + " - " + Vector3f.dot(b.getVelocity(), b.getPosition()) + " = " + (Vector3f.dot(b.getVelocity(), closest1) - Vector3f.dot(b.getVelocity(), b.getPosition())));
@@ -377,17 +386,10 @@ public class PhysicsEngine {
                 }
             }
         }
+        System.out.println("Check 5");
 
         resolvePlaneCollision(b, forResolution);
-        /*System.out.println("COLLISION WITH OBSTACLE RESOLVED");
-        System.out.println("COLLISION WITH " + forResolution);
-        Vector3f we = Vector3f.sub(b.getPosition(), b.getLastPosition(), null);
-        double angle = Math.min(Vector3f.angle(forResolution.getNormal(), we), Math.PI - Vector3f.angle(forResolution.getNormal(), we));
-        System.out.println(we + " with angle " + Math.toDegrees(angle));
-        if (angle < Math.toRadians(20)) {
-            MainGameLoop.currState.cleanUp();
-            DisplayManager.closeDisplay();
-        }*/
+        System.out.println("Check 6");
         return true;
     }
 
@@ -678,8 +680,14 @@ public class PhysicsEngine {
         if (world.getHeightOfTerrain(x, z) > maxHeight) {
             return world.getHeightOfTerrain(x, z);
         }
-
-        return maxHeight;
+        
+        VirtualBall vb = new VirtualBall(new Vector3f(x, maxHeight, z));
+        ArrayList<PhysicalFace> f = world.getCollidingFacesEntities(vb);
+        while (vb.collidesWith(f))
+        	vb.increasePosition(new Vector3f(0, 0.01f, 0));
+        
+        return vb.getPosition().y;
+        //return maxHeight;
     }
 
 }
