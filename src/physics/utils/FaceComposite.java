@@ -38,7 +38,7 @@ public class FaceComposite {
             Math.abs(Vector3f.dot(faces.get(0).getNormal(), f.getP1()) - Vector3f.dot(faces.get(0).getNormal(), faces.get(0).getP1())) < 0.01) {
             return true;
         }
-        System.out.printf("New face is not parallel to face composite defined by: (%f|%f|%f)\n", faces.get(0).getNormal().x, faces.get(0).getNormal().y, faces.get(0).getNormal().z);
+        //System.out.printf("New face is not parallel to face composite defined by: (%f|%f|%f)\n", faces.get(0).getNormal().x, faces.get(0).getNormal().y, faces.get(0).getNormal().z);
         return false;
     }
 

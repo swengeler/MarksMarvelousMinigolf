@@ -255,23 +255,23 @@ public class DesignerState implements State{
 			lastInput = System.currentTimeMillis();
 		}
 		if ((System.currentTimeMillis() - lastInput > 200) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_F ) && picker.getCurrentTerrainPoint() != null) {
-			createEntity("tree", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 5);
+			createEntity("tree", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 10);
 			lastInput = System.currentTimeMillis();
 		}
 		if ((System.currentTimeMillis() - lastInput > 200) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_G) && picker.getCurrentTerrainPoint() != null) {
 			createEntity("box", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 7);
 			lastInput = System.currentTimeMillis();
 		}
+		if ((System.currentTimeMillis() - lastInput > 200) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_U) && picker.getCurrentTerrainPoint() != null) {
+			createEntity("ramp", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 180f, 0f, 5);
+			lastInput = System.currentTimeMillis();
+		}
+		if ((System.currentTimeMillis() - lastInput > 200) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_Z) && !Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && picker.getCurrentTerrainPoint() != null) {
+			createEntity("rampWHole", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 180f, 0f, 5);
+			lastInput = System.currentTimeMillis();
+		}
 		if (world.hasStart() && world.hasEnd() && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			MainGameLoop.loadGame(world, 3);
-		}
-		if ((System.currentTimeMillis() - lastInput > 200) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_V) && picker.getCurrentTerrainPoint() != null) {
-			createEntity("wall", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 3);
-			lastInput = System.currentTimeMillis();
-		}
-		if ((System.currentTimeMillis() - lastInput > 200) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_B) && picker.getCurrentTerrainPoint() != null) {
-			createEntity("wall", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 90f, 0f, 3);
-			lastInput = System.currentTimeMillis();
 		}
 
 		// commands for saving and loading courses
@@ -402,6 +402,8 @@ public class DesignerState implements State{
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("holeObstacle");
 		ModelData wall_seg = OBJFileLoader.loadOBJ("wall_seg");
+		ModelData ramp = OBJFileLoader.loadOBJ("ramp");
+		ModelData rampWHole = OBJFileLoader.loadOBJ("rampWHole");
 
 		mData.put("human", human);
 	    mData.put("ball", ball);
@@ -417,6 +419,8 @@ public class DesignerState implements State{
 	    mData.put("flag", flag);
 	    mData.put("hole", hole);
 	    mData.put("wall_seg", wall_seg);
+		mData.put("ramp", ramp);
+		mData.put("rampWHole", rampWHole);
 
 		RawModel humanModel = loader.loadToVAO(human.getVertices(), human.getTextureCoords(), human.getNormals(), human.getIndices());
 		RawModel ballModel = loader.loadToVAO(ball.getVertices(), ball.getTextureCoords(), ball.getNormals(), ball.getIndices());
@@ -434,6 +438,8 @@ public class DesignerState implements State{
 		RawModel wallModel = loader.loadToVAO(wall.getVertices(), wall.getTextureCoords(), wall.getNormals(), wall.getIndices());
 		RawModel dragonLowModel = loader.loadToVAO(dragon_low.getVertices(), dragon_low.getTextureCoords(), dragon_low.getNormals(), dragon_low.getIndices());
 		RawModel wallSegModel = loader.loadToVAO(wall_seg.getVertices(), wall_seg.getTextureCoords(), wall_seg.getNormals(), wall_seg.getIndices());
+		RawModel rampModel = loader.loadToVAO(ramp.getVertices(), ramp.getTextureCoords(), ramp.getNormals(), ramp.getIndices());
+		RawModel rampWHoleModel = loader.loadToVAO(rampWHole.getVertices(), rampWHole.getTextureCoords(), rampWHole.getNormals(), rampWHole.getIndices());
 
 
 		tModels.put("human", new TexturedModel(humanModel,new ModelTexture(loader.loadTexture("playerTexture"))));
@@ -455,6 +461,8 @@ public class DesignerState implements State{
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("wall_seg", new TexturedModel(wallSegModel, new ModelTexture(loader.loadTexture("white"))));
+		tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("skull"))));
+		tModels.put("rampWHole", new TexturedModel(rampWHoleModel, new ModelTexture(loader.loadTexture("white"))));
 
 
 		tModels.get("barrel").getTexture().setShineDamper(10);

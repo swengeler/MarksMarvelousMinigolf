@@ -22,7 +22,7 @@ import terrains.World;
 public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 3.0f; // That is the maximum height difference between two adjacent cell for them to be connected
-	private static final float MAX_SHOT_POWER = 1000;
+	private static final float MAX_SHOT_POWER = 500;
 	private static final float DELTA_ANGLE = 5f; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 100;
 	private static final float DELTA_CHECK = 0.5f;

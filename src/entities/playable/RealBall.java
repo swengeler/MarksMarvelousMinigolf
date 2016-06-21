@@ -103,7 +103,7 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public void setMoving(boolean moving) {
-		System.out.println("Moving set to " + moving);
+		//System.out.println("Moving set to " + moving);
 		this.moving = moving;
 		if (moving)
 			resetLastPos();
@@ -136,7 +136,7 @@ public class RealBall extends Entity implements Ball {
 			charging = false;
 			setMoving(true);
 
-			System.out.println(initspeed + "hell is here");
+			//System.out.println(initspeed + "hell is here");
 			this.currentVel.x = (float) (initspeed * Math.sin(Math.toRadians(super.getRotY()+ Camera.getInstance().getAngleAroundBall()))) * POWER_SCALE;
 			this.currentVel.z = (float) (initspeed * Math.cos(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall()))) * POWER_SCALE;
 
@@ -274,7 +274,6 @@ public class RealBall extends Entity implements Ball {
 
 	public void setRotation(Vector3f v){
 		this.spin = v;
-		System.out.println("fuck you " + spin.x + " " + spin.y + " " + spin.z);
 	}
 
 	public Vector3f getRotation(){

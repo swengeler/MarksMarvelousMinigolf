@@ -249,12 +249,12 @@ public class Terrain implements Serializable {
 	
 	private RawModel generateTerrain(Loader loader, Vector2f hole){
 		VERTEX_COUNT = heights.length;
-		System.out.println(VERTEX_COUNT);
+		//System.out.println(VERTEX_COUNT);
 		float newHeight = -4;
 		int holeRad = 4;
 		float x = (hole.getX() / (SIZE/2)) * (VERTEX_COUNT/2);
 		float z = (hole.getY() / (SIZE/2)) * (VERTEX_COUNT/2);
-		System.out.println("Hole at x: " + x + " z: " + z);
+		//System.out.println("Hole at x: " + x + " z: " + z);
 		for (float i = -holeRad; i <= holeRad; i++) {
 			for (float k = -holeRad; k  <= holeRad; k++) {
 				if (x + i >= 0 && x + i < VERTEX_COUNT && z + k >= 0 && z + k < VERTEX_COUNT) {

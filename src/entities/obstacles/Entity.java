@@ -30,7 +30,6 @@ public class Entity implements Serializable {
 		this.model = model;
 		this.position = position;
 		this.rotation = new Vector3f(rotX, rotY, rotZ);
-		System.out.println(rotY);
 		this.scale = scale;
 		this.type = type;
 	}

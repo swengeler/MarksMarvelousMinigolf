@@ -426,12 +426,13 @@ public class GameState implements State {
 		ModelData wall = OBJFileLoader.loadOBJ("wall");
 	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("holeObstacle");
-        ModelData ramp = OBJFileLoader.loadOBJ("ramp_hole");
+        ModelData ramp = OBJFileLoader.loadOBJ("ramp");
         ModelData windmill = OBJFileLoader.loadOBJ("windmill_tower2");
         ModelData windmill_rot = OBJFileLoader.loadOBJ("windmill_wings");
         ModelData sphere_offcenter = OBJFileLoader.loadOBJ("test");
 		ModelData ad_column = OBJFileLoader.loadOBJ("ad_column");
 		ModelData wall_seg = OBJFileLoader.loadOBJ("wall_seg");
+		ModelData rampWHole = OBJFileLoader.loadOBJ("rampWHole");
 
 	    mData.put("human", human);
 	    mData.put("ball", ball);
@@ -447,6 +448,7 @@ public class GameState implements State {
 	    mData.put("flag", flag);
 	    mData.put("hole", hole);
         mData.put("ramp", ramp);
+        mData.put("rampWHole", rampWHole);
         mData.put("windmill", windmill);
         mData.put("windmill_rot", windmill_rot);
         mData.put("sphere_offcenter", sphere_offcenter);
@@ -469,6 +471,7 @@ public class GameState implements State {
 		RawModel wallModel = loader.loadToVAO(wall.getVertices(), wall.getTextureCoords(), wall.getNormals(), wall.getIndices());
 		RawModel dragonLowModel = loader.loadToVAO(dragon_low.getVertices(), dragon_low.getTextureCoords(), dragon_low.getNormals(), dragon_low.getIndices());
         RawModel rampModel = loader.loadToVAO(ramp.getVertices(), ramp.getTextureCoords(), ramp.getNormals(), ramp.getIndices());
+        RawModel rampWHoleModel = loader.loadToVAO(rampWHole.getVertices(), rampWHole.getTextureCoords(), rampWHole.getNormals(), rampWHole.getIndices());
         RawModel windmillModel = loader.loadToVAO(windmill.getVertices(), windmill.getTextureCoords(), windmill.getNormals(), windmill.getIndices());
         RawModel windmillRotModel = loader.loadToVAO(windmill_rot.getVertices(), windmill_rot.getTextureCoords(), windmill_rot.getNormals(), windmill_rot.getIndices());
         RawModel sphereModel = loader.loadToVAO(sphere_offcenter.getVertices(), sphere_offcenter.getTextureCoords(), sphere_offcenter.getNormals(), sphere_offcenter.getIndices());
@@ -492,7 +495,8 @@ public class GameState implements State {
 		tModels.put("flag", new TexturedModel(flagModel, new ModelTexture(loader.loadTexture("flag"))));
 		tModels.put("wall", new TexturedModel(wallModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
-        tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("white"))));
+        tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("skull"))));
+        tModels.put("rampWHole", new TexturedModel(rampWHoleModel, new ModelTexture(loader.loadTexture("white"))));
         tModels.put("windmill", new TexturedModel(windmillModel, new ModelTexture(loader.loadTexture("windmill_tower"))));
         tModels.put("windmill_rot", new TexturedModel(windmillRotModel, new ModelTexture(loader.loadTexture("windmill_wings_alt"))));
         tModels.put("sphere_offcenter", new TexturedModel(sphereModel, new ModelTexture(loader.loadTexture("white"))));

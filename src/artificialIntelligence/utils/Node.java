@@ -24,7 +24,7 @@ public class Node{
 	
 	private Vector3f position;
 	
-	private float d = Terrain.getSize()*10f;
+	private float d = Terrain.getSize()*100f;
 	private float height;
 	
 	private boolean walkable = false;

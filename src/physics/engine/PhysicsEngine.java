@@ -77,6 +77,7 @@ public class PhysicsEngine {
             if (b.isMoving()) {
                 //System.out.println("Since the ball moved wind is applied");
                 noiseHandler.applyWind(b.getVelocity());
+                noiseHandler.applySurfaceNoise(b.getVelocity());
             }
             if ((b.isMoving() && (b.movedLastStep() || b.getLastTimeElapsed() == 0)) || MainGameLoop.getCounter() < 10) {
                 b.updateAndMove();
@@ -88,7 +89,7 @@ public class PhysicsEngine {
                     resolveTerrainCollision(b);
                 System.out.println("\n---- Collision detection ends ----\n");
             } else {
-                System.out.println("curposition: " + b.getPosition() + ", lastposition: " + b.getLastPosition());
+                //System.out.println("curposition: " + b.getPosition() + ", lastposition: " + b.getLastPosition());
                 b.setVelocity(0, 0, 0);
                 b.setMoving(false);
             }
@@ -240,26 +241,26 @@ public class PhysicsEngine {
             }
 
             if (stillColliding.size() == 1) {
-            	System.out.println("Check 1");
+            	//System.out.println("Check 1");
                 b.setPosition(resetPosition);
-                System.out.println("Check 2");
+                //System.out.println("Check 2");
                 forResolution = stillColliding.get(0);
-                System.out.println("Check 3.1, ball velocity: " + b.getVelocity());
+                //System.out.println("Check 3.1, ball velocity: " + b.getVelocity());
                 //b.move();
                 revBM.set(forResolution.getNormal());
-                System.out.println("Check 3.2: " + revBM);
+                //System.out.println("Check 3.2: " + revBM);
                 revBM.scale(Vector3f.dot(b.getVelocity(), revBM) / revBM.lengthSquared());
-                System.out.println("Check 3.3: " + revBM);
+                //System.out.println("Check 3.3: " + revBM);
                 //revBM.normalise();
             	//revBM.scale(-0.01f);
-                System.out.println("Check 3.4: " + revBM);
+                //System.out.println("Check 3.4: " + revBM);
                 if (revBM.lengthSquared() > 0.00001) {
                     revBM.normalise();
                     revBM.scale(-0.01f);
                 	while (forResolution.collidesWithFace(b))
                         b.increasePosition(revBM);
                 }
-                System.out.println("Check 4");
+                //System.out.println("Check 4");
             }
             else if (stillColliding.size() == 2) {
                 Vector3f closest1 = stillColliding.get(0).getClosestPoint(b);
@@ -400,10 +401,8 @@ public class PhysicsEngine {
                 }
             }
         }
-        System.out.println("Check 5");
 
         resolvePlaneCollision(b, forResolution);
-        System.out.println("Check 6");
         return true;
     }
 
@@ -482,6 +481,19 @@ public class PhysicsEngine {
     private void resolvePlaneCollision(Ball b, Face forResolution) {
         System.out.print("Ball's position during collision resolution: " + b.getPosition() + " with plane: " + forResolution.getNormal());
         System.out.print(", ball's velocity before:  " + b.getVelocity());
+
+        if (b.getPosition().x < 1) {
+            b.getPosition().x = 1;
+        } else if (b.getPosition().x > Terrain.getSize() - 1) {
+            b.getPosition().x = Terrain.getSize() - 1;
+        }
+        if (b.getPosition().z < 1) {
+            b.getPosition().z = 1;
+        } else if (b.getPosition().z > Terrain.getSize() - 1) {
+            b.getPosition().z = Terrain.getSize() - 1;
+        }
+
+
         // calculate the angle between the plane that is used for collision resolution and the velocity vector of the ball
         // since Vector3f.angle(x, y) can compute angles over 90 degrees, there is an additional check to make sure the angle is below 90 degrees
         float temp = Vector3f.angle(forResolution.getNormal(), b.getVelocity());
@@ -547,7 +559,11 @@ public class PhysicsEngine {
         float hx = world.getEnd().x;
         float hz = world.getEnd().z;
 
-        while (ball.isMoving() || counter < 10) {
+        while ((ball.isMoving() || counter < 10) && world.ballInWorld(ball)) {
+            if(ball.isMoving()) {
+                noiseHandler.applyWind(b.getVelocity());
+                noiseHandler.applySurfaceNoise(b.getVelocity());
+            }
             ball.applyAccel(GRAVITY);
             if ((ball.isMoving() && ball.movedLastStep()) || counter < 10) {
                 ball.updateAndMove();
@@ -576,15 +592,19 @@ public class PhysicsEngine {
     public AIShot aiTestShot(RealBall b, Vector3f shotVel, Node[][] grid){
     	AIShot shot = new AIShot(shotVel);
         VirtualBall ball = new VirtualBall(b, shotVel);
-        System.out.printf("Initial position of the virtual ball: (%f|%f|%f)\n", ball.getPosition().x, ball.getPosition().y, ball.getPosition().z);
+        //System.out.printf("Initial position of the virtual ball: (%f|%f|%f)\n", ball.getPosition().x, ball.getPosition().y, ball.getPosition().z);
         shot.addCollidingBallPosition(ball.getPosition());
         int gridX = (int) (ball.getPosition().x / Algorithm.CELL_SIZE);
         int gridZ = (int) (ball.getPosition().z / Algorithm.CELL_SIZE);
         Node n = grid[gridX][gridZ];
-        System.out.println("Distance of the virtual ball from the hole " + n.getD());
+        //System.out.println("Distance of the virtual ball from the hole " + n.getD());
         int counter = 0;
         long one = System.currentTimeMillis();
-        while (ball.isMoving() || counter < 10) {
+        while ((ball.isMoving() || counter < 10) && world.ballInWorld(ball)) {
+            if (ball.isMoving()) {
+                noiseHandler.applyWind(b.getVelocity());
+                noiseHandler.applySurfaceNoise(b.getVelocity());
+            }
             ball.applyAccel(GRAVITY);
             if ((ball.isMoving() && ball.movedLastStep()) || counter < 10) {
                 ball.updateAndMove();

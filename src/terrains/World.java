@@ -148,10 +148,19 @@ public class World implements Serializable {
 		for (Entity e : entities) {
 			if (e.isCollidable() && e.inBounds(b)) {
 				collidingFaces.addAll(e.getCollidingFaces(b));
-				System.out.println("Ball may collide with " + e + ".");
+				//System.out.println("Ball may collide with " + e + ".");
 			}
 		}
 		return collidingFaces;
+	}
+
+	public boolean ballInWorld(Ball b) {
+		for (Terrain t : terrains) {
+			if (t.ballInTerrain(b)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public Terrain getTerrain(float x, float z){
@@ -242,7 +251,7 @@ public class World implements Serializable {
 	}
 	
 	public void setEnd(Vector2f position) {
-		System.out.println("New hole at x: " + position.x + " z: " + position.y);
+		//System.out.println("New hole at x: " + position.x + " z: " + position.y);
 		this.End =  position;
 		this.hasEnd = true;
 	}
