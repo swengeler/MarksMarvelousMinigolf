@@ -32,6 +32,8 @@ public interface Ball {
 	void setMoving(boolean moving);
 	boolean isMoving();
 	boolean movedLastStep();
+	void ignoreCollisions(int counter);
+	boolean ignoresCollisions();
 	boolean collidesWith(ArrayList<PhysicalFace> faces);
 	void checkInputs();
 	float getRotY();

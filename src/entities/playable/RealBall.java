@@ -35,6 +35,7 @@ public class RealBall extends Entity implements Ball {
 	private float currentTurnSpeed;
 	private float lastTimeElapsed;
 
+	private int ignoreCounter;
 	private int score;
 
 	private boolean moving;
@@ -78,6 +79,14 @@ public class RealBall extends Entity implements Ball {
 		Vector3f delta = new Vector3f(currentVel.x, currentVel.y, currentVel.z);
 		delta.scale(getTimeElapsed());
 		super.increasePosition(delta);
+	}
+
+	public void ignoreCollisions(int counter) {
+		this.ignoreCounter = counter;
+	}
+
+	public boolean ignoresCollisions() {
+		return (ignoreCounter-- > 0);
 	}
 
     public void applyAccel(Vector3f accel) {

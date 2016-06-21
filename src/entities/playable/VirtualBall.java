@@ -14,6 +14,7 @@ public class VirtualBall implements Ball {
 	private Vector3f position, lastPositionMovementCheck, lastPositionActual, velocity, acceleration;
 	private boolean moving;
 	private Vector3f spin;
+	private int ignoreCounter;
 	
 	public VirtualBall(RealBall cloneOf, Vector3f initVelocity) {
 		this.cloneOf = cloneOf;
@@ -154,6 +155,14 @@ public class VirtualBall implements Ball {
 		position.x = p.x;
 		position.y = p.y;
 		position.z = p.z;
+	}
+
+	public void ignoreCollisions(int counter) {
+		this.ignoreCounter = counter;
+	}
+
+	public boolean ignoresCollisions() {
+		return (ignoreCounter-- > 0);
 	}
 	
 	public boolean equals(Object o) {

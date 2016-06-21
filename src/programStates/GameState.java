@@ -126,7 +126,7 @@ public class GameState implements State {
 		System.out.println("After loading particle system for the first time");
 
 		//createEntity("box", new Vector3f(world.getStart().x + 70, -60f/*-60f*/, world.getStart().z - 120), 0, 0, 0, 20);
-		createEntity("box", new Vector3f(world.getStart().x + 70, 0, world.getStart().z - 120), 0, 0, 0, 1);
+		createEntity("box", new Vector3f(world.getStart().x + 70, -100, world.getStart().z - 120), 0, 0, 0, 30);
 		//world.setEnd(new Vector2f(world.getStart().x + 50, world.getStart().z + 50));
         //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
 		createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
@@ -192,7 +192,7 @@ public class GameState implements State {
 		setCameraToBall(currBall);
 		System.out.println("done game with world");
 		createEntity("flag", new Vector3f(0, 0, 300), 0, 0, 0, 20);
-		//createEntity("hole", new Vector3f(world.getEnd().x, 0, world.getEnd().z), 0, 0, 0, 1.2f);
+		createEntity("hole", new Vector3f(world.getEnd().x, 0, world.getEnd().z), 0, 0, 0, 1.2f);
 		//createTerrain(0, 1, "grass", false);
 		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
