@@ -23,7 +23,7 @@ public class CameraDesigner extends Camera {
 		float verticalDistance = calculateVerticalDistance();
 		calculateCameraPosition(horizontalDistance, verticalDistance);
 		this.yaw = 180 - (ball.getRotY() + angleAroundBall);
-		System.out.println("Camera:\nPosition: " + position + "\nPitch: " + pitch + ", yaw: " + yaw + ", roll: " + roll + ", distance from ball: " + distanceFromBall + ", angle around ball: " + angleAroundBall);
+		//System.out.println("Camera:\nPosition: " + position + "\nPitch: " + pitch + ", yaw: " + yaw + ", roll: " + roll + ", distance from ball: " + distanceFromBall + ", angle around ball: " + angleAroundBall);
 	}
 
 	private void calculateZoom(){

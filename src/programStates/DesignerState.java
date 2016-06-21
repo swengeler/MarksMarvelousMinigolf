@@ -191,7 +191,7 @@ public class DesignerState implements State{
 			lastInput = System.currentTimeMillis();
 		}
 
-		// gui interactions (only back to main menu button right now)
+		// gui interactions
 		if (Mouse.isButtonDown(0)) {
 			for (GuiButton button : guis){
 				if (button.isInside(new Vector2f(Mouse.getX(), Mouse.getY()))){

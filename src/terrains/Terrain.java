@@ -23,7 +23,8 @@ public class Terrain implements Serializable {
 
 	private static final float SIZE = 300;
 	private static final float MAX_HEIGHT = 40;
-	private static final float RADIUS = 15;
+	private static final float RADIUS = 20;
+	private static final float ACTUAL_HEIGHT = 5;
 	private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;
 	
 	private float x;
@@ -307,14 +308,14 @@ public class Terrain implements Serializable {
 	}
 	
 	public void updateTerrain(Loader loader, float x, float z) {
-		float maxHillHeight = 5;
+		float maxHillHeight = MAX_HEIGHT;
 		int count = VERTEX_COUNT * VERTEX_COUNT;
 		float[] vertices = new float[count * 3];
 		float[] normals = new float[count * 3];
 		float[] textureCoords = new float[count*2];
 		int[] indices = new int[6*(VERTEX_COUNT-1)*(VERTEX_COUNT-1)];
 		int vertexPointer = 0;
-		float newHeight = 10;
+		float newHeight = ACTUAL_HEIGHT;
 		for (float i = -RADIUS; i <= RADIUS; i++) {
 			for (float k = -RADIUS; k  <= RADIUS; k++) {
 				if (x + i >= 0 && x + i < VERTEX_COUNT && z + k >= 0 && z + k < VERTEX_COUNT) {

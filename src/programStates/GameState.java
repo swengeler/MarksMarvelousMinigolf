@@ -193,7 +193,7 @@ public class GameState implements State {
 		setCameraToBall(currBall);
 		System.out.println("done game with world");
 		createEntity("flag", new Vector3f(0, 0, 300), 0, 0, 0, 20);
-		createEntity("hole", new Vector3f(world.getEnd().x, 0, world.getEnd().z), 0, 0, 0, 1.2f);
+		//createEntity("hole", new Vector3f(world.getEnd().x, 0, world.getEnd().z), 0, 0, 0, 1.2f);
 		//createTerrain(0, 1, "grass", false);
 		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
@@ -406,7 +406,7 @@ public class GameState implements State {
 	private void loadGuis() {
 		guiRenderer = new GuiRenderer(loader);
 		guis = new ArrayList<>();
-		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", world));
+		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", null));
 		guis.add(new GuiButton("controls", new Vector2f(1540, 675), new Vector2f(0.65f, 0.4f), loader, "overlay", null));
 		guis.add(new GuiButton("save", new Vector2f(59, 810), new Vector2f(0.2f, 0.2f), loader, "save", null));
 	}
