@@ -91,6 +91,7 @@ public class PhysicsEngine {
                     resolveTerrainCollision(b);
                 System.out.println("\n---- Collision detection ends ----\n");
             } else {
+                System.out.println("curposition: " + b.getPosition() + ", lastposition: " + b.getLastPosition());
                 b.setVelocity(0, 0, 0);
                 b.setMoving(false);
             }
@@ -148,8 +149,12 @@ public class PhysicsEngine {
     }
 
     public boolean resolveObstacleCollision(Ball b) {
+        Vector3f previousPosition = new Vector3f(b.getPosition());
+
         // test whether the ball moved through an obstacle because it was too fast
         Vector3f intersectionPoint = world.getLastIntersectionPointSegment(b.getLastPosition(), b.getPosition());
+
+        System.out.println("Intersectino point: " + intersectionPoint);
 
         if (intersectionPoint != null) {
             b.setPosition(intersectionPoint);
@@ -159,8 +164,11 @@ public class PhysicsEngine {
         ArrayList<PhysicalFace> collidingFaces = new ArrayList<>();
         collidingFaces.addAll(world.getCollidingFacesEntities(b));
 
-        if (collidingFaces.size() == 0)
-             return false;
+        if (collidingFaces.size() == 0) {
+            b.setPosition(previousPosition);
+            return false;
+        }
+
 
         System.out.println("NUMBER OF COLLIDING FACES: " + collidingFaces.size());
 
