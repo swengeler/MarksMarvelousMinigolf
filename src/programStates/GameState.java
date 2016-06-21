@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import artificialIntelligence.algorithms.HMPathing;
 import artificialIntelligence.algorithms.MonteCarlo;
 import entities.camera.Camera;
 import entities.camera.Empty;
@@ -33,6 +34,7 @@ import objConverter.OBJFileLoader;
 import particles.ParticleMaster;
 import particles.ParticleSystem;
 import particles.ParticleTexture;
+import physics.noise.NoiseHandler;
 import renderEngine.utils.DisplayManager;
 import renderEngine.utils.Loader;
 import renderEngine.renderers.MasterRenderer;
@@ -85,8 +87,11 @@ public class GameState implements State {
 	private float timeBallStill;
 	
 	private BobTheBot bob;
+
+	private boolean testing;
+	private int counter;
 	
-	public GameState(Loader loader, int numberOfPlayers){
+	public GameState(Loader loader, int numberOfPlayers) {
 		instance = this;
 		this.numberOfPlayers = numberOfPlayers;
 		init(loader);
@@ -110,7 +115,7 @@ public class GameState implements State {
 		long start = System.currentTimeMillis();
 		this.loader = loader;
 		loadModels();
-		loadGuis();
+		//loadGuis();
 		createBall(new Vector3f(0.5f, Ball.RADIUS, 0.5f), true);
 		camera = new Camera(balls.get(0));
 		world = new World(camera);
@@ -119,9 +124,9 @@ public class GameState implements State {
 		renderer = new MasterRenderer(loader, camera);
 		mainEngine = new PhysicsEngine(balls, world, null);
 		// addRandomWind();
-		System.out.println("Before loading particle system for the first time");
+		//System.out.println("Before loading particle system for the first time");
 		loadParticleSystem();
-		System.out.println("After loading particle system for the first time");
+		//System.out.println("After loading particle system for the first time");
 
 		//createEntity("box", new Vector3f(world.getStart().x + 70, -60f/*-60f*/, world.getStart().z - 120), 0, 0, 0, 20);
 		createEntity("box", new Vector3f(world.getStart().x + 70, -100, world.getStart().z - 120), 0, 0, 0, 30);
@@ -150,17 +155,10 @@ public class GameState implements State {
 		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 
-		System.out.println("\nINTERSECTION TEST");
-		Vector3f p1 = new Vector3f(0, 1, 0);
-		Vector3f p2 = new Vector3f(200, 1, 120);
-		for (Entity e : world.getEntities()) {
-			e.isIntersectedBySegment(p1, p2);
-		}
-		System.out.println("INTERSECTION TEST\n");
 	}
 	
 	private void buildWithWorld(Loader loader, World world) {
-		System.out.println("new game with world");
+		//System.out.println("new game with world");
 		this.loader = loader;
 		loadModels();
 		loadGuis();
@@ -173,25 +171,25 @@ public class GameState implements State {
 			if (e instanceof Wall) {
 				list.add((Wall) e);
 			}
-			System.out.println(e);
-			System.out.println("cdata: " + e.getCollisionData());
+			//System.out.println(e);
+			//System.out.println("cdata: " + e.getCollisionData());
 		}
 		for (Wall e : list) {
 			world.getEntities().remove(e);
 			createWall(e.getP1(), e.getP2());
 		}
 
-		createBall(new Vector3f(world.getStart().x, world.getStart().y + Ball.RADIUS, world.getStart().z), true);
+		createBall(new Vector3f(world.getStart()), true);
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
-		System.out.println("newEngine");
+		//System.out.println("newEngine");
 		mainEngine = new PhysicsEngine(balls, world, null);
 		loadWater();
 		loadParticleSystem();
 		setCameraToBall(currBall);
-		System.out.println("done game with world");
+		//System.out.println("done game with world");
 		//createEntity("flag", new Vector3f(0, 0, 300), 0, 0, 0, 20);
-		//createEntity("hole", new Vector3f(world.getEnd().x, 0, world.getEnd().z), 0, 0, 0, 1.2f);
+		createEntity("hole", new Vector3f(world.getEnd().x, 0, world.getEnd().z), 0, 0, 0, 1f);
 		//createTerrain(0, 1, "grass", false);
 		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
@@ -253,7 +251,14 @@ public class GameState implements State {
 		}
 
 		if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
+			//bob.shoot();
+			System.out.println("\nTesting \"Simple\" map without obstacles\nNoise is off\nAll tests in which the angle does not change have been performed using an angle of 5 degrees\nAll tests in which the maximum velocity does not change have been performed using the velocity 1000");
+			counter = 1;
+			System.out.println("\nNext play from start with counter " + counter);
+			test(counter);
+			System.out.println("Now using max-velocity: " + HMPathing.MAX_SHOT_POWER + " and angle: " + HMPathing.DELTA_ANGLE);
 			bob.shoot();
+			//((RealBall) balls.get(currBall)).setPlayed(true);
 			lastInput = System.currentTimeMillis();
 		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_I)) {
 			if (virtualShotTest == -1) {
@@ -282,6 +287,38 @@ public class GameState implements State {
 			lastInput = System.currentTimeMillis();
 		}
 	}
+
+	public void test(int c) {
+		this.testing = true;
+
+		if (c == 56) {
+			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.EASY, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
+			System.out.println("\nNoise set to easy");
+		}
+		if (c == 112) {
+			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.MEDIUM, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
+			System.out.println("\nNoise set to medium");
+		}
+		if (c == 168) {
+			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.MEDIUM, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
+			System.out.println("\nNoise set to hard");
+		}
+
+		/*if (c % 56 == 0)
+			HMPathing.DELTA_ANGLE = 5;
+
+		if (c % 56 == 21)
+			HMPathing.MAX_SHOT_POWER = 1000;*/
+
+		if ((c - 1) % 36 == 0 && c % 36 < 21) {
+			HMPathing.DELTA_ANGLE = 1;
+			HMPathing.MAX_SHOT_POWER = (c % 36) * 100;
+			((RealBall) balls.get(currBall)).setPlayed(true);
+		} else {
+			HMPathing.DELTA_ANGLE = c;
+			((RealBall) balls.get(currBall)).setPlayed(true);
+		}
+	}
 	
 	public void setCameraToBall(int index){
 		camera = new Camera(balls.get(index));
@@ -303,6 +340,23 @@ public class GameState implements State {
 			if (timeBallStill >= 1) {
 				printScore();
 				int bio = checkBallsInHole();
+				if (testing) {
+					if (bio >= 0) {
+						balls.get(bio).setPosition(world.getStart());
+						System.out.println("Average of every shot: " + (HMPathing.sum / HMPathing.count) + " over " + HMPathing.count + " (total: " + HMPathing.sum + ")");
+						HMPathing.sum = 0;
+						HMPathing.count = 0;
+						counter++;
+						System.out.println("\nNext play from start with counter " + counter);
+						test(counter);
+						System.out.println("Now using max-velocity: " + HMPathing.MAX_SHOT_POWER + " and angle: " + HMPathing.DELTA_ANGLE);
+						bob.shoot();
+					} else {
+						test(counter);
+						bob.shoot();
+					}
+					return;
+				}
 				if (bio >= 0){
 					System.out.print("Ball " + bio + " in hole!");
 					if (numberOfPlayers == 1)
@@ -322,11 +376,13 @@ public class GameState implements State {
 	
 	private int checkBallsInHole() {
 		float hx = world.getEnd().x;
+		float hy = -4;
 		float hz = world.getEnd().z;
 		for (Ball b : balls){
 			float bx = b.getPosition().x;
+			float by = b.getPosition().y;
 			float bz = b.getPosition().z;
-			if (Math.abs(bx-hx) < 2 && Math.abs(bz-hz) < 2){
+			if (Math.abs(bx-hx) < 2 && Math.abs(bz-hz) < 2 && by < 0) {
 				return balls.indexOf(b);
 			}
 		}
@@ -532,7 +588,7 @@ public class GameState implements State {
 	}
 
 	public Entity createWall(Vector2f p1, Vector2f p2) {
-		System.out.println("Create wall between " + p1 + " and " + p2);
+		//System.out.println("Create wall between " + p1 + " and " + p2);
 		Entity e = new Wall(p1, p2, tModels.get("wall_seg"), 0, mData.get("wall_seg"));
 		world.add(e);
 		return e;
@@ -567,7 +623,7 @@ public class GameState implements State {
 			world.addNE(e);
 			return e;
 		} 
-		System.out.println("Normal maps disabled");
+		//System.out.println("Normal maps disabled");
 		return null;
 	}
 	
@@ -608,7 +664,7 @@ public class GameState implements State {
 
 	public void printScore(){
 		((RealBall) balls.get(currBall)).addScore();
-		System.out.println("Score for player " + currBall + " is: " + ((RealBall) balls.get(currBall)).getScore());
+		//System.out.println("Score for player " + currBall + " is: " + ((RealBall) balls.get(currBall)).getScore());
 	}
 
 	public void removeBall() {

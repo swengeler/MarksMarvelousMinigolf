@@ -66,11 +66,11 @@ public class NoiseHandler {
                 }
             } else if (i == SURFACE_NOISE) {
                 if (difficulty == EASY) {
-
+                    surfaceNoise = SurfaceNoise.getInstance(0.1);
                 } else if (difficulty == MEDIUM) {
-
+                    surfaceNoise = SurfaceNoise.getInstance(0.2);
                 } else if (difficulty == HARD) {
-
+                    surfaceNoise = SurfaceNoise.getInstance(0.3);
                 }
             }
         }

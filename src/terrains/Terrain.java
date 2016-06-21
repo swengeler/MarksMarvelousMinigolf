@@ -261,7 +261,9 @@ public class Terrain implements Serializable {
 					float distance = (float) Math.sqrt((i*i)+(k*k));
 					if (distance <= holeRad) {
 						float height = (float) ((newHeight/2) * -(Math.cos(Math.PI - (Math.PI * (distance/holeRad)))) + (newHeight/2));
-						heights[(int)(x + i)][(int)(z + k)] =  height;		
+						//heights[(int)(x + i)][(int)(z + k)] =  height;
+						heights[(int)(x + i)][(int)(z + k)] =  newHeight;
+
 					}
 				}
 			}	

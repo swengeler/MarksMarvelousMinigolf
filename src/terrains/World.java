@@ -257,7 +257,7 @@ public class World implements Serializable {
 	}
 	
 	public Vector3f getStart() {
-		return new Vector3f(Start.x, getHeightOfTerrain(Start.x, Start.y), Start.y);
+		return new Vector3f(Start.x, getHeightOfTerrain(Start.x, Start.y) + Ball.RADIUS, Start.y);
 	}
 	
 	public Vector3f getEnd() {

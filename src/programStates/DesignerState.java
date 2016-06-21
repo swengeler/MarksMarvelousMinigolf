@@ -271,7 +271,7 @@ public class DesignerState implements State{
 			lastInput = System.currentTimeMillis();
 		}
 		if (world.hasStart() && world.hasEnd() && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-			MainGameLoop.loadGame(world, 3);
+			MainGameLoop.loadGame(world, 2);
 		}
 
 		// commands for saving and loading courses
@@ -382,7 +382,7 @@ public class DesignerState implements State{
 		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", null));
 		guis.add(new GuiButton("save", new Vector2f(59, 810), new Vector2f(0.2f, 0.2f), loader, "save", null));
 		guis.add(new GuiButton("load", new Vector2f(59, 765), new Vector2f(0.2f, 0.2f), loader, "load", null));
-		guis.add(new GuiButton("overlay", new Vector2f(1510, 510), new Vector2f(0.6f, 0.5f), loader, "overlay", null));
+		//guis.add(new GuiButton("overlay", new Vector2f(1510, 510), new Vector2f(0.6f, 0.5f), loader, "overlay", null));
 	}
 
 	private void loadModels() {

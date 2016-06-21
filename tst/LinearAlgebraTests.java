@@ -11,11 +11,11 @@ public class LinearAlgebraTests {
     public static final Vector3f Z_AXIS = new Vector3f(0, 0, 1f);
 
     public void convertingCoordinateSystemOther(Vector3f oldAxis, Vector3f newAxis) {
-        System.out.println(oldAxis + " - " + newAxis);
+        //System.out.println(oldAxis + " - " + newAxis);
         Vector3f rotAxis = Vector3f.cross(oldAxis, newAxis, null);
         rotAxis.normalise();
         float angle = Vector3f.angle(oldAxis, newAxis);
-        System.out.println("Rotation axis: " + rotAxis + "\nAngle between the vectors: " + Math.toDegrees(angle));
+        //System.out.println("Rotation axis: " + rotAxis + "\nAngle between the vectors: " + Math.toDegrees(angle));
 
         Matrix3f rodriguesRotMatrix = new Matrix3f();
         rodriguesRotMatrix.setIdentity();
@@ -29,12 +29,12 @@ public class LinearAlgebraTests {
         crossProductMatrix.m02 = -rotAxis.y;
         crossProductMatrix.m12 = rotAxis.x;
 
-        System.out.println(crossProductMatrix);
+        //System.out.println(crossProductMatrix);
 
         Matrix3f summandOne = new Matrix3f();
         summandOne.setZero();
         double factorOne = Math.sin(angle);
-        System.out.println("Factor one: " + factorOne);
+        //System.out.println("Factor one: " + factorOne);
         summandOne.m10 = (float) (crossProductMatrix.m10 * factorOne);
         summandOne.m20 = (float) (crossProductMatrix.m20 * factorOne);
         summandOne.m01 = (float) (crossProductMatrix.m01 * factorOne);
@@ -45,16 +45,16 @@ public class LinearAlgebraTests {
         Matrix3f summandTwo = new Matrix3f();
         summandTwo.setZero();
         double factorTwo = 1 - Math.cos(angle);
-        System.out.println("Factor two: " + factorTwo + " " + Math.cos(angle));
+        //System.out.println("Factor two: " + factorTwo + " " + Math.cos(angle));
         summandTwo.m10 = crossProductMatrix.m10;
         summandTwo.m20 = crossProductMatrix.m20;
         summandTwo.m01 = crossProductMatrix.m01;
         summandTwo.m21 = crossProductMatrix.m21;
         summandTwo.m02 = crossProductMatrix.m02;
         summandTwo.m12 = crossProductMatrix.m12;
-        System.out.println("summandTwo 1:\n" + summandTwo);
+        //System.out.println("summandTwo 1:\n" + summandTwo);
         Matrix3f.mul(summandTwo, summandTwo, summandTwo);
-        System.out.println("summandTwo 2:\n" + summandTwo);
+        //System.out.println("summandTwo 2:\n" + summandTwo);
 
         summandTwo.m00 *= factorTwo;
         summandTwo.m01 *= factorTwo;
@@ -66,28 +66,28 @@ public class LinearAlgebraTests {
         summandTwo.m21 *= factorTwo;
         summandTwo.m22 *= factorTwo;
 
-        System.out.println("summandTwo 3:\n" + summandTwo);
+        //System.out.println("summandTwo 3:\n" + summandTwo);
 
         Matrix3f.add(rodriguesRotMatrix, summandOne, rodriguesRotMatrix);
         Matrix3f.add(rodriguesRotMatrix, summandTwo, rodriguesRotMatrix);
 
-        System.out.println(rodriguesRotMatrix);
+        //System.out.println(rodriguesRotMatrix);
 
         Vector3f tfVector = new Vector3f();
         tfVector.set(LinearAlgebraTests.X_AXIS.x, LinearAlgebraTests.X_AXIS.y, LinearAlgebraTests.X_AXIS.z);
         Matrix3f.transform(rodriguesRotMatrix, tfVector, tfVector);
         tfVector.normalise();
-        System.out.println("Transformed x-axis: " + tfVector);
+        //System.out.println("Transformed x-axis: " + tfVector);
 
         tfVector.set(LinearAlgebraTests.Y_AXIS.x, LinearAlgebraTests.Y_AXIS.y, LinearAlgebraTests.Y_AXIS.z);
         Matrix3f.transform(rodriguesRotMatrix, tfVector, tfVector);
         tfVector.normalise();
-        System.out.println("Transformed y-axis: " + tfVector);
+        //System.out.println("Transformed y-axis: " + tfVector);
 
         tfVector.set(LinearAlgebraTests.Z_AXIS.x, LinearAlgebraTests.Z_AXIS.y, LinearAlgebraTests.Z_AXIS.z);
         Matrix3f.transform(rodriguesRotMatrix, tfVector, tfVector);
         tfVector.normalise();
-        System.out.println("Transformed z-axis: " + tfVector);
+        //System.out.println("Transformed z-axis: " + tfVector);
     }
 
     public void convertingCoordinateSystemEuler(Vector3f oldAxis, Vector3f newAxis) throws Exception {
@@ -130,11 +130,11 @@ public class LinearAlgebraTests {
         Vector3f euler = new Vector3f((float) heading, (float) attitude, (float) bank);
         Matrix4f tfMatrix = LinearAlgebra.createTransformationMatrix(null, (float) heading, (float) attitude, (float) bank, 1f);
         Vector4f tfVector = new Vector4f(0, 0, 0, 1f);
-        System.out.println("Conversion matrix:\n" + tfMatrix);
+        //System.out.println("Conversion matrix:\n" + tfMatrix);
 
         tfVector.set(LinearAlgebraTests.X_AXIS.x, LinearAlgebraTests.X_AXIS.y, LinearAlgebraTests.X_AXIS.z);
         Matrix4f.transform(tfMatrix, tfVector, tfVector);
-        System.out.printf("New x-axis: (%f|%f|%f)\n", tfVector.x, tfVector.y, tfVector.z);
+        //System.out.printf("New x-axis: (%f|%f|%f)\n", tfVector.x, tfVector.y, tfVector.z);
 
         tfVector.set(LinearAlgebraTests.Y_AXIS.x, LinearAlgebraTests.Y_AXIS.y, LinearAlgebraTests.Y_AXIS.z);
         Matrix4f.transform(tfMatrix, tfVector, tfVector);

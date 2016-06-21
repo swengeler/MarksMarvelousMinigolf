@@ -26,8 +26,8 @@ public class MainGameLoop {
 		
 		DisplayManager.reset();
 		
-		while(!Display.isCloseRequested()){
-			if(!update) {
+		while (!Display.isCloseRequested()){
+			if (!update) {
 				currState.checkInputs();
 				currState.update();
 				GL11.glEnable(GL30.GL_CLIP_DISTANCE0);

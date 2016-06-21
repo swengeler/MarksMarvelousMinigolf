@@ -15,11 +15,20 @@ public class SurfaceNoise {
     }
 
     private SurfaceNoise(double probability) {
-
+        this.probabiliy = probability;
     }
 
     public Vector3f updateAndGet(Vector3f ballVelocity) {
-        if (Math.random() < probabiliy);
+        if (Math.random() < probabiliy) {
+            double rand = Math.random();
+            if (rand < 1 / 3) {
+                ballVelocity.x += Math.random() * 0.5 - 0.5;
+            } else if (rand < 1 / 6) {
+                ballVelocity.y += Math.random() * 0.25;
+            } else {
+                ballVelocity.z += Math.random() * 0.5 - 0.5;
+            }
+        }
         return null;
     }
 

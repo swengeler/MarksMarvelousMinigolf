@@ -65,12 +65,12 @@ public class Wind {
 
     public Vector3f updateAndGet(Vector3f ballVelocity) {
         if (!active && (counter == 0 || ((Math.random() * 0.9 * avPauses) + 0.2 * avPauses) >= counter)) {
-            System.out.println("\nWIND STARTED\n");
+            //System.out.println("\nWIND STARTED\n");
             counter = 0;
             active = true;
         }
         if (active && ((Math.random() * 0.9 * avDuration) + 0.2 * avDuration) >= counter) {
-            System.out.println("Wind with avDuration = " + avDuration + " and avPauses = " + avPauses + " is applied at time " + System.currentTimeMillis() + ".");
+            //System.out.println("Wind with avDuration = " + avDuration + " and avPauses = " + avPauses + " is applied at time " + System.currentTimeMillis() + ".");
             // should then return a vector that is roughly the same as baseDirection but has minor deviations in direction and magnitude
             double stdX = standardDeviation * x;
             double newX = r.nextGaussian() * stdX;
@@ -83,13 +83,13 @@ public class Wind {
             double stdZ = standardDeviation * z;
             double newZ = r.nextGaussian() * stdZ;
             ballVelocity.z += ((float) z);
-            System.out.printf("Wind changes velocity by: (%f|%f|%f)\n", x, y, z);
+            //System.out.printf("Wind changes velocity by: (%f|%f|%f)\n", x, y, z);
         } else if (active) {
-            System.out.println("\nWIND STOPPED\n");
+            //System.out.println("\nWIND STOPPED\n");
             counter = 1;
             active = false;
         } else {
-            System.out.println("\nWIND NOT APPLIED\n");
+            //System.out.println("\nWIND NOT APPLIED\n");
         }
         counter += System.currentTimeMillis() - lastCheck;
         lastCheck = System.currentTimeMillis();

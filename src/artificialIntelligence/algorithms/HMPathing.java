@@ -22,8 +22,8 @@ import terrains.World;
 public class HMPathing extends Algorithm {
 
 	private static final float MAX_SLOPE = 3.0f; // That is the maximum height difference between two adjacent cell for them to be connected
-	private static final float MAX_SHOT_POWER = 500;
-	private static final float DELTA_ANGLE = 5f; // In degrees
+	public static float MAX_SHOT_POWER = 1500;
+	public static float DELTA_ANGLE = 5f; // In degrees
 	private static final int MIDPOINT_ITERATIONS = 100;
 	private static final float DELTA_CHECK = 0.5f;
 	private static final int ITER_IN_BETWEEN = 4;
@@ -34,31 +34,36 @@ public class HMPathing extends Algorithm {
 	private Node holeNode;
 	private int xHole, zHole;
 	public static float maxDistance;
+
+	public static long sum;
+	public static int count;
+
 	
 	public HMPathing(Ball b, World w) {
 		this.b = b;
 		this.w = w;
-		long one = System.currentTimeMillis();
+		long one = System.nanoTime();
 		createGraph();
-		System.out.println("Time to build graph: " + (System.currentTimeMillis() - one) + "ms");
+		System.out.println("Time to build graph: " + (System.nanoTime() - one) + " ns");
 	}
 	
 	public void shootBall() {
+		long before = System.nanoTime();
+
 		int xBallGrid = (int)(b.getPosition().x/CELL_SIZE);
 		int zBallGrid = (int)(b.getPosition().z/CELL_SIZE);
 		Node ballNode = grid[xBallGrid][zBallGrid];
 		float ballD = ballNode.getD();
-		System.out.println("Distance of the ball from the hole is: " + ballD);
 		AIShot bestShot = null;
 		Vector3f straightVec = straightShotNonRandom(0f, w.getEnd(), b.getPosition());
 		Vector3f finalPowah = null;
 		if (isStraightShotPossible(b, w.getEnd())) {
-			System.out.println("Straight shot is possible");
+			//System.out.println("Straight shot is possible");
 			bestShot = PhysicsEngine.getInstance().aiTestShot((RealBall) b, straightVec, grid);
 			finalPowah = bestShot.getShot();
 		} else {
-			System.out.println("Straight shot is not possible");
-			MinHeap<AIShot> shots = new MinHeap<AIShot>();
+			//System.out.println("Straight shot is not possible");
+			MinHeap<AIShot> shots = new MinHeap<>();
 			int shotsTaken = 0;
 			for (int i = 0; i < 360; i += DELTA_ANGLE){
 				shotsTaken++;
@@ -129,10 +134,14 @@ public class HMPathing extends Algorithm {
 			bestShot = pShot;*/
 			finalPowah = getThePowah(bestShot);
 		} 
-		System.out.println("The best shot ends up at a distance " + bestShot.getClosestNode().getD() + " from the hole");
+		//System.out.println("The best shot ends up at a distance " + bestShot.getClosestNode().getD() + " from the hole");
 		b.setVelocity(bestShot.getShot());
 		b.setMoving(true);
-		System.out.println("Ball shooted by the bot with velocity: " + bestShot.getShot());
+		//System.out.println("Ball shot by the bot with velocity: " + bestShot.getShot());
+		long duration = (System.nanoTime() - before);
+		sum += duration;
+		count++;
+		System.out.println("Next shot " + duration + " ns");
 		
 	}
 	

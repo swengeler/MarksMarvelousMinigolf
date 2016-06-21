@@ -2,6 +2,7 @@ package entities.playable;
 
 import java.util.ArrayList;
 
+import artificialIntelligence.algorithms.HMPathing;
 import entities.obstacles.Entity;
 import entities.camera.Camera;
 import org.lwjgl.input.Keyboard;
@@ -68,10 +69,10 @@ public class RealBall extends Entity implements Ball {
 		super.increasePosition(delta);
         super.increaseRotation(delta.z * 360, 0, delta.x * 360);
 
-		System.out.printf("Ball's position after moving: (%f|%f|%f)\n", getPosition().x, getPosition().y, getPosition().z);
-		System.out.printf("Ball's velocity after moving (with gravity applied): (%f|%f|%f)\n", currentVel.x, currentVel.y, currentVel.z);
+		//System.out.printf("Ball's position after moving: (%f|%f|%f)\n", getPosition().x, getPosition().y, getPosition().z);
+		//System.out.printf("Ball's velocity after moving (with gravity applied): (%f|%f|%f)\n", currentVel.x, currentVel.y, currentVel.z);
 		if (getVelocity().length() < Ball.MIN_VEL && Math.abs(getPosition().y - GameState.getInstance().getWorld().getHeightOfTerrain(getPosition().x, getPosition().z)) < 1) {
-			System.out.println("Moving set to false because velocity too low");
+			//System.out.println("Moving set to false because velocity too low");
 			setMoving(false);
 		}
 	}
@@ -140,7 +141,7 @@ public class RealBall extends Entity implements Ball {
 			this.currentVel.x = (float) (initspeed * Math.sin(Math.toRadians(super.getRotY()+ Camera.getInstance().getAngleAroundBall()))) * POWER_SCALE;
 			this.currentVel.z = (float) (initspeed * Math.cos(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall()))) * POWER_SCALE;
 
-			initspeed=0;
+			initspeed = 0;
 			played = true;
 		}
 
@@ -224,12 +225,12 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public boolean movedLastStep() {
-		System.out.printf("Difference in positions: (%f|%f|%f)\n", getPosition().x - lastPositionMovementCheck.x, getPosition().y - lastPositionMovementCheck.y, getPosition().z - lastPositionMovementCheck.z);
+		//System.out.printf("Difference in positions: (%f|%f|%f)\n", getPosition().x - lastPositionMovementCheck.x, getPosition().y - lastPositionMovementCheck.y, getPosition().z - lastPositionMovementCheck.z);
 		boolean moved = (Math.pow(getPosition().x - lastPositionMovementCheck.x, 2) +
 						Math.pow(getPosition().y - lastPositionMovementCheck.y, 2) +
 						Math.pow(getPosition().z - lastPositionMovementCheck.z, 2) >
 						Math.pow(PhysicsEngine.MIN_MOV_REQ, 2));
-		System.out.println("Therefore moved is " + moved);
+		//System.out.println("Therefore moved is " + moved);
 		return moved;
 	}
 

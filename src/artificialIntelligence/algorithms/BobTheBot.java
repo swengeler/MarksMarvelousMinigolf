@@ -22,10 +22,6 @@ public class BobTheBot {
 	public void setBall(Ball ball) {
 		this.ball = ball;
 	}
-
-	public Algorithm getAlg() {
-		return alg;
-	}
 	
 	public void setAlgorithm(int algorithm){
 		if (algorithm == 0) {}
@@ -33,7 +29,7 @@ public class BobTheBot {
 	}
 	
 	public void shoot(){
-		if(!ball.isMoving())
+		if (!ball.isMoving())
 			alg.shootBall();
 	}
 	

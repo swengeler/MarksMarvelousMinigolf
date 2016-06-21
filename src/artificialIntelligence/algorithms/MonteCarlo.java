@@ -44,13 +44,13 @@ public class MonteCarlo {
         Vector4f rotVector = new Vector4f(0, 0, 0, 1);
         if (step == 0) {
             velocity.set((float) (Math.random() * MAX_VELOCITY), 0, (float) (Math.random() * MAX_VELOCITY));
-            System.out.println("Velocity set initially to: " + velocity);
+            //System.out.println("Velocity set initially to: " + velocity);
         } else {
             rotMatrix.rotate((float) (Math.PI / NR_SHOTS) * step, new Vector3f(0, 1, 0));
             rotVector.set(velocity.x, velocity.y, velocity.z);
             Matrix4f.transform(rotMatrix, rotVector, rotVector);
             velocity.set(rotVector.x, rotVector.y, rotVector.z);
-            System.out.println("Velocity set to: " + velocity);
+            //System.out.println("Velocity set to: " + velocity);
         }
         return velocity;
     }
