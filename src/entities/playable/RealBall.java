@@ -103,7 +103,7 @@ public class RealBall extends Entity implements Ball {
 	}
 
 	public void setMoving(boolean moving) {
-		System.out.println("Moving set to " + moving);
+		//System.out.println("Moving set to " + moving);
 		this.moving = moving;
 		if (moving)
 			resetLastPos();
