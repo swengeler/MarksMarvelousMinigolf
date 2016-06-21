@@ -159,6 +159,7 @@ public class PhysicsEngine {
         if (intersectionPoint != null) {
             b.setPosition(intersectionPoint);
         }
+        System.out.println("Ball's position after being set (or not): " + b.getPosition());
 
         // get all colliding faces in any of the entities in the world
         ArrayList<PhysicalFace> collidingFaces = new ArrayList<>();
@@ -205,8 +206,10 @@ public class PhysicsEngine {
             System.out.printf("Normal of closest: (%f|%f|%f)\n", normal.x, normal.y, normal.z);
             normal.scale(Vector3f.dot(b.getVelocity(), normal) / normal.lengthSquared());
             normal.scale(-0.001f);
-            while (b.collidesWith(collidingFaces)) {
-                b.increasePosition(normal);
+            System.out.println("Normal scaled: " + normal);
+            if (normal.lengthSquared() > 0.00001) {
+                while (b.collidesWith(collidingFaces))
+                    b.increasePosition(normal);
             }
         } else {
             Vector3f revBM = new Vector3f(b.getVelocity().x, b.getVelocity().y, b.getVelocity().z);
@@ -240,9 +243,12 @@ public class PhysicsEngine {
                 System.out.println("Check 3.2: " + revBM);
                 revBM.scale(Vector3f.dot(b.getVelocity(), revBM) / revBM.lengthSquared());
                 System.out.println("Check 3.3: " + revBM);
-            	revBM.scale(-0.001f);
+                //revBM.normalise();
+            	//revBM.scale(-0.01f);
                 System.out.println("Check 3.4: " + revBM);
                 if (revBM.lengthSquared() > 0.00001) {
+                    revBM.normalise();
+                    revBM.scale(-0.01f);
                 	while (forResolution.collidesWithFace(b))
                         b.increasePosition(revBM);
                 }
