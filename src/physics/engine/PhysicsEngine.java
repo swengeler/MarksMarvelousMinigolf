@@ -77,7 +77,8 @@ public class PhysicsEngine {
     }
 
     public void tick() {
-        GameState.wmr.increaseRotation(0, 0, 0.25f);
+    	if(GameState.wmr != null)
+    		GameState.wmr.increaseRotation(0, 0, 0.25f);
         for (RealBall b : balls) {
             b.applyAccel(GRAVITY);
             if (b.isMoving()) {
