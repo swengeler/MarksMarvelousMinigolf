@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import entities.playable.Ball;
 import org.lwjgl.util.vector.Vector3f;
 
-public class CollisionData implements Serializable{
+public class CollisionData implements Serializable {
+
+	private static long serialVersionUID = 3171949354836880413L;
 
 	private BoundingBox bbox;
 	protected ArrayList<Face> faces;

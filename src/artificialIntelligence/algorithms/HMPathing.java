@@ -44,7 +44,7 @@ public class HMPathing extends Algorithm {
 		this.w = w;
 		long one = System.nanoTime();
 		createGraph();
-		System.out.println("Time to build graph: " + (System.nanoTime() - one) + " ns");
+		//System.out.println("Time to build graph: " + (System.nanoTime() - one) + " ns");
 	}
 	
 	public void shootBall() {
@@ -141,7 +141,7 @@ public class HMPathing extends Algorithm {
 		long duration = (System.nanoTime() - before);
 		sum += duration;
 		count++;
-		System.out.println("Next shot " + duration + " ns");
+		//System.out.println("Next shot " + duration + " ns");
 		
 	}
 	

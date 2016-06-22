@@ -460,7 +460,7 @@ public class DesignerState implements State{
 	}
 
 	public Entity createWall(Vector2f p1, Vector2f p2) {
-		System.out.println("Create wall between " + p1 + " and " + p2);
+		//System.out.println("Create wall between " + p1 + " and " + p2);
 		Entity e = new Wall(p1, p2, tModels.get("wall_seg"), 0, mData.get("wall_seg"));
 		world.add(e);
 		tempWalls.add((Wall) e);
