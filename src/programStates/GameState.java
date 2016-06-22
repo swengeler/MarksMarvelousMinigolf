@@ -1,5 +1,6 @@
 package programStates;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -252,12 +253,33 @@ public class GameState implements State {
 
 		if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
 			//bob.shoot();
-			System.out.println("\nTesting \"Simple\" map without obstacles\nNoise is off\nAll tests in which the angle does not change have been performed using an angle of 5 degrees\nAll tests in which the maximum velocity does not change have been performed using the velocity 1000");
-			counter = 1;
+			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.MEDIUM,/* NoiseHandler.OFF,*/ NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
+			System.out.println("\nTesting \"Simple\" map without obstacles\nNoise is easy\nAll tests in which the angle does not change have been performed using an angle of 5 degrees\nAll tests in which the maximum velocity does not change have been performed using the velocity 1000");
+			counter = 6;
 			System.out.println("\nNext play from start with counter " + counter);
 			test(counter);
 			System.out.println("Now using max-velocity: " + HMPathing.MAX_SHOT_POWER + " and angle: " + HMPathing.DELTA_ANGLE);
+
+			try (FileWriter fw = new FileWriter("boxes_highamount_noisemedium-averages.txt", true); //boxes_highamount_noisemedium
+				BufferedWriter bw = new BufferedWriter(fw);
+				PrintWriter out = new PrintWriter(bw))
+			{
+				out.println("Now using max-velocity: " + HMPathing.MAX_SHOT_POWER + " and angle: " + HMPathing.DELTA_ANGLE);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			try (FileWriter fw = new FileWriter("boxes_highamount_noisemedium-counts.txt", true);
+				 BufferedWriter bw = new BufferedWriter(fw);
+				 PrintWriter out = new PrintWriter(bw))
+			{
+				out.println("Now using max-velocity: " + HMPathing.MAX_SHOT_POWER + " and angle: " + HMPathing.DELTA_ANGLE);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 			bob.shoot();
+
 			//((RealBall) balls.get(currBall)).setPlayed(true);
 			lastInput = System.currentTimeMillis();
 		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_I)) {
@@ -271,13 +293,17 @@ public class GameState implements State {
 			}
 			lastInput = System.currentTimeMillis();
 		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_N)) {
-			MonteCarlo mc = new MonteCarlo();
+			/*MonteCarlo mc = new MonteCarlo();
 			System.out.println("Calculating shot test for ball " + currBall);
 			long one = System.currentTimeMillis();
 			Vector3f vel = mc.calculateShot(balls.get(currBall), world);
 			System.out.println("Calculated shot test for ball " + currBall + " in " + (System.currentTimeMillis() - one) + "ms");
 			balls.get(currBall).setMoving(true);
 			balls.get(currBall).setVelocity(vel);
+			((RealBall) balls.get(currBall)).setPlayed(true);
+			lastInput = System.currentTimeMillis();*/
+
+			bob.shoot();
 			((RealBall) balls.get(currBall)).setPlayed(true);
 			lastInput = System.currentTimeMillis();
 		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_O)) {
@@ -291,18 +317,18 @@ public class GameState implements State {
 	public void test(int c) {
 		this.testing = true;
 
-		if (c == 56) {
+		/*if (c == 720) {
 			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.EASY, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
 			System.out.println("\nNoise set to easy");
 		}
-		if (c == 112) {
+		if (c == 1440) {
 			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.MEDIUM, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
 			System.out.println("\nNoise set to medium");
 		}
-		if (c == 168) {
+		if (c == 2880) {
 			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.MEDIUM, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
 			System.out.println("\nNoise set to hard");
-		}
+		}*/
 
 		/*if (c % 56 == 0)
 			HMPathing.DELTA_ANGLE = 5;
@@ -310,22 +336,42 @@ public class GameState implements State {
 		if (c % 56 == 21)
 			HMPathing.MAX_SHOT_POWER = 1000;*/
 
-		if ((c - 1) % 36 == 0 && c % 36 < 21) {
-			HMPathing.DELTA_ANGLE = 1;
-			HMPathing.MAX_SHOT_POWER = (c % 36) * 100;
+		if (c % 48 == 6 && c / 48 < 16) {
+			HMPathing.DELTA_ANGLE = 6;
+			HMPathing.MAX_SHOT_POWER = 100 + ((int) (c / 48)) * 200;
+			((RealBall) balls.get(currBall)).setPlayed(true);
+			try (FileWriter fw = new FileWriter("boxes_highamount_noisemedium-averages.txt", true);
+				 BufferedWriter bw = new BufferedWriter(fw);
+				 PrintWriter out = new PrintWriter(bw))
+			{
+				out.println();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			try (FileWriter fw = new FileWriter("boxes_highamount_noisemedium-counts.txt", true);
+				 BufferedWriter bw = new BufferedWriter(fw);
+				 PrintWriter out = new PrintWriter(bw))
+			{
+				out.println();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else if (c % 48 == 0) {
+			HMPathing.DELTA_ANGLE = 48;
 			((RealBall) balls.get(currBall)).setPlayed(true);
 		} else {
-			HMPathing.DELTA_ANGLE = c;
+			HMPathing.DELTA_ANGLE = c % 48;
 			((RealBall) balls.get(currBall)).setPlayed(true);
 		}
 	}
-	
+
 	public void setCameraToBall(int index){
 		camera = new Camera(balls.get(index));
 		renderer.updateCamera(camera);
 		world.setCamera(camera);
 	}
-	
+
 	@Override
 	public void update() {
 		if (mainEngine == null) {
@@ -344,9 +390,28 @@ public class GameState implements State {
 					if (bio >= 0) {
 						balls.get(bio).setPosition(world.getStart());
 						System.out.println("Average of every shot: " + (HMPathing.sum / HMPathing.count) + " over " + HMPathing.count + " (total: " + HMPathing.sum + ")");
+
+						try (FileWriter fw = new FileWriter("boxes_highamount_noisemedium-averages.txt", true);
+							 BufferedWriter bw = new BufferedWriter(fw);
+							 PrintWriter out = new PrintWriter(bw))
+						{
+							out.println(HMPathing.sum / HMPathing.count);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						try (FileWriter fw = new FileWriter("boxes_highamount_noisemedium-counts.txt", true);
+							 BufferedWriter bw = new BufferedWriter(fw);
+							 PrintWriter out = new PrintWriter(bw))
+						{
+							out.println(HMPathing.count);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
 						HMPathing.sum = 0;
 						HMPathing.count = 0;
-						counter++;
+						counter += 6;
 						System.out.println("\nNext play from start with counter " + counter);
 						test(counter);
 						System.out.println("Now using max-velocity: " + HMPathing.MAX_SHOT_POWER + " and angle: " + HMPathing.DELTA_ANGLE);
@@ -654,7 +719,7 @@ public class GameState implements State {
 	public void swap() {
 		if (balls.size() < numberOfPlayers){
 			currBall++;
-			createBall(new Vector3f(world.getStart().x, world.getStart().y + Ball.RADIUS, world.getStart().z), true);
+			createBall(new Vector3f(world.getStart()), true);
 		} else {
 			currBall = (currBall + 1) % numberOfPlayers;
 		}
