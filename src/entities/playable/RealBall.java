@@ -92,11 +92,9 @@ public class RealBall extends Entity implements Ball {
 	}
 
     public void applyAccel(Vector3f accel) {
-		//System.out.printf("Acceleration applied: (%f|%f|%f)\n", accel.x, accel.y, accel.z);
 		currentAcc.set(accel.x, accel.y, accel.z);
 		currentAcc.scale(getTimeElapsed());
 		Vector3f.add(currentVel, currentAcc, currentVel);
-		//System.out.printf("... and velocity after: (%f|%f|%f)\n", currentVel.x, currentVel.y, currentVel.z);
     }
 
 	public void resetLastPos() {
@@ -117,12 +115,10 @@ public class RealBall extends Entity implements Ball {
 	private void jump() {
 		setMoving(true);
 		this.currentVel.y = JUMP_POWER;
-		//System.out.println("Moving set to " + moving + " (velocity now: (" + currentVel.x + "|" + currentVel.y + "|" + currentVel.z + ")");
 	}
 
 	public void checkInputs() {
 		if (Keyboard.isKeyDown(Keyboard.KEY_C)){
-			//System.out.println("Here swapping from the ball at position " + this.getPosition().x );
 			GameState.getInstance().swap();
 		}
 
@@ -137,7 +133,6 @@ public class RealBall extends Entity implements Ball {
 			charging = false;
 			setMoving(true);
 
-			//System.out.println(initspeed + "hell is here");
 			this.currentVel.x = (float) (initspeed * Math.sin(Math.toRadians(super.getRotY()+ Camera.getInstance().getAngleAroundBall()))) * POWER_SCALE;
 			this.currentVel.z = (float) (initspeed * Math.cos(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall()))) * POWER_SCALE;
 
@@ -148,14 +143,10 @@ public class RealBall extends Entity implements Ball {
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 			this.currentVel.x += (float) (RUN_SPEED * Math.sin(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR;
 			this.currentVel.z += (float) (RUN_SPEED * Math.cos(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR;
-			//System.out.println("Change in x-velocity: " + (RUN_SPEED * Math.sin(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR);
-			//System.out.println("Change in z-velocity: " + (RUN_SPEED * Math.cos(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR);
 			setMoving(true);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
 			this.currentVel.x -= (float) (RUN_SPEED * Math.sin(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR;
 			this.currentVel.z -= (float) (RUN_SPEED * Math.cos(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR;
-			//System.out.println("Change in x-velocity: " + (-RUN_SPEED * Math.sin(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR);
-			//System.out.println("Change in z-velocity: " + (-RUN_SPEED * Math.cos(Math.toRadians(super.getRotY()+Camera.getInstance().getAngleAroundBall())))/FACTOR);
 			setMoving(true);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
 			this.currentVel.z += 40;

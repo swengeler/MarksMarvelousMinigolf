@@ -49,7 +49,7 @@ import water.WaterTile;
 
 public class GameState implements State {
 
-	public static Entity wmr, two;
+	public static Entity wmr;
 	
 	private static GameState instance;
 	
@@ -78,11 +78,8 @@ public class GameState implements State {
 	private boolean particle = true;
 	private boolean shadow = true;
 	private boolean normalMap = true;
-	private boolean multiplayer;
 	private int numberOfPlayers;
-	
-	private boolean gameover = true;
-	private long virtualShotTest = -1;
+
 	private long lastInput;
 
 	private float timeBallStill;
@@ -104,7 +101,6 @@ public class GameState implements State {
 	}
 	
 	public GameState(Loader loader, World world, int numberOfPlayers) {
-		// testcommit
 		instance = this;
 		this.numberOfPlayers = numberOfPlayers;
 		buildWithWorld(loader, world);
@@ -113,36 +109,24 @@ public class GameState implements State {
 	
 	@Override
 	public void init(Loader loader) {
-		long start = System.currentTimeMillis();
 		this.loader = loader;
 		loadModels();
-		//loadGuis();
-		createBall(new Vector3f(0.5f, Ball.RADIUS, 0.5f), true);
+		loadGuis();
+		createBall(new Vector3f(10f, Ball.RADIUS, 10f), true);
 		camera = new Camera(balls.get(0));
 		world = new World(camera);
-		//balls.get(0).setPosition(world.getStart());
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
 		mainEngine = new PhysicsEngine(balls, world, null);
-		// addRandomWind();
-		//System.out.println("Before loading particle system for the first time");
 		loadParticleSystem();
-		//System.out.println("After loading particle system for the first time");
 
-		//createEntity("box", new Vector3f(world.getStart().x + 70, -60f/*-60f*/, world.getStart().z - 120), 0, 0, 0, 20);
-		createEntity("box", new Vector3f(world.getStart().x + 70, -100, world.getStart().z - 120), 0, 0, 0, 30);
-		//world.setEnd(new Vector2f(world.getStart().x + 50, world.getStart().z + 50));
-        //createEntity("ramp", new Vector3f(world.getStart().x + 50, -0.1f, world.getStart().z - 50), 0, 45, 0, 5);
-		//createEntity("flag", new Vector3f(world.getStart().x - 170, 0, world.getStart().z - 220), 0, 45, 0, 5);
-		createEntity("wall", new Vector3f(100, 0, 100), 0, 0, 0, 5);
-		//createEntity("windmill", new Vector3f(world.getStart().x, 0, world.getStart().z + 150), 0, 0, 0, 10);
-		//two = createRotatingEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), new Vector3f(0, 180, 0), 5, new Vector3f());
-		two = createEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), 0, 180, 0, 5);
-		//wmr = createRotatingEntity("windmill_rot", new Vector3f(world.getStart().x, 76, world.getStart().z + 150 - 26f), new Vector3f(), 10, new Vector3f());
-		//two = createRotatingEntity("sphere_offcenter", new Vector3f(world.getStart().x, 50, world.getStart().z - 300), new Vector3f(), 10, new Vector3f());
-		createEntity("ramp", new Vector3f(50, 0, 200), 0, 0, 0, 5);
-
-		//createWall(new Vector2f(0, 100), new Vector2f(100, 0));
+		createEntity("box", new Vector3f(230, 0, 20), 0, 0, 0, 10);
+		createEntity("windmill", new Vector3f(150, 0, 250), 0, 0, 0, 6);
+		createEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), 0, 180, 0, 3);
+		wmr = createRotatingEntity("windmill_rot", new Vector3f(150, 45.5f, 233.5f), new Vector3f(), 6, new Vector3f());
+		createEntity("ramp", new Vector3f(50, 0, 200), 0, 180, 0, 5);
+		createEntity("rampWHole", new Vector3f(100, 0, 150), 0, -135, 0, 5);
+		createBoundingWall();
 
 		createTerrain(0, 0, "grass", false);
 		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
@@ -153,27 +137,22 @@ public class GameState implements State {
 		system.setSpeedError(0.25f);
 		system.randomizeRotation();
 		system.setDirection(new Vector3f(1,0,0), 0.1f);
-		bob = new BobTheBot(0, balls.get(0), world);
+		//bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
-
 	}
 	
 	private void buildWithWorld(Loader loader, World world) {
-		//System.out.println("new game with world");
 		this.loader = loader;
 		loadModels();
 		loadGuis();
 		this.world = world;
 		createTerrain(0, 0, "grass", world.getTerrains().get(0).getHeights());
 
-		// this solution is really ugly, if possible change
 		List<Wall> list = new ArrayList<>();
 		for (Entity e : world.getEntities()) {
 			if (e instanceof Wall) {
 				list.add((Wall) e);
 			}
-			//System.out.println(e);
-			//System.out.println("cdata: " + e.getCollisionData());
 		}
 		for (Wall e : list) {
 			world.getEntities().remove(e);
@@ -183,17 +162,38 @@ public class GameState implements State {
 		createBall(new Vector3f(world.getStart()), true);
 		loadLights();
 		renderer = new MasterRenderer(loader, camera);
-		//System.out.println("newEngine");
 		mainEngine = new PhysicsEngine(balls, world, null);
 		loadWater();
 		loadParticleSystem();
 		setCameraToBall(currBall);
-		//System.out.println("done game with world");
-		//createEntity("flag", new Vector3f(0, 0, 300), 0, 0, 0, 20);
 		createEntity("hole", new Vector3f(world.getEnd().x, 0, world.getEnd().z), 0, 0, 0, 1f);
-		//createTerrain(0, 1, "grass", false);
 		bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
+	}
+
+	public void createBoundingWall() {
+		Vector2f p1 = new Vector2f(0, 0), p2 = new Vector2f(0, Terrain.getSize() - 0);
+		Vector2f p3 = new Vector2f(0, 3), p4 = new Vector2f(3, 0);
+		createWall(p1, p2);
+		//createWall(p3, p4);
+		p1.set(Terrain.getSize() - 0, Terrain.getSize());
+		p2.set(0, Terrain.getSize());
+		p3.set(0, Terrain.getSize() - 3);
+		p4.set(3, Terrain.getSize());
+		createWall(p1, p2);
+		//createWall(p3, p4);
+		p1.set(Terrain.getSize(), Terrain.getSize() - 0);
+		p2.set(Terrain.getSize(), 0);
+		p3.set(Terrain.getSize() - 3, Terrain.getSize());
+		p4.set(Terrain.getSize(), Terrain.getSize() - 3);
+		createWall(p1, p2);
+		//createWall(p3, p4);
+		p1.set(0, 0);
+		p2.set(Terrain.getSize() - 0, 0);
+		p3.set(Terrain.getSize(), 3);
+		p4.set(Terrain.getSize() - 3, 0);
+		createWall(p1, p2);
+		//createWall(p3, p4);
 	}
 	
 	@Override
@@ -243,7 +243,6 @@ public class GameState implements State {
 		balls.get(currBall).checkInputs();
 
 		if (Mouse.isButtonDown(0)){
-			//System.out.println("X=" + Mouse.getX() + ", Y=" + Mouse.getY());
 			for (GuiButton button : guis){
 				if (button.isInside(new Vector2f(Mouse.getX(), Mouse.getY()))){
 					button.click();
@@ -251,9 +250,8 @@ public class GameState implements State {
 			}
 		}
 
-		if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_M) && currBall == 0){
-			//bob.shoot();
-			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.MEDIUM,/* NoiseHandler.OFF,*/ NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
+		if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_N) && currBall == 0) {
+			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.MEDIUM, NoiseHandler.OFF, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
 			System.out.println("\nTesting \"Simple\" map without obstacles\nNoise is easy\nAll tests in which the angle does not change have been performed using an angle of 5 degrees\nAll tests in which the maximum velocity does not change have been performed using the velocity 1000");
 			counter = 6;
 			System.out.println("\nNext play from start with counter " + counter);
@@ -279,34 +277,15 @@ public class GameState implements State {
 			}
 
 			bob.shoot();
-
-			//((RealBall) balls.get(currBall)).setPlayed(true);
-			lastInput = System.currentTimeMillis();
-		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_I)) {
-			if (virtualShotTest == -1) {
-				System.out.println("\n\n\nVIRTUALBALL TEST STARTING\n");
-				mainEngine.performVirtualShot((RealBall) balls.get(0), new Vector3f(150, 0, 150));
-				balls.get(0).setVelocity(150, 0, 150);
-				balls.get(0).setMoving(true);
-				System.out.println("\nVIRTUALBALL TEST ENDING\n\n\n");
-				virtualShotTest = 0;
-			}
-			lastInput = System.currentTimeMillis();
-		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_N)) {
-			/*MonteCarlo mc = new MonteCarlo();
-			System.out.println("Calculating shot test for ball " + currBall);
-			long one = System.currentTimeMillis();
-			Vector3f vel = mc.calculateShot(balls.get(currBall), world);
-			System.out.println("Calculated shot test for ball " + currBall + " in " + (System.currentTimeMillis() - one) + "ms");
-			balls.get(currBall).setMoving(true);
-			balls.get(currBall).setVelocity(vel);
 			((RealBall) balls.get(currBall)).setPlayed(true);
-			lastInput = System.currentTimeMillis();*/
-
+			lastInput = System.currentTimeMillis();
+		}
+		if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_M)) {
 			bob.shoot();
 			((RealBall) balls.get(currBall)).setPlayed(true);
 			lastInput = System.currentTimeMillis();
-		} else if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_O)) {
+		}
+		if ((System.currentTimeMillis() - lastInput) > 200 && Keyboard.isKeyDown(Keyboard.KEY_O)) {
 			System.out.println("Ball's velocity set to something by key press");
 			balls.get(currBall).setVelocity(2000, 0, 0);
 			balls.get(currBall).setMoving(true);
@@ -314,27 +293,8 @@ public class GameState implements State {
 		}
 	}
 
-	public void test(int c) {
+	private void test(int c) {
 		this.testing = true;
-
-		/*if (c == 720) {
-			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.EASY, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
-			System.out.println("\nNoise set to easy");
-		}
-		if (c == 1440) {
-			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.MEDIUM, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
-			System.out.println("\nNoise set to medium");
-		}
-		if (c == 2880) {
-			mainEngine.setNoiseHandler(new NoiseHandler(NoiseHandler.MEDIUM, NoiseHandler.FRICTION, NoiseHandler.RESTITUTION, NoiseHandler.SURFACE_NOISE));
-			System.out.println("\nNoise set to hard");
-		}*/
-
-		/*if (c % 56 == 0)
-			HMPathing.DELTA_ANGLE = 5;
-
-		if (c % 56 == 21)
-			HMPathing.MAX_SHOT_POWER = 1000;*/
 
 		if (c % 48 == 6 && c / 48 < 16) {
 			HMPathing.DELTA_ANGLE = 6;
@@ -526,102 +486,69 @@ public class GameState implements State {
 		guiRenderer = new GuiRenderer(loader);
 		guis = new ArrayList<>();
 		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", world));
-		guis.add(new GuiButton("controls", new Vector2f(1540, 675), new Vector2f(0.65f, 0.4f), loader, "overlay", null));
+		guis.add(new GuiButton("controls", new Vector2f(1505, 700), new Vector2f(0.45f, 0.4f), loader, "overlay", null));
 		guis.add(new GuiButton("save", new Vector2f(59, 810), new Vector2f(0.2f, 0.2f), loader, "save", null));
 	}
 	
 	private void loadModels() {
-		long before = System.currentTimeMillis();
-		ModelData human = OBJFileLoader.loadOBJ("person");
 		ModelData ball = OBJFileLoader.loadOBJ("ball_centred_high_scaled2");
 		ModelData tree = OBJFileLoader.loadOBJ("tree");
-		ModelData fern = OBJFileLoader.loadOBJ("fern");
-		ModelData grass = OBJFileLoader.loadOBJ("grassModel");
-		ModelData pine = OBJFileLoader.loadOBJ("pine");
-		ModelData flower = OBJFileLoader.loadOBJ("grassModel");
 		ModelData box = OBJFileLoader.loadOBJ("box");
 		ModelData dragon = OBJFileLoader.loadOBJ("dragon");
 		ModelData empty = OBJFileLoader.loadOBJ("empty");
 		ModelData disk = OBJFileLoader.loadOBJ("disk");
 		ModelData flag = OBJFileLoader.loadOBJ("flag");
-		ModelData wall = OBJFileLoader.loadOBJ("wall");
-	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("holeObstacle");
         ModelData ramp = OBJFileLoader.loadOBJ("ramp");
         ModelData windmill = OBJFileLoader.loadOBJ("windmill_tower2");
         ModelData windmill_rot = OBJFileLoader.loadOBJ("windmill_wings");
-        ModelData sphere_offcenter = OBJFileLoader.loadOBJ("test");
 		ModelData ad_column = OBJFileLoader.loadOBJ("ad_column");
 		ModelData wall_seg = OBJFileLoader.loadOBJ("wall_seg");
 		ModelData rampWHole = OBJFileLoader.loadOBJ("rampWHole");
 
-	    mData.put("human", human);
 	    mData.put("ball", ball);
 	    mData.put("tree", tree);
-	    mData.put("fern", fern);
-	    mData.put("grass", grass);
-	    mData.put("pine", pine);
-	    mData.put("flower", flower);
 	    mData.put("box", box);
 	    mData.put("dragon", dragon);
-	    mData.put("wall", wall);
-	    mData.put("dragon_low", dragon_low);
 	    mData.put("flag", flag);
 	    mData.put("hole", hole);
         mData.put("ramp", ramp);
         mData.put("rampWHole", rampWHole);
         mData.put("windmill", windmill);
         mData.put("windmill_rot", windmill_rot);
-        mData.put("sphere_offcenter", sphere_offcenter);
 		mData.put("ad_column", ad_column);
 		mData.put("wall_seg", wall_seg);
-		
-		RawModel humanModel = loader.loadToVAO(human.getVertices(), human.getTextureCoords(), human.getNormals(), human.getIndices());
+
 		RawModel ballModel = loader.loadToVAO(ball.getVertices(), ball.getTextureCoords(), ball.getNormals(), ball.getIndices());
 		RawModel treeModel = loader.loadToVAO(tree.getVertices(), tree.getTextureCoords(), tree.getNormals(), tree.getIndices());
-		RawModel fernModel = loader.loadToVAO(fern.getVertices(), fern.getTextureCoords(), fern.getNormals(), fern.getIndices());
-		RawModel grassModel = loader.loadToVAO(grass.getVertices(), grass.getTextureCoords(), grass.getNormals(), grass.getIndices());
-		RawModel pineModel = loader.loadToVAO(pine.getVertices(), pine.getTextureCoords(), pine.getNormals(), pine.getIndices());
 		RawModel boxModel = loader.loadToVAO(box.getVertices(), box.getTextureCoords(), box.getNormals(), box.getIndices());
-		RawModel flowerModel = loader.loadToVAO(flower.getVertices(), flower.getTextureCoords(), flower.getNormals(), flower.getIndices());
 		RawModel dragonModel = loader.loadToVAO(dragon.getVertices(), dragon.getTextureCoords(), dragon.getNormals(), dragon.getIndices());
 		RawModel emptyModel = loader.loadToVAO(empty.getVertices(), empty.getTextureCoords(), empty.getNormals(), empty.getIndices());
 		RawModel diskModel = loader.loadToVAO(disk.getVertices(), disk.getTextureCoords(), disk.getNormals(), disk.getIndices());
 		RawModel flagModel = loader.loadToVAO(flag.getVertices(), flag.getTextureCoords(), flag.getNormals(), flag.getIndices());
 		RawModel holeModel = loader.loadToVAO(hole.getVertices(), hole.getTextureCoords(), hole.getNormals(), hole.getIndices());
-		RawModel wallModel = loader.loadToVAO(wall.getVertices(), wall.getTextureCoords(), wall.getNormals(), wall.getIndices());
-		RawModel dragonLowModel = loader.loadToVAO(dragon_low.getVertices(), dragon_low.getTextureCoords(), dragon_low.getNormals(), dragon_low.getIndices());
         RawModel rampModel = loader.loadToVAO(ramp.getVertices(), ramp.getTextureCoords(), ramp.getNormals(), ramp.getIndices());
         RawModel rampWHoleModel = loader.loadToVAO(rampWHole.getVertices(), rampWHole.getTextureCoords(), rampWHole.getNormals(), rampWHole.getIndices());
         RawModel windmillModel = loader.loadToVAO(windmill.getVertices(), windmill.getTextureCoords(), windmill.getNormals(), windmill.getIndices());
         RawModel windmillRotModel = loader.loadToVAO(windmill_rot.getVertices(), windmill_rot.getTextureCoords(), windmill_rot.getNormals(), windmill_rot.getIndices());
-        RawModel sphereModel = loader.loadToVAO(sphere_offcenter.getVertices(), sphere_offcenter.getTextureCoords(), sphere_offcenter.getNormals(), sphere_offcenter.getIndices());
 		RawModel columnModel = loader.loadToVAO(ad_column.getVertices(), ad_column.getTextureCoords(), ad_column.getNormals(), ad_column.getIndices());
 		RawModel wallSegModel = loader.loadToVAO(wall_seg.getVertices(), wall_seg.getTextureCoords(), wall_seg.getNormals(), wall_seg.getIndices());
 
-		tModels.put("human", new TexturedModel(humanModel, new ModelTexture(loader.loadTexture("playerTexture"))));
 		tModels.put("ball", new TexturedModel(ballModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("tree", new TexturedModel(treeModel, new ModelTexture(loader.loadTexture("tree"))));
-		tModels.put("fern", new TexturedModel(fernModel, new ModelTexture(loader.loadTexture("fernAtlas"))));
-		tModels.put("grass", new TexturedModel(grassModel, new ModelTexture(loader.loadTexture("grassTexture"))));
-		tModels.put("pine", new TexturedModel(pineModel, new ModelTexture(loader.loadTexture("pine"))));
 		tModels.put("box", new TexturedModel(boxModel, new ModelTexture(loader.loadTexture("box"))));
-		tModels.put("flower", new TexturedModel(flowerModel, new ModelTexture(loader.loadTexture("flower"))));
 		tModels.put("barrel", new TexturedModel(NormalMappedObjLoader.loadOBJ("barrel", loader), new ModelTexture(loader.loadTexture("barrel"))));
 		tModels.put("crate", new TexturedModel(NormalMappedObjLoader.loadOBJ("crate", loader), new ModelTexture(loader.loadTexture("crate"))));
 		tModels.put("boulder", new TexturedModel(NormalMappedObjLoader.loadOBJ("boulder", loader), new ModelTexture(loader.loadTexture("boulder"))));
 		tModels.put("dragon", new TexturedModel(dragonModel, new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("empty", new TexturedModel(emptyModel, new ModelTexture(loader.loadTexture("flower"))));
+		tModels.put("empty", new TexturedModel(emptyModel, new ModelTexture(loader.loadTexture("empty"))));
 		tModels.put("disk", new TexturedModel(diskModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("flag", new TexturedModel(flagModel, new ModelTexture(loader.loadTexture("flag"))));
-		tModels.put("wall", new TexturedModel(wallModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
         tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("skull"))));
         tModels.put("rampWHole", new TexturedModel(rampWHoleModel, new ModelTexture(loader.loadTexture("white"))));
         tModels.put("windmill", new TexturedModel(windmillModel, new ModelTexture(loader.loadTexture("windmill_tower"))));
         tModels.put("windmill_rot", new TexturedModel(windmillRotModel, new ModelTexture(loader.loadTexture("windmill_wings_alt"))));
-        tModels.put("sphere_offcenter", new TexturedModel(sphereModel, new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("ad_column", new TexturedModel(columnModel, new ModelTexture(loader.loadTexture("ad column default"))));
 		tModels.put("wall_seg", new TexturedModel(wallSegModel, new ModelTexture(loader.loadTexture("white"))));
 
@@ -639,8 +566,6 @@ public class GameState implements State {
 		
 		tModels.get("ball").getTexture().setShineDamper(10);
 		tModels.get("ball").getTexture().setReflectivity(1);
-
-		//System.out.println("Loading all models: " + (System.currentTimeMillis() - before) + "ms");
 	}
 	
 	private void loadLights(){

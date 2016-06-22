@@ -182,7 +182,6 @@ public class Entity implements Serializable {
 	public boolean isIntersectedBySegment(Vector3f p1, Vector3f p2) {
 		//long before = System.nanoTime();
 		boolean answer = cdata.isIntersectedBySegment(p1, p2);
-		//System.out.println("Intersection test took " + (System.nanoTime() - before) + " ns for " + this + " (" + answer + ")");
 	    return answer;
 	}
 

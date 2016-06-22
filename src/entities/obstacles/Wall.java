@@ -21,9 +21,7 @@ public class Wall extends Entity {
 
     private void rotateAndScale() {
         Vector2f difference = Vector2f.sub(p2, p1, null);
-        System.out.println("Difference: " + difference);
         this.scale = difference.length();
-        System.out.println("Scale: " + this.scale);
         // the angle of rotation around the y-axis is determined by the angle between the difference-vector and the z-axis, since the wall model goes along that axis
         Vector2f zAxis = new Vector2f(0, 1);
         float angle = Vector2f.angle(zAxis, difference);
@@ -34,11 +32,9 @@ public class Wall extends Entity {
             }
         }
         this.rotation.y = (float) Math.toDegrees(angle);
-        System.out.println("Angle to z-axis: " + this.rotation.y);
         // the position of the wall can also be determined by the two endpoints
         difference.scale(0.5f);
         Vector2f midPoint = Vector2f.add(p1, difference, null);
-        System.out.println("Midpoint: " + midPoint);
         this.position.set(midPoint.x, 0, midPoint.y);
     }
 

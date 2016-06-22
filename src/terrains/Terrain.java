@@ -249,12 +249,10 @@ public class Terrain implements Serializable {
 	
 	private RawModel generateTerrain(Loader loader, Vector2f hole){
 		VERTEX_COUNT = heights.length;
-		//System.out.println(VERTEX_COUNT);
 		float newHeight = -4;
 		int holeRad = 4;
 		float x = (hole.getX() / (SIZE/2)) * (VERTEX_COUNT/2);
 		float z = (hole.getY() / (SIZE/2)) * (VERTEX_COUNT/2);
-		//System.out.println("Hole at x: " + x + " z: " + z);
 		for (float i = -holeRad; i <= holeRad; i++) {
 			for (float k = -holeRad; k  <= holeRad; k++) {
 				if (x + i >= 0 && x + i < VERTEX_COUNT && z + k >= 0 && z + k < VERTEX_COUNT) {
@@ -405,7 +403,6 @@ public class Terrain implements Serializable {
 	}
 
 	public ArrayList<Face> getCollidingFaces(Ball b) {
-		//System.out.println("getCollidingFaces in Terrain is called (Terrain at " + this.x + "|" + this.z + ")");
 		float ballR = Ball.RADIUS;
 		float ballX = b.getPosition().x - this.x;
 		float ballZ = b.getPosition().z - this.z;
@@ -445,14 +442,11 @@ public class Terrain implements Serializable {
 		else if (lowerZ < 0)
 			lowerZ = 0;
 
-		//System.out.println("leftX = " + leftX + ", rightX = " + rightX + ", upperZ = " + upperZ + ", lowerZ = " + lowerZ);
-
 		Vector3f p1 = new Vector3f(0,0,0), p2 = new Vector3f(0,0,0), p3 = new Vector3f(0,0,0), normal = new Vector3f(0,0,0), v1 = new Vector3f(0,0,0), v2 = new Vector3f(0,0,0);
 
 		ArrayList<Face> collidingFaces = new ArrayList<Face>();
 		for (int i = leftX; i <= rightX && i < heights.length - 1; i++) {
 			for (int j = upperZ; j <= lowerZ && j < heights[0].length - 1; j++) {
-				//System.out.println("2 faces added at (" + i + "|" + j + ")");
 
 				// upper left corner
 				p1.set(i + this.x, this.heights[i][j], j + this.z);
@@ -466,7 +460,6 @@ public class Terrain implements Serializable {
 				Vector3f.cross(v1, v2, normal);
 				normal.normalise();
 				collidingFaces.add(new Face(normal, p1, p2, p3));
-				//System.out.println("Face added: " + collidingFaces.get(collidingFaces.size() - 1) + ".");
 
 				// upper right corner
 				p1.set(i + this.x, this.heights[i][j + 1], j + this.z + 1);
@@ -480,10 +473,8 @@ public class Terrain implements Serializable {
 				Vector3f.cross(v1, v2, normal);
 				normal.normalise();
 				collidingFaces.add(new Face(normal, p1, p2, p3));
-				//System.out.println("Face added: " + collidingFaces.get(collidingFaces.size() - 1) + ".");
 			}
 		}
-		//System.out.println("Number of colliding faces (in Terrain): " + collidingFaces.size());
 		return collidingFaces;
 	}
 	

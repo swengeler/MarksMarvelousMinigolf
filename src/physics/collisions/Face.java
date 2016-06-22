@@ -24,7 +24,6 @@ public class Face implements Serializable{
 	public boolean collidesWithFace(Ball b) {
 		Vector3f closest = LinearAlgebra.closestPtPointTriangle(b.getPosition(), point1, point2, point3);
 		Vector3f.sub(b.getPosition(), closest, dist);
-		//System.out.println("Distance between ball and " + this + ": " + dist.length());
 		if (dist.length() <= Ball.RADIUS)
 			return true;
 		return false;

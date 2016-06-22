@@ -126,7 +126,6 @@ public class World implements Serializable {
 				}
 			}
 		}
-		//System.out.println("Getting intersection point in world took " + (System.currentTimeMillis() - before) + " ms");
 		return closest;
 	}
 	
@@ -251,7 +250,6 @@ public class World implements Serializable {
 	}
 	
 	public void setEnd(Vector2f position) {
-		//System.out.println("New hole at x: " + position.x + " z: " + position.y);
 		this.End =  position;
 		this.hasEnd = true;
 	}

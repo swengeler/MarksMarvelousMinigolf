@@ -60,7 +60,6 @@ public class LinearAlgebra {
         float d1 = Vector3f.dot(ab, ap);
         float d2 = Vector3f.dot(ac, ap);
         if (d1 <= 0 && d2 <= 0) {
-            //System.out.printf("First point returned: (%f|%f|%f)\n", aOr.x, aOr.y, aOr.z);
             return aOr;
         }
 
@@ -70,7 +69,6 @@ public class LinearAlgebra {
         float d3 = Vector3f.dot(ab, bp);
         float d4 = Vector3f.dot(ac, bp);
         if (d3 >= 0 && d4 <= d3) {
-            //System.out.printf("Second point returned: (%f|%f|%f)\n", bOr.x, bOr.y, bOr.z);
             return bOr;
         }
 
@@ -80,7 +78,6 @@ public class LinearAlgebra {
         float d5 = Vector3f.dot(ab, cp);
         float d6 = Vector3f.dot(ac, cp);
         if (d6 >= 0 && d5 <= d6) {
-            //System.out.printf("Third point returned: (%f|%f|%f)\n", cOr.x, cOr.y, cOr.z);
             return cOr;
         }
 
@@ -90,7 +87,6 @@ public class LinearAlgebra {
             float v = d1 / (d1 - d3);
             Vector3f temp = new Vector3f();
             Vector3f.add(a, (Vector3f) ab.scale(v), temp);
-            //System.out.printf("Point on edge (first - second) returned: (%f|%f|%f)\n", temp.x, temp.y, temp.z);
             return temp;
         }
 
@@ -100,7 +96,6 @@ public class LinearAlgebra {
             float w = d2 / (d2 - d6);
             Vector3f temp = new Vector3f();
             Vector3f.add(a, (Vector3f) ac.scale(w), temp);
-            //System.out.printf("Point on edge (first - third) returned: (%f|%f|%f)\n", temp.x, temp.y, temp.z);
             return temp;
         }
 
@@ -112,7 +107,6 @@ public class LinearAlgebra {
             Vector3f temp2 = new Vector3f();
             Vector3f.sub(c, b, temp1);
             Vector3f.add(b, (Vector3f) temp1.scale(w), temp2);
-            //System.out.printf("Point on edge (second - third) returned: (%f|%f|%f)\n", temp2.x, temp2.y, temp2.z);
             return temp2;
         }
 
@@ -124,7 +118,6 @@ public class LinearAlgebra {
         Vector3f temp2 = new Vector3f();
         Vector3f.add((Vector3f) ab.scale(v), (Vector3f) ac.scale(w), temp1);
         Vector3f.add(a, temp1, temp2);
-        //System.out.printf("Point in face returned: (%f|%f|%f)\n", temp2.x, temp2.y, temp2.z);
         return temp2;
 	}
 	

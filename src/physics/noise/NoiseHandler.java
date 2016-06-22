@@ -25,7 +25,6 @@ public class NoiseHandler {
         float x, y, z;
         for (int i : modes) {
             if (i == OFF) {
-                //System.out.println("Noise off");
                 wind = null;
                 friction = null;
                 restitution = null;

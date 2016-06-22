@@ -39,8 +39,6 @@ public class VirtualBall implements Ball {
 		Vector3f delta = new Vector3f(velocity.x, velocity.y, velocity.z);
 		delta.scale(getTimeElapsed());
 		increasePosition(delta.x, delta.y, delta.z);
-		//System.out.printf("\nVirtualBall's position after updating: (%f|%f|%f)\n", position.x, position.y, position.z);
-		//System.out.printf("VirtualBall's velocity after updating: (%f|%f|%f)\n", velocity.x, velocity.y, velocity.z);
 		if (getVelocity().length() < Ball.MIN_VEL && Math.abs(getPosition().y - GameState.getInstance().getWorld().getHeightOfTerrain(getPosition().x, getPosition().z)) < 1) {
 			setMoving(false);
 		}
@@ -57,11 +55,9 @@ public class VirtualBall implements Ball {
 	}
 
 	public void applyAccel(Vector3f accel) {
-		//System.out.printf("Acceleration applied: (%f|%f|%f)\n", accel.x, accel.y, accel.z);
 		acceleration.set(accel.x, accel.y, accel.z);
 		acceleration.scale(getTimeElapsed());
 		Vector3f.add(velocity, acceleration, velocity);
-		//System.out.printf("... and velocity after: (%f|%f|%f)\n", velocity.x, velocity.y, velocity.z);
 	}
 	
 	public void setMoving(boolean moving) {

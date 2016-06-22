@@ -382,84 +382,55 @@ public class DesignerState implements State{
 		guis.add(new GuiButton("main_menu", new Vector2f(105, 855), new Vector2f(0.2f, 0.2f), loader, "main_menu", null));
 		guis.add(new GuiButton("save", new Vector2f(59, 810), new Vector2f(0.2f, 0.2f), loader, "save", null));
 		guis.add(new GuiButton("load", new Vector2f(59, 765), new Vector2f(0.2f, 0.2f), loader, "load", null));
-		//guis.add(new GuiButton("overlay", new Vector2f(1510, 510), new Vector2f(0.6f, 0.5f), loader, "overlay", null));
+		guis.add(new GuiButton("overlay", new Vector2f(1575, 570), new Vector2f(0.6f, 0.4f), loader, "overlay", null));
 	}
 
 	private void loadModels() {
-		ModelData human = OBJFileLoader.loadOBJ("person");
 		ModelData ball = OBJFileLoader.loadOBJ("ball_centred_high_scaled2");
 		ModelData tree = OBJFileLoader.loadOBJ("tree");
-		ModelData fern = OBJFileLoader.loadOBJ("fern");
-		ModelData grass = OBJFileLoader.loadOBJ("grassModel");
-		ModelData pine = OBJFileLoader.loadOBJ("pine");
-		ModelData flower = OBJFileLoader.loadOBJ("grassModel");
 		ModelData box = OBJFileLoader.loadOBJ("box");
 		ModelData dragon = OBJFileLoader.loadOBJ("dragon");
 		ModelData empty = OBJFileLoader.loadOBJ("empty");
 		ModelData disk = OBJFileLoader.loadOBJ("disk");
 		ModelData flag = OBJFileLoader.loadOBJ("flag");
-		ModelData wall = OBJFileLoader.loadOBJ("wall");
-	    ModelData dragon_low = OBJFileLoader.loadOBJ("dragon_low_test");
 	    ModelData hole = OBJFileLoader.loadOBJ("holeObstacle");
 		ModelData wall_seg = OBJFileLoader.loadOBJ("wall_seg");
 		ModelData ramp = OBJFileLoader.loadOBJ("ramp");
 		ModelData rampWHole = OBJFileLoader.loadOBJ("rampWHole");
 
-		mData.put("human", human);
 	    mData.put("ball", ball);
 	    mData.put("tree", tree);
-	    mData.put("fern", fern);
-	    mData.put("grass", grass);
-	    mData.put("pine", pine);
-	    mData.put("flower", flower);
 	    mData.put("box", box);
 	    mData.put("dragon", dragon);
-	    mData.put("wall", wall);
-	    mData.put("dragon_low", dragon_low);
 	    mData.put("flag", flag);
 	    mData.put("hole", hole);
 	    mData.put("wall_seg", wall_seg);
 		mData.put("ramp", ramp);
 		mData.put("rampWHole", rampWHole);
 
-		RawModel humanModel = loader.loadToVAO(human.getVertices(), human.getTextureCoords(), human.getNormals(), human.getIndices());
 		RawModel ballModel = loader.loadToVAO(ball.getVertices(), ball.getTextureCoords(), ball.getNormals(), ball.getIndices());
 		RawModel treeModel = loader.loadToVAO(tree.getVertices(), tree.getTextureCoords(), tree.getNormals(), tree.getIndices());
-		RawModel fernModel = loader.loadToVAO(fern.getVertices(), fern.getTextureCoords(), fern.getNormals(), fern.getIndices());
-		RawModel grassModel = loader.loadToVAO(grass.getVertices(), grass.getTextureCoords(), grass.getNormals(), grass.getIndices());
-		RawModel pineModel = loader.loadToVAO(pine.getVertices(), pine.getTextureCoords(), pine.getNormals(), pine.getIndices());
 		RawModel boxModel = loader.loadToVAO(box.getVertices(), box.getTextureCoords(), box.getNormals(), box.getIndices());
-		RawModel flowerModel = loader.loadToVAO(flower.getVertices(), flower.getTextureCoords(), flower.getNormals(), flower.getIndices());
 		RawModel dragonModel = loader.loadToVAO(dragon.getVertices(), dragon.getTextureCoords(), dragon.getNormals(), dragon.getIndices());
 		RawModel emptyModel = loader.loadToVAO(empty.getVertices(), empty.getTextureCoords(), empty.getNormals(), empty.getIndices());
 		RawModel diskModel = loader.loadToVAO(disk.getVertices(), disk.getTextureCoords(), disk.getNormals(), disk.getIndices());
 		RawModel flagModel = loader.loadToVAO(flag.getVertices(), flag.getTextureCoords(), flag.getNormals(), flag.getIndices());
 		RawModel holeModel = loader.loadToVAO(hole.getVertices(), hole.getTextureCoords(), hole.getNormals(), hole.getIndices());
-		RawModel wallModel = loader.loadToVAO(wall.getVertices(), wall.getTextureCoords(), wall.getNormals(), wall.getIndices());
-		RawModel dragonLowModel = loader.loadToVAO(dragon_low.getVertices(), dragon_low.getTextureCoords(), dragon_low.getNormals(), dragon_low.getIndices());
 		RawModel wallSegModel = loader.loadToVAO(wall_seg.getVertices(), wall_seg.getTextureCoords(), wall_seg.getNormals(), wall_seg.getIndices());
 		RawModel rampModel = loader.loadToVAO(ramp.getVertices(), ramp.getTextureCoords(), ramp.getNormals(), ramp.getIndices());
 		RawModel rampWHoleModel = loader.loadToVAO(rampWHole.getVertices(), rampWHole.getTextureCoords(), rampWHole.getNormals(), rampWHole.getIndices());
 
-
-		tModels.put("human", new TexturedModel(humanModel,new ModelTexture(loader.loadTexture("playerTexture"))));
 		tModels.put("ball", new TexturedModel(ballModel,new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("tree", new TexturedModel(treeModel,new ModelTexture(loader.loadTexture("tree"))));
-		tModels.put("fern", new TexturedModel(fernModel,new ModelTexture(loader.loadTexture("fernAtlas"))));
-		tModels.put("grass", new TexturedModel(grassModel,new ModelTexture(loader.loadTexture("grassTexture"))));
-		tModels.put("pine", new TexturedModel(pineModel,new ModelTexture(loader.loadTexture("pine"))));
 		tModels.put("box", new TexturedModel(boxModel,new ModelTexture(loader.loadTexture("box"))));
-		tModels.put("flower", new TexturedModel(flowerModel,new ModelTexture(loader.loadTexture("flower"))));
 		tModels.put("barrel", new TexturedModel(NormalMappedObjLoader.loadOBJ("barrel", loader), new ModelTexture(loader.loadTexture("barrel"))));
 		tModels.put("crate", new TexturedModel(NormalMappedObjLoader.loadOBJ("crate", loader), new ModelTexture(loader.loadTexture("crate"))));
 		tModels.put("boulder", new TexturedModel(NormalMappedObjLoader.loadOBJ("boulder", loader), new ModelTexture(loader.loadTexture("boulder"))));
 		tModels.put("dragon", new TexturedModel(dragonModel,new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("empty", new TexturedModel(emptyModel, new ModelTexture(loader.loadTexture("flower"))));
+		tModels.put("empty", new TexturedModel(emptyModel, new ModelTexture(loader.loadTexture("empty"))));
 		tModels.put("disk", new TexturedModel(diskModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("flag", new TexturedModel(flagModel, new ModelTexture(loader.loadTexture("flag"))));
-		tModels.put("wall", new TexturedModel(wallModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("hole", new TexturedModel(holeModel, new ModelTexture(loader.loadTexture("white"))));
-		tModels.put("dragon_low", new TexturedModel(dragonLowModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("wall_seg", new TexturedModel(wallSegModel, new ModelTexture(loader.loadTexture("white"))));
 		tModels.put("ramp", new TexturedModel(rampModel, new ModelTexture(loader.loadTexture("skull"))));
 		tModels.put("rampWHole", new TexturedModel(rampWHoleModel, new ModelTexture(loader.loadTexture("white"))));
@@ -496,7 +467,7 @@ public class DesignerState implements State{
 		return e;
 	}
 
-	public void createBoundingWall() {
+	private void createBoundingWall() {
 		Vector2f p1 = new Vector2f(0, 0), p2 = new Vector2f(0, Terrain.getSize() - 0);
 		Vector2f p3 = new Vector2f(0, 3), p4 = new Vector2f(3, 0);
 		createWall(p1, p2);

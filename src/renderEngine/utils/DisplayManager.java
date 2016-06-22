@@ -48,7 +48,6 @@ public class DisplayManager {
 		lastFrameTime = currentFrameTime;
 		if(currentFrameTime - lastFPStick >= 1000){
 			lastFPStick = currentFrameTime;
-			//System.out.println(frames + " frames per second");
 			frames = 0;
 		} else {
 			frames++;
