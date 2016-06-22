@@ -120,23 +120,23 @@ public class GameState implements State {
 		mainEngine = new PhysicsEngine(balls, world, null);
 		loadParticleSystem();
 
-		createEntity("box", new Vector3f(230, 0, 20), 0, 0, 0, 10);
-		createEntity("windmill", new Vector3f(150, 0, 250), 0, 0, 0, 6);
-		createEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), 0, 180, 0, 3);
-		wmr = createRotatingEntity("windmill_rot", new Vector3f(150, 45.5f, 233.5f), new Vector3f(), 6, new Vector3f());
-		createEntity("ramp", new Vector3f(50, 0, 200), 0, 180, 0, 5);
+		//createEntity("box", new Vector3f(230, 0, 20), 0, 0, 0, 10);
+		//createEntity("windmill", new Vector3f(150, 0, 250), 0, 0, 0, 6);
+		//createEntity("ad_column", new Vector3f(world.getStart().x, 0, world.getStart().z - 50), 0, 180, 0, 3);
+		//wmr = createRotatingEntity("windmill_rot", new Vector3f(150, 45.5f, 233.5f), new Vector3f(), 6, new Vector3f());
+		//createEntity("ramp", new Vector3f(50, 0, 200), 0, 180, 0, 5);
 		createEntity("rampWHole", new Vector3f(100, 0, 150), 0, -135, 0, 5);
 		createBoundingWall();
 
 		createTerrain(0, 0, "grass", false);
-		createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
+		/*createWaterTile(Terrain.getSize()/2f, Terrain.getSize()/2f, -8f);
 		createEntity("dragon", new Vector3f(100, getWorld().getHeightOfTerrain(100, 60), 60), -10f, 170f, 0f, 3 );
 		ParticleSystem system = createParticleSystem("fire", 8, 200, 30, -0.05f, 1.5f, 8.6f, new Vector3f(113,getWorld().getHeightOfTerrain(100, 60) + 21.3f,57));
 		system.setLifeError(0.1f);
 		system.setScaleError(0.5f);
 		system.setSpeedError(0.25f);
 		system.randomizeRotation();
-		system.setDirection(new Vector3f(1,0,0), 0.1f);
+		system.setDirection(new Vector3f(1,0,0), 0.1f);*/
 		//bob = new BobTheBot(0, balls.get(0), world);
 		DisplayManager.reset();
 	}

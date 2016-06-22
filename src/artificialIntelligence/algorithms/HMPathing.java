@@ -145,23 +145,6 @@ public class HMPathing extends Algorithm {
 		
 	}
 	
-/*	private boolean isStraightShotPossible(Ball b, Vector3f end) {
-		VirtualBall vb = new VirtualBall((RealBall) b, new Vector3f());
-		Vector3f dirVec = Vector3f.sub(end, b.getPosition(), null);
-		dirVec.y = 0;
-		dirVec.normalise();
-		dirVec.scale(DELTA_CHECK);
-		while(Vector3f.sub(vb.getPosition(), end, null).length() > DELTA_CHECK){
-			vb.increasePosition(dirVec);
-			ArrayList<Entity> arr = w.getCollidingEntities(vb);
-			//ArrayList<Face> arr = w.getCollidingFacesEntities(vb);
-			System.out.println("The length of the array is " + arr.size());
-			if(arr.size() != 0)
-				return false;
-		}
-		return true;
-	}*/
-	
 	private boolean isStraightShotPossible(Ball b, Vector3f end) {
 		return !w.obstaclesIntersectedBySegment(b.getPosition(), end);
 	}

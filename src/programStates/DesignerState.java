@@ -259,7 +259,7 @@ public class DesignerState implements State{
 			lastInput = System.currentTimeMillis();
 		}
 		if ((System.currentTimeMillis() - lastInput > 200) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_G) && picker.getCurrentTerrainPoint() != null) {
-			createEntity("box", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z), picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 7);
+			createEntity("box", new Vector3f(picker.getCurrentTerrainPoint().x, getWorld().getHeightOfTerrain(picker.getCurrentTerrainPoint().x, picker.getCurrentTerrainPoint().z) - 13.5f, picker.getCurrentTerrainPoint().z), 0f, 0f, 0f, 7);
 			lastInput = System.currentTimeMillis();
 		}
 		if ((System.currentTimeMillis() - lastInput > 200) && loader.getVBOs() <= 350 && Keyboard.isKeyDown(Keyboard.KEY_U) && picker.getCurrentTerrainPoint() != null) {

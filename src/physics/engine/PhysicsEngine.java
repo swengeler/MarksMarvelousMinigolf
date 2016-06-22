@@ -28,7 +28,7 @@ public class PhysicsEngine {
     public static final float NORMAL_TH = 0.001f;
     private static final float ANGLE_TH = 5f;
     private static final float C = 0.001f;
-    public static final float MIN_MOV_REQ = 0.005f;
+    public static final float MIN_MOV_REQ = 0.0005f;
 
     public static final float REAL_GRAVITY = 9.813f;
 
@@ -77,7 +77,8 @@ public class PhysicsEngine {
     }
 
     public void tick() {
-        GameState.wmr.increaseRotation(0, 0, 0.25f);
+        if (GameState.wmr != null)
+            GameState.wmr.increaseRotation(0, 0, 0.25f);
         for (RealBall b : balls) {
             b.applyAccel(GRAVITY);
             if (b.isMoving()) {
